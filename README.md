@@ -1,0 +1,1 @@
+Danh sách các bảng trong CSDL: https://docs.google.com/spreadsheets/d/1LVhNFlwh3exTfcSOx71wyrl1PduV75SGwx98Sr4ASJU/edit?usp=sharing
