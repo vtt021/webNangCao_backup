@@ -3,16 +3,33 @@ import Searchbar from './SearchBar'
 import HeaderImage from './images/HeaderImage.jpg'
 import AppLogo from './images/AppLogo.png'
 import _ from './HeaderPage.css'
+import { Container, Row, Col, Image, Button } from 'react-bootstrap'
+import DropDown from './DropDown'
 
 
 export default function HeaderPage(props) {
     return (
-        <div>
-            <img className="HeaderImg" src = {HeaderImage}/>
-            <div className="Container-1">
-                <img className="AppLogo" src = {AppLogo}/>
-                <Searchbar/>
-            </div>
-        </div>
+        <Container fluid>
+            <Row className="Container-1">
+                <Image className="HeaderImg" src={HeaderImage} />
+            </Row>
+            <Row style={{marginTop:"10px"}}>
+                <Col xs={1}>
+                    <img className="AppLogo" src={AppLogo} />
+                </Col>
+                <Col xs = {2}>
+                    <DropDown />
+                </Col>
+                <Col xs = {3}>
+                    <Searchbar />
+                </Col>
+                <Col xs = {3}>
+                    <Button>Log in</Button>
+                </Col>
+                <Col xs = {3}>
+                    <Button>Sign up</Button>
+                </Col>
+            </Row>
+        </Container>
     )
 }
