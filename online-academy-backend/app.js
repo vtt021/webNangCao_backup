@@ -10,11 +10,15 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
+global.__basedir = __dirname;
+
 
 const PORT = 3001;
 app.listen(PORT, () => {
     console.log(`API is running at http://localhost:${PORT}`);
 })
+
+app.use('/api/file', require('./routes/upload.route'));
 // app.use('/api/auth', require('./routes/auth.route'));
 
 // app.use('/api/actors', require('./routes/actor.route'))
