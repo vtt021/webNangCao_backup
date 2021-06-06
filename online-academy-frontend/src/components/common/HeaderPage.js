@@ -20,13 +20,13 @@ export default function HeaderPage(props) {
                 <Col xs = {2}>
                     <DropDown />
                 </Col>
-                <Col xs = {3}>
+                <Col xs = {5}>
                     <Searchbar />
                 </Col>
-                <Col xs = {3}>
+                <Col xs = {2}>
                     <Button>Log in</Button>
                 </Col>
-                <Col xs = {3}>
+                <Col xs = {2}>
                     <Button>Sign up</Button>
                 </Col>
             </Row>

@@ -8,13 +8,14 @@ export default function DropDown(props) {
         <Dropdown
       onMouseLeave={() => setShowDropdown(false)}
       onMouseOver={() => setShowDropdown(true)}
+      onClick={()=>{setShowDropdown(false)}}
       style={{ width: '166px' }}
     >
       <Dropdown.Toggle
         className="main-style"
         id="dropdown-basic"
       >
-        Dropdown Button
+        Categories
       </Dropdown.Toggle>
 
       <Dropdown.Menu show={showDropdown}>
