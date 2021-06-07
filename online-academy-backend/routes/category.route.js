@@ -23,7 +23,7 @@ router.put('/', async (req, res) => {
 
 router.delete('/', async(req, res)=> {
     const id = req.body.id;
-    await categoryModel.delete(id);
+    const ret = await categoryModel.delete(id);
     return res.status(200).json(ret);
 })
 
