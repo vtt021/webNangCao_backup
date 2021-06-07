@@ -19,6 +19,8 @@ app.listen(PORT, () => {
 })
 
 app.use('/api/file', require('./routes/upload.route'));
+app.use('/api/category', require('./routes/category.route'));
+app.use('/api/sub-category', require('./routes/subCategory.route'))
 // app.use('/api/auth', require('./routes/auth.route'));
 
 // app.use('/api/actors', require('./routes/actor.route'))

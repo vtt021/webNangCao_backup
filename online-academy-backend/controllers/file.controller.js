@@ -1,8 +1,9 @@
 const upload = require('../middlewares/upload.mdw');
 
-const URL = "http://localhost:3001/get-cfiles/";
+const URL = "http://localhost:3001/api/file/";
 
 const fs = require("fs");
+const path = __basedir + '/resources/assets/';
 
 
 const uploadFile = async (req, res) => {
@@ -17,7 +18,7 @@ const uploadFile = async (req, res) => {
 
         res.status(200).send({
             message: 'File upload successfully',
-            link: req.file.originalname
+            link: 'http://localhost:3001/' + req.file.originalname
         });
     }
     catch (err) {
@@ -36,7 +37,6 @@ const uploadFile = async (req, res) => {
 };
 
 const getFilesList = (req, res) => {
-    const path = __dirname + '/resources/assets/';
     fs.readdir(path, (err, files) => {
         if (err) {
             res.status(500).send({
@@ -58,7 +58,6 @@ const getFilesList = (req, res) => {
 
 const downloadFiles = (req, res) => {
     const fileName = req.params.name;
-    const path = __dirname + '/resources/assets/';
 
     res.download(path + fileName, err => {
         if (err) {

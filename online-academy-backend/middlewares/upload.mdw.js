@@ -1,5 +1,6 @@
 const multer = require('multer');
-const util = require("util")
+const util = require("util");
+const randomstring = require("randomstring");
 
 const maxSize = 50 * 1024 * 1024;
 
@@ -8,7 +9,11 @@ let storage = multer.diskStorage({
         cb(null, './resources/assets/');
     },
     filename: (req, file, cb) => {
-        const fileName = file.originalname.toLowerCase().split(' ').join('-');
+        // const fileName = file.originalname.toLowerCase().split(' ').join('-');
+        const fileName = randomstring.generate({
+            length: 12,
+            charset: 'alphanumeric'
+        });
         cb(null, fileName);
     },
 });
