@@ -35,6 +35,7 @@ module.exports = {
     },
 
     update(id, subCategory) {
+        subCategory.lastUpdated = new Date();
         return db(TABLE_NAME).where({
             id: id,
             isDeleted: false
