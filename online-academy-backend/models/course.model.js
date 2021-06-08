@@ -1,6 +1,6 @@
 const db = require('../utils/db');
 const TABLE_NAME = 'course'
-const auth = require('../middlewares/auth.mdw');
+
 const mainPageData = [
     'courseName',
     'subCategoryId',

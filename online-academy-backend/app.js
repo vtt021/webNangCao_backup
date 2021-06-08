@@ -24,6 +24,7 @@ app.use('/api/sub-categories', require('./routes/subCategory.route'))
 app.use('/api/auth', require('./routes/auth.route'));
 app.use('/api/courses', require('./routes/course.route'))
 app.use('/api/users', require('./routes/user.route'))
+app.use('/api/course-contents', require('./routes/courseContent.route'))
 
 // app.use('/api/actors', require('./routes/actor.route'))
 // app.use('/api/categories', require('./routes/category.route'));
