@@ -32,19 +32,6 @@ module.exports = {
             .orderByRaw('(viewCount + studentCount * 5 + ratingCount * (rating - 3) * 10) desc')
             .limit(4);
 
-        // const courses = [];
-
-        // queryData.forEach(element => {
-        //     let course = {};
-        //     course.courseName = element.courseName;
-        //     course.subCategoryId = element.subCategoryId;
-        //     course.teacherId = element.teacherId;
-        //     course.rating = element.rating;
-        //     course.ratingCount = element.ratingCount;
-        //     course.imageThumbnail = element.imageThumbnail;
-        //     course.price = element.price;
-        // });
-
         return courses;
     },
 
@@ -69,8 +56,7 @@ module.exports = {
         return courses;
     },
 
-
-    async getCourseName(id) {
+    async getCourseById(id) {
         const course = await db(TABLE_NAME).where({
             id: id,
             isDeleted: false
@@ -78,10 +64,30 @@ module.exports = {
         return course;
     },
 
+    async search(queryString, page, ratingDesc, priceAsc) {
+        let offset = 5 * (page - 1);
+        console.log("queryString = " + queryString);
+        const courses = await db.select(mainPageData).from(TABLE_NAME)
+            .whereRaw('match(courseName) against(' + queryString + ' in boolean mode)')
+            .limit(5)
+            .offset(5 * (page - 1));
+
+
+        if (ratingDesc === true) {
+            courses = courses.orderBy('rating', 'desc');
+        }
+
+        if (priceAsc === true) {
+            courses = courses.orderBy('price', 'asc');
+        }
+        return courses;
+    },
+
     add(course) {
         return db(TABLE_NAME).insert(course);
     },
 
+    // ! Chưa check được trường hợp gv add course không phải của mình
     update(id, course) {
         course.lastUpdated = new Date();
         return db(TABLE_NAME).where({

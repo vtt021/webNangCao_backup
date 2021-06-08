@@ -9,9 +9,33 @@ const router = express.Router();
 //     res.json(list);
 // })
 
+router.get('/new', async(req, res) => {
+    const list = await courseModel.getTopNewCourses();
+    return res.json(list);
+})
+
+router.get('/top-watch', async(req, res) => {
+    const list = await courseModel.getTopWatchCourses();
+    return res.json(list);
+})
+
 router.get('/hot', async(req, res) => {
     const list = await courseModel.getTopHotCourses();
     return res.json(list);
+})
+
+router.get('/search', async(req, res) => {
+    const string = req.query.string;
+    const ratingDesc = req.query.ratingDesc;
+    const priceAsc = req.query.priceAsc;
+    const page = req.query.page;
+    const list = await courseModel.search(string, page, ratingDesc, priceAsc);
+    return res.json(list);
+})
+
+router.post('/imageThumbnail', async(req, res) => {
+    const link = req.body.link;
+
 })
 
 // router.post('/', async (req, res) => {
