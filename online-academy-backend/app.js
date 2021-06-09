@@ -25,6 +25,8 @@ app.use('/api/auth', require('./routes/auth.route'));
 app.use('/api/courses', require('./routes/course.route'))
 app.use('/api/users', require('./routes/user.route'))
 app.use('/api/course-contents', require('./routes/courseContent.route'))
+app.use('/api/register-course', require('./routes/registerCourse.route'))
+app.use('/api/register-course-detail', require('./routes/registerCourseDetail.route'));
 
 // app.use('/api/actors', require('./routes/actor.route'))
 // app.use('/api/categories', require('./routes/category.route'));

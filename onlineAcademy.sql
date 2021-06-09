@@ -63,9 +63,7 @@ create table course (
     courseName char(80) character set utf8mb4 not null	,
     subCategoryId int not null,
 	teacherId int not null, 
-    imageThumbnailName varchar(255),
     imageThumbnail varchar(255),
-    imageCourseName varchar(255),
     imageCourse varchar(255),
     price int not null default 0,
     salePrice int,
@@ -177,11 +175,10 @@ create table register_course_detail(
     primary key (courseId, userId, contentId),
     constraint FK_CourseIdUserId_RegisterCourse foreign key (courseId, userId) references register_course(courseId, userId),
     constraint FK_ContentId_CourseContent foreign key (contentId) references course_content(id)
-    
 );
 
 insert into register_course_detail(courseId, userId, contentId, completeRate) values(1, 1, 1,20);
-insert into register_course_detail(courseId, userId, contentId, completeRate ) values(1, 1, 2,50);
+insert into register_course_detail(courseId, userId, contentId, completeRate) values(1, 1, 2,50);
 insert into register_course_detail(courseId, userId, contentId, completeRate) values(1, 1, 3,30);
 insert into register_course_detail(courseId, userId, contentId, completeRate) values(1, 1, 4,20);
 insert into register_course_detail(courseId, userId, contentId, completeRate) values(1, 1, 5,10);

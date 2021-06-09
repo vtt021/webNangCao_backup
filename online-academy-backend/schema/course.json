@@ -1,0 +1,31 @@
+{
+    "required": [
+        "courseName",
+        "subCategoryId",
+        "teacherId",
+        "price",
+        "detailShort",
+        "detailLong"
+    ],
+    "additionalProperties": false,
+    "properties": {
+        "categoryName": {
+            "type": "string"
+        },
+        "subCategoryId": {
+            "type": "number"
+        },
+        "teacherId": {
+            "type": "number"
+        },
+        "price": {
+            "type": "number"
+        },
+        "detailShort": {
+            "type": "string"
+        },
+        "detailLong": {
+            "type": "string"
+        }
+    }
+}

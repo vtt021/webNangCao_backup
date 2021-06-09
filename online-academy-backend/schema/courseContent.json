@@ -1,0 +1,23 @@
+{
+    "required": [
+        "courseId",
+        "isPreview",
+        "content",
+        "video"
+    ],
+    "additionalProperties": false,
+    "properties": {
+        "courseId": {
+            "type": "number"
+        },
+        "isPreview": {
+            "type": "boolean"
+        },
+        "content": {
+            "type": "string"
+        },
+        "video": {
+            "type": "string"
+        }
+    }
+}
