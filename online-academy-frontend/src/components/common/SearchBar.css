@@ -1,0 +1,35 @@
+container {
+    border-style: solid;
+    border-width: strong;
+    margin: 0px;
+    border-color: 000000;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+.input {
+    border-style: solid;
+    border-width: strong;
+    all: unset;
+    text-align: left;
+    font: 16px system-ui;
+    color:black;
+    height: 100%;
+    width: 100%;
+  }
+ 
+  .Button {
+    all: unset;
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+  }
+  
+  .SearchImg {
+    fill: currentColor;
+    width: 24px;
+    height: 24px;
+    padding: 10px;
+  }
