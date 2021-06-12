@@ -8,21 +8,45 @@ const router = express.Router();
 
 
 
-router.get('/', adminAuthMdw,  async(req, res) => {
-    const list = await registerCourseModel.getAll();
-    return res.json(list);
+router.get('/', adminAuthMdw, async (req, res) => {
+    try {
+        const list = await registerCourseModel.getAll();
+        return res.json(list);
+    }
+    catch (e) {
+        res.status(500).json({
+            message: e.message
+        })
+    }
+
 })
 
-router.get('/my-course', userAuthMdw, async(req, res) => {
-    let userId = req.accessTokenPayload;
-    const list = await registerCourseModel.getRegisterCourseByUserId(userId);
-    return res.json(list);
+router.get('/my-course', userAuthMdw, async (req, res) => {
+    try {
+        let userId = req.accessTokenPayload;
+        const list = await registerCourseModel.getRegisterCourseByUserId(userId);
+        return res.json(list);
+    }
+    catch (e) {
+        res.status(500).json({
+            message: e.message
+        })
+    }
+
 })
 
-router.get('/course-users', async(req, res) => {
-    let courseId = req.query.courseId;
-    const list = await registerCourseModel.getRegisterUsersByCourseId(courseId);
-    return res.json(list);
+router.get('/course-users', async (req, res) => {
+    try {
+        let courseId = req.query.courseId;
+        const list = await registerCourseModel.getRegisterUsersByCourseId(courseId);
+        return res.json(list);
+    }
+    catch (e) {
+        res.status(500).json({
+            message: e.message
+        })
+    }
+
 })
 
 // router.post('/imageThumbnail', async(req, res) => {
@@ -30,23 +54,46 @@ router.get('/course-users', async(req, res) => {
 
 // })
 
-router.post('/',  async (req, res) => {
-    await registerCourseModel.add(req.body);
-    return res.status(201).json(req.body);
+router.post('/', async (req, res) => {
+    try {
+        await registerCourseModel.add(req.body);
+        return res.status(201).json(req.body);
+    }
+    catch (e) {
+        res.status(500).json({
+            message: e.message
+        })
+    }
+
 })
 
 router.put('/', async (req, res) => {
-    const id = req.body.id;
-    const registerCourseUpdateData = req.body.registerData;
-    const ret = await registerCourseModel.update(id, registerCourseUpdateData);
-    return res.status(200).json(ret);
+    try {
+        const id = req.body.id;
+        const registerCourseUpdateData = req.body.registerData;
+        const ret = await registerCourseModel.update(id, registerCourseUpdateData);
+        return res.status(200).json(ret);
+    }
+    catch (e) {
+        res.status(500).json({
+            message: e.message
+        })
+    }
+
 })
 
-router.delete('/', async(req, res) => {
-    const courseId = req.body.courseId;
-    const userId = req.body.userId;
-    const ret = await registerCourseModel.delete(courseId, userId);
-    return res.status(200).json(ret);
+router.delete('/', async (req, res) => {
+    try {
+        const courseId = req.body.courseId;
+        const userId = req.body.userId;
+        const ret = await registerCourseModel.delete(courseId, userId);
+        return res.status(200).json(ret);
+    }
+    catch (e) {
+        res.status(500).json({
+            message: e.message
+        })
+    }
 })
 
 module.exports = router;
