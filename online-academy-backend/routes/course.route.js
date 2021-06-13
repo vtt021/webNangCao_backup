@@ -58,7 +58,7 @@ router.get('/hot', async (req, res) => {
 
 })
 
-router.get('/search', userAuth, async (req, res) => {
+router.get('/search', userAuthMdw, async (req, res) => {
     try {
         const string = req.query.string;
         const ratingDesc = req.query.ratingDesc;
