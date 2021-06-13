@@ -1,14 +1,29 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios';
 import Searchbar from './SearchBar'
 import HeaderImage from './images/HeaderImage.jpg'
 import AppLogo from './images/AppLogo.png'
 import _ from './HeaderPage.css'
-import { Container, Row, Col, Image, Button, Navbar, Nav, FormControl, Form, NavDropdown } from 'react-bootstrap'
-import DropDown from './DropDown'
-import MyTab from '../home/images/MyTab'
+import { Container, Row, Image, Button, Navbar, NavDropdown } from 'react-bootstrap'
 
+
+const renderItems = (listCategories) => {
+    return (listCategories.map((title) => (
+        <NavDropdown.Item  href="#/action">
+            {title.categoryName}
+        </NavDropdown.Item >
+    )))
+}
 
 export default function HeaderPage(props) {
+    const [listCategories, setListCategories] = useState([{ id: 1, categoryName: 'aaa' }])
+    useEffect(() => {
+        axios.get("http://localhost:3001/api/categories").then(res => {
+            const listCategories = res.data;
+            setListCategories(listCategories);
+        })
+            .catch(error => console.log(error));
+    }, []);
     return (
         <Container fluid>
             <Row className="Container-1">
@@ -19,13 +34,10 @@ export default function HeaderPage(props) {
             <Navbar bg="dark" variant="dark" className='justify-content-between'>
                 <Navbar.Brand href="/">
                     <Image src={AppLogo} className="AppLogo" />
-                    a
+                    My Academy
                 </Navbar.Brand>
                 <NavDropdown title="Categories" id="NavDropdown">
-                    <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                    <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
-                    <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-                    <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
+                    {renderItems(listCategories)}
                 </NavDropdown>
                 <NavDropdown.Divider />
                 <Searchbar />
