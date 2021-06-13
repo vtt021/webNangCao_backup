@@ -43,7 +43,7 @@ module.exports = {
     addRate(rate) {
         let courseId = rate.courseId;
         let userId = rate.userId;
-        let rate = rate.rating || 0;
+        let rating = rate.rating || 0;
         let rateContent = rate.rateContent || "";
 
         return db(TABLE_NAME).where({
@@ -51,7 +51,7 @@ module.exports = {
             userId: userId,
             isDeleted: false
         }).update({
-            rate: rate,
+            rate: rating,
             rateContent: rateContent
         })
     },
