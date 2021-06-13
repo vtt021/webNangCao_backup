@@ -1,0 +1,15 @@
+{
+    "required": [
+        "categoryId",
+        "categoryName"
+    ],
+    "additionalProperties": false,
+    "properties": {
+        "categoryId": {
+            "type": "number"
+        },
+        "categoryName": {
+            "type": "string"
+        }
+    }
+}
