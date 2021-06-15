@@ -10,6 +10,7 @@ module.exports = async function (req, res, next) {
             const id = decoded.id;
             
             const user = await userModel.getUserById(id);
+            console.log(JSON.stringify(user));
             if (user.role <= 1) {
                 return res.status(401).json({
                     message: 'Invalid access token!'

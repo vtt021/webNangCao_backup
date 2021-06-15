@@ -16,7 +16,6 @@ router.get('/', userAuthMdw, async (req, res) => {
             message: e.message
         })
     }
-
 })
 
 router.get('/new', async (req, res) => {
