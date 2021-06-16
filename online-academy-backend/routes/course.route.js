@@ -2,11 +2,12 @@ const express = require('express');
 const courseModel = require('../models/course.model');
 const teacherAuthMdw = require('../middlewares/teacherAuth.mdw');
 const userAuthMdw = require('../middlewares/userAuth.mdw');
+const adminAuthMdw = require('../middlewares/adminAuth.mdw')
 
 const router = express.Router();
 
 
-router.get('/', userAuthMdw, async (req, res) => {
+router.get('/', adminAuthMdw, async (req, res) => {
     try {
         const list = await courseModel.getAll();
         return res.json(list);
@@ -20,7 +21,8 @@ router.get('/', userAuthMdw, async (req, res) => {
 
 router.get('/new', async (req, res) => {
     try {
-        const list = await courseModel.getTopNewCourses();
+        const limit = req.query.limit;
+        const list = await courseModel.getTopNewCourses(limit);
         return res.json(list);
     }
     catch (e) {
@@ -33,7 +35,8 @@ router.get('/new', async (req, res) => {
 
 router.get('/top-watch', async (req, res) => {
     try {
-        const list = await courseModel.getTopWatchCourses();
+        const limit = req.query.limit;
+        const list = await courseModel.getTopWatchCourses(limit);
         return res.json(list);
     }
     catch (e) {
@@ -46,7 +49,8 @@ router.get('/top-watch', async (req, res) => {
 
 router.get('/hot', async (req, res) => {
     try {
-        const list = await courseModel.getTopHotCourses();
+        const limit = req.query.limit;
+        const list = await courseModel.getTopHotCourses(limit);
         return res.json(list);
     }
     catch (e) {
@@ -57,13 +61,14 @@ router.get('/hot', async (req, res) => {
 
 })
 
-router.get('/search', userAuthMdw, async (req, res) => {
+router.get('/search', async (req, res) => {
     try {
-        const string = req.query.string;
+        const string = req.query.keyword;
         const ratingDesc = req.query.ratingDesc;
         const priceAsc = req.query.priceAsc;
         const page = req.query.page;
-        const list = await courseModel.search(string, page, ratingDesc, priceAsc);
+        const limit = req.query.limit;
+        const list = await courseModel.search(string, page, limit, ratingDesc, priceAsc);
         return res.json(list);
     }
     catch (e) {
@@ -71,8 +76,37 @@ router.get('/search', userAuthMdw, async (req, res) => {
             message: e.message
         })
     }
-
 })
+
+router.get('/category', async (req, res) => {
+    try {
+        const categoryId = req.query.categoryId;
+        const page = req.query.page;
+        const limit = req.query.limit;
+        const list = await courseModel.getCoursesByCategory(categoryId, limit, page);
+        return res.json(list);
+    }
+    catch (e) {
+        res.status(500).json({
+            message: e.message
+        })
+    }
+})
+
+router.get('/:id', async (req, res) => {
+    try {
+        const courseId = req.params.id;
+        const data = await courseModel.get(courseId);
+        return res.json(data);
+    }
+    catch (e) {
+        res.status(500).json({
+            message: e.message
+        })
+    }
+})
+
+//TODO: Thêm route cho thêm ảnh đại diện khóa học
 
 router.post('/', teacherAuthMdw, async (req, res) => {
     try {
@@ -84,7 +118,6 @@ router.post('/', teacherAuthMdw, async (req, res) => {
             message: e.message
         })
     }
-
 })
 
 router.put('/', teacherAuthMdw, async (req, res) => {
