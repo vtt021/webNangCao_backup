@@ -4,11 +4,6 @@ const TABLE_NAME = 'sub_category'
 module.exports = {
     async getAll() {
         const subCategories = await db(TABLE_NAME).where({ isDeleted: false });
-
-        subCategories.forEach(element => {
-            delete element["isDeleted"];
-            delete element["lastUpdated"];
-        });
         return subCategories;
     },
 

@@ -1,10 +1,39 @@
 const express = require('express');
+const adminAuthMdw = require('../middlewares/adminAuth.mdw');
 const subCategoryModel = require('../models/subCategory.model');
 
 const router = express.Router();
 
 
 router.get('/', async (req, res) => {
+    try {
+        const categoryId = req.body.id;
+
+        if (categoryId === undefined) {
+            const list = await subCategoryModel.getAll();
+            list.forEach(element => {
+                delete element["isDeleted"];
+                delete element["lastUpdated"];
+            });
+            res.json(list);
+        }
+        else {
+            const list = await subCategoryModel.getSubcategoryInCategory(categoryId);
+            list.forEach(element => {
+                delete element["isDeleted"];
+                delete element["lastUpdated"];
+            });
+            res.json(list);
+        }
+    }
+    catch (e) {
+        res.status(500).json({
+            message: e.message
+        })
+    }
+})
+
+router.get('/admin', adminAuthMdw, async (req, res) => {
     try {
         const categoryId = req.body.id;
 
@@ -22,9 +51,8 @@ router.get('/', async (req, res) => {
             message: e.message
         })
     }
-
-
 })
+
 
 router.post('/', async (req, res) => {
     try {
