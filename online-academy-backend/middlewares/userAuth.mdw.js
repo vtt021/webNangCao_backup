@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const authConstants = require('../utils/auth.constant');
 
 module.exports = function (req, res, next) {
     const accessToken = req.headers['x-access-token'];

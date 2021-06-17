@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const userModel = require('../models/user.model');
+const authConstants = require('../utils/auth.constant');
 
 module.exports = async function (req, res, next) {
     const accessToken = req.headers['x-access-token'];
@@ -11,7 +12,7 @@ module.exports = async function (req, res, next) {
             
             const user = await userModel.getUserById(id);
             console.log(JSON.stringify(user));
-            if (user.role <= 1) {
+            if (user.role !== authConstants.KEY_ADMIN_AUTH) {
                 return res.status(401).json({
                     message: 'Invalid access token!'
                 })

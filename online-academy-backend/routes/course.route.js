@@ -3,6 +3,7 @@ const courseModel = require('../models/course.model');
 const teacherAuthMdw = require('../middlewares/teacherAuth.mdw');
 const userAuthMdw = require('../middlewares/userAuth.mdw');
 const adminAuthMdw = require('../middlewares/adminAuth.mdw')
+const upload = require('../middlewares/upload.mdw')
 
 const router = express.Router();
 
@@ -118,6 +119,27 @@ router.post('/', teacherAuthMdw, async (req, res) => {
             message: e.message
         })
     }
+})
+
+router.post('/thumbnail-image', teacherAuthMdw, upload.uploadImageMdw,  async(req, res) => {
+    const file = req.file;
+    const teacherId = req.accessTokenPayload.id;
+    const courseId = req.body.id;
+    const course = await courseModel.getCourseById(courseId);
+
+    if (course === null || course.teacherId !== teacherId) {
+        res.status(400).json({
+            message: 'Incorrect courseId or wrong teacher'
+        })
+    }
+
+    await courseModel.uploadThumbnailImage(courseId, file.filename);
+
+    console.log(file);
+    res.status(200).json({
+        message: 'OK',
+        filename: file.filename
+    })
 })
 
 router.put('/', teacherAuthMdw, async (req, res) => {

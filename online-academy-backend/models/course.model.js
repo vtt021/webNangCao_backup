@@ -85,6 +85,8 @@ module.exports = {
         return course;
     },
 
+   
+
     // async getCourseDetail(id) {
     //     const course = await db.select(mainPageData)
     //         .from(TABLE_NAME)
@@ -123,7 +125,17 @@ module.exports = {
         return db(TABLE_NAME).insert(course);
     },
 
-    // ! Chưa check được trường hợp gv add course không phải của mình
+    async uploadThumbnailImage(id, filename) {
+        let lastUpdated = new Date();
+        return db(TABLE_NAME).where({
+            id: id,
+            isDeleted: false
+        }).update({
+            imageThumbnail: filename,
+            lastUpdated: lastUpdated
+        })
+    },
+
     update(id, course) {
         course.lastUpdated = new Date();
         return db(TABLE_NAME).where({
