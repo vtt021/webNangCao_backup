@@ -4,11 +4,6 @@ const TABLE_NAME = 'category'
 module.exports = {
     async getAll() {
         const categories = await db(TABLE_NAME).where({ isDeleted: false });
-
-        categories.forEach(element => {
-            delete element["isDeleted"];
-            delete element["lastUpdated"];
-        });
         return categories;
     },
 
@@ -26,6 +21,7 @@ module.exports = {
 
     update(id, category) {
         category.lastUpdated = new Date();
+        delete category.id;
         return db(TABLE_NAME).where({
             id: id,
             isDeleted: false

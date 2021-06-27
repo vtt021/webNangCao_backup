@@ -34,11 +34,18 @@ module.exports = {
     },
 
     update(id, user) {
-        return db('users').where({user_id : id}).update(user, [id]);
+        delete user.password;
+        return db('users').where({id : id}).update(user);
+    },
+
+    updatePassword(id, pass) {
+        return db('users').where({id : id}).update({
+            password: pass
+        });
     },
 
     delete(id) {
-        return db('users').where({user_id : id}).del([id]);
+        return db('users').where({id : id}).del();
     },
 
     patchRFToken(id, refreshToken) {
@@ -46,7 +53,7 @@ module.exports = {
     },
 
     async isValidRefreshToken(id, refreshToken) {
-        const list = await db(TABLE_NAME).where('id', id).andWhere('rfToken', refreshToken);
+        const list = await db(TABLE_NAME).where('id', id).andWhere('refreshToken', refreshToken);
         if (list.length > 0) {
             return true;
         }

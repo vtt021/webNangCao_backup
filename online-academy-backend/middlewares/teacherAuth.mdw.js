@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const userModel = require('../models/user.model');
+const authConstants = require('../utils/auth.constant');
 
 module.exports = async function (req, res, next) {
     const accessToken = req.headers['x-access-token'];
@@ -10,7 +11,7 @@ module.exports = async function (req, res, next) {
             const id = decoded.id;
             
             const user = await userModel.getUserById(id);
-            if (user.role === 0) {
+            if (user.role !== authConstants.KEY_TEACHER_AUTH) {
                 return res.status(401).json({
                     message: 'Invalid access token!'
                 })

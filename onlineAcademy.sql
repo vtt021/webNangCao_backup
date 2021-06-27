@@ -13,8 +13,8 @@ create table users(
     isDeleted boolean not null default false,
     lastUpdated timestamp default current_timestamp
 );
-
-insert into users (email, username, password, role) values ("abc@xyz.com","abc", "abc", 2);
+-- tài khoản admin: username: abc@xyz.com, password: qwerty 
+insert into users (email, username, password, role) values ("abc@xyz.com","qwerty", "$2b$10$wVqUEHpSmq9hJDDf8pLlbu1nO9YHXptHnB3jtZBUKK9ZGWnYPCuve", 2);
 insert into users (email, username, password, role) values ("abc1@xyz.com","abc1", "abc", 1);
 insert into users (email, username, password, role) values ("abc2@xyz.com","abc2", "abc", 1);
 insert into users (email, username, password, role) values ("abc3@xyz.com","abc3", "abc", 1);
@@ -25,7 +25,7 @@ insert into users (email, username, password, role) values ("abc7@xyz.com","abc7
 insert into users (email, username, password, role) values ("abc8@xyz.com","abc8", "abc", 0);
 insert into users (email, username, password, role) values ("abc9@xyz.com","abc9", "abc", 0);
 insert into users (email, username, password, role) values ("abc10@xyz.com","abc10", "abc", 0);
-insert into users (email, username, password, role) values ("abc11@xyz.com","abc11", "abc", 0);
+insert into users (email, username, password, role) values ("abc11@xyz.com","abc11", "abc", 0); 
 
 
 
@@ -76,6 +76,7 @@ create table course (
     isCompleted boolean default false,
     isDeleted boolean not null default false,
     lastUpdated timestamp default current_timestamp,
+    createdDate timestamp default current_timestamp,
     fulltext(courseName),
     
     constraint FK_Course_UserId foreign key (teacherId) references users(id),
@@ -183,17 +184,17 @@ insert into register_course_detail(courseId, userId, contentId, completeRate) va
 insert into register_course_detail(courseId, userId, contentId, completeRate) values(1, 1, 4,20);
 insert into register_course_detail(courseId, userId, contentId, completeRate) values(1, 1, 5,10);
 
-create table test(
-	id int not null primary key auto_increment,
-    a int not null,
-    b int not null
-);
+-- create table test(
+-- 	id int not null primary key auto_increment,
+--     a int not null,
+--     b int not null
+-- );
 
-insert into test(a, b) values(3,5);
-insert into test(a, b) values(8,7);
-insert into test(a, b) values(6,2);
-insert into test(a, b) values(2,1);
-insert into test(a, b) values(4,5);
+-- insert into test(a, b) values(3,5);
+-- insert into test(a, b) values(8,7);
+-- insert into test(a, b) values(6,2);
+-- insert into test(a, b) values(2,1);
+-- insert into test(a, b) values(4,5);
 
 
 

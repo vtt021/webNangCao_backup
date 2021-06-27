@@ -1,4 +1,5 @@
 const db = require('../utils/db');
+const courseContentModel = require('./courseContent.model');
 const TABLE_NAME = 'course'
 
 const mainPageData = [
@@ -13,8 +14,6 @@ const mainPageData = [
 ];
 
 module.exports = {
-
-
     async getAll() {
         const courses = await db(TABLE_NAME).where({ isDeleted: false });
 
@@ -25,33 +24,55 @@ module.exports = {
         return courses;
     },
 
-    async getTopHotCourses() {
+    async getTopHotCourses(limit) {
         const courses = await db.select(mainPageData)
             .from(TABLE_NAME)
             .where({ isDeleted: false })
-            .orderByRaw('(viewCount + studentCount * 5 + ratingCount * (rating - 3) * 10) desc')
-            .limit(4);
+            .orderByRaw('(viewCount + studentCount * 5 + ratingCount * rating * 10) desc');
+
+        if (limit !== undefined) {
+            courses = courses.limit(limit);
+        }
 
         return courses;
     },
 
-    async getTopNewCourses() {
+    async getTopNewCourses(limit) {
         const courses = await db.select(mainPageData)
             .from(TABLE_NAME)
             .where({ isDeleted: false })
-            .orderBy('lastUpdate', 'desc')
-            .limit(10);
+            .orderBy('createdDate', 'desc');
 
-
+        if (limit !== undefined) {
+            courses = courses.limit(limit);
+        }
         return courses;
     },
 
-    async getTopWatchCourses() {
+    async getTopWatchCourses(limit) {
         const courses = await db.select(mainPageData)
             .from(TABLE_NAME)
             .where({ isDeleted: false })
             .orderBy('viewCount', 'desc')
-            .limit(10);
+
+        if (limit !== undefined) {
+            courses = courses.limit(limit);
+        }
+
+        return courses;
+    },
+
+    async getCoursesByCategory(categoryId, limit, page) {
+        let offset = limit * (page - 1);
+
+        const courses = await db.select(mainPageData)
+            .from(TABLE_NAME)
+            .where({
+                isDeleted: false,
+                categoryId: categoryId
+            })
+            .limit(limit)
+            .offset(offset);
 
         return courses;
     },
@@ -64,13 +85,30 @@ module.exports = {
         return course;
     },
 
-    async search(queryString, page, ratingDesc, priceAsc) {
-        let offset = 5 * (page - 1);
+   
+
+    // async getCourseDetail(id) {
+    //     const course = await db.select(mainPageData)
+    //         .from(TABLE_NAME)
+    //         .where({
+    //             isDeleted: false
+    //         });
+
+    //     if (course !== null) {
+    //         const detail = await courseContentModel.getContentsByCourseId(id);
+    //         course.detail = detail;
+    //     }
+
+    //     return course;
+    // },
+
+    async search(queryString, page, limit, ratingDesc, priceAsc) {
+        let offset = limit * (page - 1);
         console.log("queryString = " + queryString);
         const courses = await db.select(mainPageData).from(TABLE_NAME)
             .whereRaw('match(courseName) against(' + queryString + ' in boolean mode)')
-            .limit(5)
-            .offset(5 * (page - 1));
+            .limit(limit)
+            .offset(offset);
 
 
         if (ratingDesc === true) {
@@ -87,7 +125,17 @@ module.exports = {
         return db(TABLE_NAME).insert(course);
     },
 
-    // ! Chưa check được trường hợp gv add course không phải của mình
+    async uploadThumbnailImage(id, filename) {
+        let lastUpdated = new Date();
+        return db(TABLE_NAME).where({
+            id: id,
+            isDeleted: false
+        }).update({
+            imageThumbnail: filename,
+            lastUpdated: lastUpdated
+        })
+    },
+
     update(id, course) {
         course.lastUpdated = new Date();
         return db(TABLE_NAME).where({

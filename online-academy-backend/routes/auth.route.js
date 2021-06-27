@@ -35,7 +35,7 @@ router.post('/', async (req, res, next) => {
 
     await userModel.patchRFToken(user.id, refreshToken);
 
-    return res.json({
+    return res.status(200).json({
         authenticated: true,
         accessToken,
         refreshToken
@@ -44,24 +44,34 @@ router.post('/', async (req, res, next) => {
 })
 
 router.post('/refresh', async (req, res, next) => {
-    const {accessToken, refreshToken} = req.body;
+    try {
+        const {accessToken, refreshToken} = req.body;
 
-    const userId = jwt.verify(accessToken, 'ONLINE_ACADEMY', {
-        ignoreExpiration: true
-    });
+        const decoded = jwt.verify(accessToken, 'ONLINE_ACADEMY', {
+            ignoreExpiration: true
+        });
 
-    const ret = await userModel.isValidRefreshToken(userId, refreshToken);
-
-    if (ret === true) {
-        const newAccessToken = jwt.sign({userId}, 'ONLINE_ACADEMY', {expiresIn: 600})
-        return res.json({
-            accessToken: newAccessToken
+        let userId = decoded.id;
+    
+        const ret = await userModel.isValidRefreshToken(userId, refreshToken);
+    
+        if (ret === true) {
+            const newAccessToken = jwt.sign({userId}, 'ONLINE_ACADEMY', {expiresIn: 600})
+            return res.json({
+                accessToken: newAccessToken
+            })
+        }
+    
+        return res.status(400).json({
+            message: 'Refresh token is invalid'
         })
     }
-
-    return res.status(400).json({
-        message: 'Refresh token is invalid'
-    })
+    catch (e) {
+        return res.status(400).json({
+            message: 'Invalid token'
+        })
+    }
+    
 });
 
 module.exports = router;
