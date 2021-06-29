@@ -5,6 +5,7 @@ import AppLogo from './images/AppLogo.png'
 import _ from './HeaderPage.css'
 import { Container, Row, Col, Image, Button } from 'react-bootstrap'
 import DropDown from './DropDown'
+import { Link } from 'react-router-dom'
 
 
 export default function HeaderPage(props) {
@@ -20,7 +21,7 @@ export default function HeaderPage(props) {
                 <Col xs = {2}>
                     <DropDown />
                 </Col>
-                <Col xs = {5}>
+                <Col xs = {2}>
                     <Searchbar />
                 </Col>
                 <Col xs = {2}>
@@ -28,6 +29,9 @@ export default function HeaderPage(props) {
                 </Col>
                 <Col xs = {2}>
                     <Button>Sign up</Button>
+                </Col>
+                <Col xs = {2}>
+                    <Link to="/dashboard" className="btn btn-primary">Admin</Link>
                 </Col>
             </Row>
         </Container>

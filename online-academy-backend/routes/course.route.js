@@ -14,6 +14,7 @@ router.get('/', adminAuthMdw, async (req, res) => {
         return res.json(list);
     }
     catch (e) {
+        console.log(e.stack);
         res.status(500).json({
             message: e.message
         })
@@ -27,6 +28,7 @@ router.get('/new', async (req, res) => {
         return res.json(list);
     }
     catch (e) {
+        console.log(e.stack);
         res.status(500).json({
             message: e.message
         })
@@ -41,6 +43,7 @@ router.get('/top-watch', async (req, res) => {
         return res.json(list);
     }
     catch (e) {
+        console.log(e.stack);
         res.status(500).json({
             message: e.message
         })
@@ -55,6 +58,7 @@ router.get('/hot', async (req, res) => {
         return res.json(list);
     }
     catch (e) {
+        console.log(e.stack);
         res.status(500).json({
             message: e.message
         })
@@ -73,6 +77,7 @@ router.get('/search', async (req, res) => {
         return res.json(list);
     }
     catch (e) {
+        console.log(e.stack);
         res.status(500).json({
             message: e.message
         })
@@ -88,6 +93,7 @@ router.get('/category', async (req, res) => {
         return res.json(list);
     }
     catch (e) {
+        console.log(e.stack);
         res.status(500).json({
             message: e.message
         })
@@ -101,6 +107,7 @@ router.get('/:id', async (req, res) => {
         return res.json(data);
     }
     catch (e) {
+        console.log(e.stack);
         res.status(500).json({
             message: e.message
         })
@@ -115,31 +122,42 @@ router.post('/', teacherAuthMdw, async (req, res) => {
         return res.status(201).json(req.body);
     }
     catch (e) {
+        console.log(e.stack);
         res.status(500).json({
             message: e.message
         })
     }
 })
 
-router.post('/thumbnail-image', teacherAuthMdw, upload.uploadImageMdw,  async(req, res) => {
-    const file = req.file;
-    const teacherId = req.accessTokenPayload.id;
-    const courseId = req.body.id;
-    const course = await courseModel.getCourseById(courseId);
+router.post('/thumbnail-image', teacherAuthMdw, upload.uploadImageMdw, async (req, res) => {
+    try {
+        const file = req.file;
+        const teacherId = req.accessTokenPayload.id;
+        const courseId = req.body.id;
+        const course = await courseModel.getCourseById(courseId);
 
-    if (course === null || course.teacherId !== teacherId) {
-        res.status(400).json({
-            message: 'Incorrect courseId or wrong teacher'
+        if (course === null || course.teacherId !== teacherId) {
+            res.status(400).json({
+                message: 'Incorrect courseId or wrong teacher'
+            })
+        }
+
+        await courseModel.uploadThumbnailImage(courseId, file.filename);
+
+        console.log(file);
+        res.status(200).json({
+            message: 'OK',
+            filename: file.filename
+        })
+    }
+    catch (e) {
+        console.log(e.stack);
+        res.status(500).json({
+            message: e.message
         })
     }
 
-    await courseModel.uploadThumbnailImage(courseId, file.filename);
 
-    console.log(file);
-    res.status(200).json({
-        message: 'OK',
-        filename: file.filename
-    })
 })
 
 router.put('/', teacherAuthMdw, async (req, res) => {
@@ -150,6 +168,7 @@ router.put('/', teacherAuthMdw, async (req, res) => {
         return res.status(200).json(ret);
     }
     catch (e) {
+        console.log(e.stack);
         res.status(500).json({
             message: e.message
         })
@@ -164,6 +183,7 @@ router.delete('/', teacherAuthMdw, async (req, res) => {
         return res.status(200).json(ret);
     }
     catch (e) {
+        console.log(e.stack);
         res.status(500).json({
             message: e.message
         })

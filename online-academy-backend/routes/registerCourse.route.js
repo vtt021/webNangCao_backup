@@ -14,6 +14,7 @@ router.get('/', adminAuthMdw, async (req, res) => {
         return res.json(list);
     }
     catch (e) {
+        console.log(e.stack);
         res.status(500).json({
             message: e.message
         })
@@ -28,6 +29,7 @@ router.get('/my-course', userAuthMdw, async (req, res) => {
         return res.json(list);
     }
     catch (e) {
+        console.log(e.stack);
         res.status(500).json({
             message: e.message
         })
@@ -42,6 +44,7 @@ router.get('/course-users', async (req, res) => {
         return res.json(list);
     }
     catch (e) {
+        console.log(e.stack);
         res.status(500).json({
             message: e.message
         })
@@ -60,6 +63,7 @@ router.post('/', async (req, res) => {
         return res.status(201).json(req.body);
     }
     catch (e) {
+        console.log(e.stack);
         res.status(500).json({
             message: e.message
         })
@@ -75,6 +79,7 @@ router.put('/', async (req, res) => {
         return res.status(200).json(ret);
     }
     catch (e) {
+        console.log(e.stack);
         res.status(500).json({
             message: e.message
         })
@@ -90,6 +95,7 @@ router.delete('/', async (req, res) => {
         return res.status(200).json(ret);
     }
     catch (e) {
+        console.log(e.stack);
         res.status(500).json({
             message: e.message
         })
