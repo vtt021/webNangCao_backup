@@ -2,20 +2,16 @@
     "required": [
         "courseName",
         "subCategoryId",
-        "teacherId",
         "price",
         "detailShort",
         "detailLong"
     ],
-    "additionalProperties": false,
+    "additionalProperties": true,
     "properties": {
         "categoryName": {
             "type": "string"
         },
         "subCategoryId": {
-            "type": "number"
-        },
-        "teacherId": {
             "type": "number"
         },
         "price": {

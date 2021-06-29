@@ -6,6 +6,8 @@ const adminAuthMdw = require('../middlewares/adminAuth.mdw')
 const upload = require('../middlewares/upload.mdw')
 
 const router = express.Router();
+const schema = require('../schema/course.json');
+const schemaValidate = require('../middlewares/validate.mdw')
 
 
 router.get('/', adminAuthMdw, async (req, res) => {
@@ -68,12 +70,21 @@ router.get('/hot', async (req, res) => {
 
 router.get('/search', async (req, res) => {
     try {
-        const string = req.query.keyword;
+        const keyword = req.query.keyword;
         const ratingDesc = req.query.ratingDesc;
         const priceAsc = req.query.priceAsc;
         const page = req.query.page;
         const limit = req.query.limit;
-        const list = await courseModel.search(string, page, limit, ratingDesc, priceAsc);
+
+        if (keyword === undefined || keyword.length < 3) {
+            return res.status(500).json({
+                message: 'No keyword or keyword length < 3'
+            })
+        }
+
+
+
+        const list = await courseModel.search(keyword, page, limit, ratingDesc, priceAsc);
         return res.json(list);
     }
     catch (e) {
@@ -89,7 +100,39 @@ router.get('/category', async (req, res) => {
         const categoryId = req.query.categoryId;
         const page = req.query.page;
         const limit = req.query.limit;
+
+
+        if (categoryId === undefined) {
+            return res.status(500).json({
+                message: 'invalid input'
+            })
+        }
+
         const list = await courseModel.getCoursesByCategory(categoryId, limit, page);
+        return res.json(list);
+    }
+    catch (e) {
+        console.log(e.stack);
+        res.status(500).json({
+            message: e.message
+        })
+    }
+})
+
+router.get('/sub-category', async (req, res) => {
+    try {
+        const subCategoryId = req.query.subCategoryId;
+        const page = req.query.page;
+        const limit = req.query.limit;
+
+
+        if (subCategoryId === undefined) {
+            return res.status(500).json({
+                message: 'invalid input'
+            })
+        }
+
+        const list = await courseModel.getCoursesBySubCategory(subCategoryId, limit, page);
         return res.json(list);
     }
     catch (e) {
@@ -103,7 +146,12 @@ router.get('/category', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const courseId = req.params.id;
-        const data = await courseModel.get(courseId);
+        const data = await courseModel.getCourseById(courseId);
+
+        if (data === undefined) {
+            return res.status(204).end();
+        }
+
         return res.json(data);
     }
     catch (e) {
@@ -114,12 +162,31 @@ router.get('/:id', async (req, res) => {
     }
 })
 
-//TODO: Thêm route cho thêm ảnh đại diện khóa học
-
-router.post('/', teacherAuthMdw, async (req, res) => {
+router.post('/', schemaValidate(schema), teacherAuthMdw, async (req, res) => {
     try {
-        await courseModel.add(req.body);
-        return res.status(201).json(req.body);
+        let data = req.body;
+        data.teacherId = req.accessTokenPayload.id;
+        const course = await courseModel.add(data);
+        return res.status(201).json({
+            message: 'OK',
+            courseId: course[0]
+        });
+    }
+    catch (e) {
+        console.log(e.stack);
+        res.status(500).json({
+            message: e.message
+        })
+    }
+})
+
+router.post('/admin', schemaValidate(schema), adminAuthMdw, async (req, res) => {
+    try {
+        const course = await courseModel.add(req.body);
+        return res.status(201).json({
+            message: 'OK',
+            courseId: course[0]
+        });
     }
     catch (e) {
         console.log(e.stack);
@@ -133,18 +200,31 @@ router.post('/thumbnail-image', teacherAuthMdw, upload.uploadImageMdw, async (re
     try {
         const file = req.file;
         const teacherId = req.accessTokenPayload.id;
-        const courseId = req.body.id;
-        const course = await courseModel.getCourseById(courseId);
+        const courseId = req.body.courseId;
 
-        if (course === null || course.teacherId !== teacherId) {
+        if (courseId === undefined) {
+            return res.status(400).json({
+                message: 'Invalid courseId'
+            })
+        }
+
+        if (file === undefined) {
+            return res.status(400).json({
+                message: 'Invalid file'
+            })
+        }
+
+        const course = await courseModel.getCourseById(courseId);
+        console.log(course);
+        console.log(teacherId);
+
+        if (course === undefined || course.teacherId !== teacherId) {
             res.status(400).json({
                 message: 'Incorrect courseId or wrong teacher'
             })
         }
 
         await courseModel.uploadThumbnailImage(courseId, file.filename);
-
-        console.log(file);
         res.status(200).json({
             message: 'OK',
             filename: file.filename
@@ -156,16 +236,100 @@ router.post('/thumbnail-image', teacherAuthMdw, upload.uploadImageMdw, async (re
             message: e.message
         })
     }
+})
 
+router.post('/thumbnail-image/admin', adminAuthMdw, upload.uploadImageMdw, async (req, res) => {
+    try {
+        const file = req.file;
+        const courseId = req.body.courseId;
 
+        if (courseId === undefined) {
+            return res.status(400).json({
+                message: 'Invalid courseId'
+            })
+        }
+        if (file === undefined) {
+            return res.status(400).json({
+                message: 'Invalid file'
+            })
+        }
+
+        const course = await courseModel.getCourseById(courseId);
+        if (course === undefined) {
+            res.status(400).json({
+                message: 'Incorrect courseId'
+            })
+        }
+
+        await courseModel.uploadThumbnailImage(courseId, file.filename);
+        res.status(200).json({
+            message: 'OK',
+            filename: file.filename
+        })
+    }
+    catch (e) {
+        console.log(e.stack);
+        res.status(500).json({
+            message: e.message
+        })
+    }
 })
 
 router.put('/', teacherAuthMdw, async (req, res) => {
     try {
-        const id = req.body.id;
+        const teacherId = req.accessTokenPayload.id;
         const courseData = req.body.courseData;
-        const ret = await courseModel.update(id, courseData);
-        return res.status(200).json(ret);
+        const courseId = req.body.courseId;
+
+        console.log("courseId", courseId);
+        console.log("courseData", courseData);
+        console.log("teacherId", teacherId)
+
+        const course = await courseModel.getCourseById(courseId);
+        console.log(course);
+        if (course === undefined || course.teacherId !== teacherId) {
+            res.status(400).json({
+                message: 'Incorrect courseId or wrong teacher'
+            })
+        }
+
+        if (courseData !== undefined && courseData.teacherId !== undefined) {
+            return res.status(400).json({
+                message: 'Changed data must not have teacher id'
+            });
+        }
+
+
+        await courseModel.update(courseId, courseData);
+        return res.status(200).json({
+            message: 'OK'
+        });
+    }
+    catch (e) {
+        console.log(e.stack);
+        res.status(500).json({
+            message: e.message
+        })
+    }
+
+})
+
+router.put('/admin', adminAuthMdw, async (req, res) => {
+    try {
+        const courseId = req.body.id;
+        const courseData = req.body.courseData;
+
+        const course = await courseModel.getCourseById(courseId);
+        if (course === undefined) {
+            res.status(400).json({
+                message: 'Incorrect courseId'
+            })
+        }
+
+        await courseModel.update(courseId, courseData);
+        return res.status(200).json({
+            message: 'OK'
+        });
     }
     catch (e) {
         console.log(e.stack);
@@ -178,9 +342,36 @@ router.put('/', teacherAuthMdw, async (req, res) => {
 
 router.delete('/', teacherAuthMdw, async (req, res) => {
     try {
-        const id = req.body.id;
-        const ret = await courseModel.delete(id);
-        return res.status(200).json(ret);
+        const courseId = req.body.courseId;
+
+        const course = await courseModel.getCourseById(courseId);
+        console.log(course);
+        if (course === undefined || course.teacherId !== teacherId) {
+            res.status(400).json({
+                message: 'Incorrect courseId or wrong teacher'
+            })
+        }
+
+        await courseModel.delete(courseId);
+        return res.status(200).json({
+            message: 'OK'
+        });
+    }
+    catch (e) {
+        console.log(e.stack);
+        res.status(500).json({
+            message: e.message
+        })
+    }
+})
+
+router.delete('/admin', adminAuthMdw, async (req, res) => {
+    try {
+        const courseId = req.body.courseId;
+        await courseModel.delete(courseId);
+        return res.status(200).json({
+            message: 'OK'
+        });
     }
     catch (e) {
         console.log(e.stack);
