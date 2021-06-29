@@ -2,10 +2,9 @@
     "required": [
         "courseId",
         "isPreview",
-        "content",
-        "video"
+        "content"
     ],
-    "additionalProperties": false,
+    "additionalProperties": true,
     "properties": {
         "courseId": {
             "type": "number"
@@ -14,9 +13,6 @@
             "type": "boolean"
         },
         "content": {
-            "type": "string"
-        },
-        "video": {
             "type": "string"
         }
     }
