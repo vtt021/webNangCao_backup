@@ -15,6 +15,7 @@ router.get('/', adminAuthMdw, async (req, res) => {
         return res.json(list);
     }
     catch (e) {
+        console.log(e.stack);
         res.status(500).json({
             message: e.message
         })
@@ -36,6 +37,7 @@ router.get('/:id', async (req, res) => {
         return res.json(user);
     }
     catch (e) {
+        console.log(e.stack);
         res.status(500).json({
             message: e.message
         })
@@ -54,6 +56,7 @@ router.post('/', schemaValidate(schema), async (req, res) => {
         res.status(201).json(user);
     }
     catch (e) {
+        console.log(e.stack);
         res.status(500).json({
             message: e.message
         })
@@ -88,6 +91,7 @@ router.put('/password', userAuthMdw, async(req, res) => {
         });
     }
     catch(e) {
+        console.log(e.stack);
         res.status(500).json({
             message: e.message
         })
@@ -122,6 +126,7 @@ router.put('/',adminAuthMdw, async (req, res) => {
         });
     }
     catch (e) {
+        console.log(e.stack);
         res.status(500).json({
             message: e.message
         })
@@ -144,6 +149,7 @@ router.delete('/', adminAuthMdw,  async (req, res) => {
         });
     }
     catch (e) {
+        console.log(e.stack);
         res.status(500).json({
             message: e.message
         })

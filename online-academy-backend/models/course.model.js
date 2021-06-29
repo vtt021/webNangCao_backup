@@ -1,5 +1,6 @@
 const db = require('../utils/db');
 const courseContentModel = require('./courseContent.model');
+const subCategoryModel = require('./subCategory.model');
 const TABLE_NAME = 'course'
 
 const mainPageData = [
@@ -41,11 +42,9 @@ module.exports = {
         const courses = await db.select(mainPageData)
             .from(TABLE_NAME)
             .where({ isDeleted: false })
-            .orderBy('createdDate', 'desc');
+            .orderBy('createdDate', 'desc')
+            .limit(limit);
 
-        if (limit !== undefined) {
-            courses = courses.limit(limit);
-        }
         return courses;
     },
 
@@ -54,23 +53,33 @@ module.exports = {
             .from(TABLE_NAME)
             .where({ isDeleted: false })
             .orderBy('viewCount', 'desc')
-
-        if (limit !== undefined) {
-            courses = courses.limit(limit);
-        }
+            .limit(limit)
 
         return courses;
     },
 
     async getCoursesByCategory(categoryId, limit, page) {
+        if ((page === undefined && limit !== undefined) || (page !== undefined && limit === undefined)) {
+            throw new Error('page and limit must be both defined or undefined')
+        }
         let offset = limit * (page - 1);
+
+        const subCategories = await subCategoryModel.getSubcategoryInCategory(categoryId);
+
+        console.log(subCategories);
+
+        let subCategoriesId = subCategories.map(cate => {
+            return cate.id;
+        })
+        console.log(subCategoriesId);
+
 
         const courses = await db.select(mainPageData)
             .from(TABLE_NAME)
             .where({
                 isDeleted: false,
-                categoryId: categoryId
             })
+            .whereIn('subCategoryId', subCategoriesId)
             .limit(limit)
             .offset(offset);
 
@@ -78,15 +87,32 @@ module.exports = {
     },
 
     async getCourseById(id) {
-        const course = await db(TABLE_NAME).where({
+        const course = await db.select(mainPageData).from(TABLE_NAME).where({
             id: id,
             isDeleted: false
         });
-        return course;
+        return course[0];
     },
 
-   
 
+    async getCoursesBySubCategory(subCategoryId, limit, page) {
+        if ((page === undefined && limit !== undefined) || (page !== undefined && limit === undefined)) {
+            throw new Error('page and limit must be both defined or undefined')
+        }
+        let offset = limit * (page - 1);
+
+        const courses = await db.select(mainPageData)
+            .from(TABLE_NAME)
+            .where({
+                isDeleted: false,
+                subCategoryId: subCategoryId
+            })
+            .limit(limit)
+            .offset(offset);
+
+        return courses;
+    },
+   
     // async getCourseDetail(id) {
     //     const course = await db.select(mainPageData)
     //         .from(TABLE_NAME)
@@ -103,26 +129,39 @@ module.exports = {
     // },
 
     async search(queryString, page, limit, ratingDesc, priceAsc) {
+        if ((page === undefined && limit !== undefined) || (page !== undefined && limit === undefined)) {
+            throw new Error('page and limit must be both defined or undefined')
+        }
+
         let offset = limit * (page - 1);
         console.log("queryString = " + queryString);
+
+        const countCourse = await db(TABLE_NAME).count()
+        .whereRaw('match(courseName) against(\'' + queryString + '\' in boolean mode) and isDeleted = false');
+
         const courses = await db.select(mainPageData).from(TABLE_NAME)
-            .whereRaw('match(courseName) against(' + queryString + ' in boolean mode)')
+            .whereRaw('match(courseName) against(\'' + queryString + '\' in boolean mode) and isDelete = false')
+            .orderBy([
+                {
+                    column: 'rating',
+                    order: ratingDesc === true ? 'desc' : 'asc'
+                },
+                {
+                    column: 'price',
+                    order: priceAsc === true ? 'asc' : 'desc'
+                }
+            ])
             .limit(limit)
-            .offset(offset);
+            .offset(offset)
 
-
-        if (ratingDesc === true) {
-            courses = courses.orderBy('rating', 'desc');
-        }
-
-        if (priceAsc === true) {
-            courses = courses.orderBy('price', 'asc');
-        }
-        return courses;
+        return {
+            total: countCourse[0]['count(*)'],
+            courses: courses
+        };
     },
 
     add(course) {
-        return db(TABLE_NAME).insert(course);
+        return db(TABLE_NAME).insert(course).returning('*');
     },
 
     async uploadThumbnailImage(id, filename) {

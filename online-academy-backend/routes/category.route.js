@@ -11,6 +11,7 @@ router.get('/admin', adminAuthMdw, async (req, res, next) => {
         res.json(list);
     }
     catch (e) {
+        console.log(e.stack);
         res.status(500).json({
             message: e.message
         })
@@ -27,6 +28,7 @@ router.get('/', async (req, res, next) => {
         res.json(list);
     }
     catch (e) {
+        console.log(e.stack);
         res.status(500).json({
             message: e.message
         })
@@ -39,6 +41,7 @@ router.post('/', adminAuthMdw, async (req, res, next) => {
         return res.status(201).json(req.body);
     }
     catch (e) {
+        console.log(e.stack);
         res.status(500).json({
             message: e.message
         })
@@ -55,6 +58,7 @@ router.put('/', adminAuthMdw, async (req, res, next) => {
         });
     }
     catch (e) {
+        console.log(e.stack);
         res.status(500).json({
             message: e.message
         })
@@ -79,6 +83,7 @@ router.delete('/',adminAuthMdw , async (req, res, next) => {
         });
     }
     catch (e) {
+        console.log(e.stack);
         res.status(500).json({
             message: e.message
         })

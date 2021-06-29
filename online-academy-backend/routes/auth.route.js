@@ -67,6 +67,7 @@ router.post('/refresh', async (req, res, next) => {
         })
     }
     catch (e) {
+        console.log(e.stack);
         return res.status(400).json({
             message: 'Invalid token'
         })
