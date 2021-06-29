@@ -41,8 +41,8 @@ export default function HeaderPage(props) {
                 </NavDropdown>
                 <NavDropdown.Divider />
                 <Searchbar />
-                <Button type="button">Log in</Button>
-                <Button type="button">Sign up</Button>
+                <Button href="/login" type="button">Log in</Button>
+                <Button href="/signup"type="button">Sign up</Button>
 
             </Navbar>
 
