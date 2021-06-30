@@ -46,6 +46,13 @@ module.exports = {
         })
     },
 
+    removeContent(courseId, userId) {
+        return db(TABLE_NAME).where({
+            courseId: courseId,
+            userId: userId
+        }).delete();
+    },
+
 
     delete(courseId, userId, contentId) {
         return db(TABLE_NAME).where({
