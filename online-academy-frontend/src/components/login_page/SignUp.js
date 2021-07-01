@@ -16,7 +16,7 @@ import './SignUp.css';
 
 export default function SignUp() {
   const classes = useStyles();
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const { register, handleSubmit, watch, formState: { errors } } = useForm();
 
   const onSubmit = data => {console.log(data);}
 
@@ -80,6 +80,21 @@ export default function SignUp() {
               />
             </Grid>
             {errors.password && <span className='errors'>*Mật khẩu tối thiểu 6 ký tự</span>}
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name="verifyPassword"
+                label="Xác nhận mật khẩu"
+                type="password"
+                id="verifyPassword"
+                autoComplete="current-password"
+                {...register("verifyPassword", { required: watch("verifyPassword")=== watch("password"), minLength: 6 })}
+
+              />
+            </Grid>
+            {errors.verifyPassword && <span className='errors'>*Mật khẩu không trùng khớp</span>}
 
           </Grid>
           <Button
