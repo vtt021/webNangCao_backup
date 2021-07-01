@@ -3,7 +3,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import userImage from '../common/images/potato.jpg'
 import { Container, Row, Col, Image, Button, Accordion, Card } from 'react-bootstrap'
 import './Detail_page.css'
-import ShowMoreText from './component/showMoreButton';
+
+import {ShowMoreText} from'./component/showMoreButton'
 export default function DetailPage(props) {
     return (
         <div>
@@ -15,9 +16,10 @@ export default function DetailPage(props) {
                     </Col>
                     <Col lg={8}>
                         <div className='subjectsName'>
-                            Khóa học về Khoai tây
+                            Khóa học về Khoai tây + 
+                            {props.subjectName}
                         </div>
-                        <ShowMoreText />
+                        <ShowMoreText content='noi dung khoa hoc ne hihihi' />
                     </Col>
 
                 </Row>
