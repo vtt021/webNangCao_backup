@@ -5,8 +5,7 @@ const contentData = [
     'courseId',
     'userId',
     'contentId',
-    'completeRate',
-    'rateContent'
+    'currentTime'
 ];
 
 
@@ -17,13 +16,23 @@ module.exports = {
         return details;
     },
 
-    async getDetailsByCourseId(courseId, userId, contentId) {
+    async getDetailsByContent(courseId, userId, contentId) {
         const details = await db.select(contentData).from(TABLE_NAME).where({
             courseId: courseId,
             userId: userId,
             contentId: contentId,
             isDeleted: false
         });
+        return details[0];
+    },
+
+    async getDetailsByCourseAndUser(courseId, userId) {
+        console.log(courseId, userId)
+        const details = await db.select(contentData).from(TABLE_NAME).where({
+            courseId: courseId,
+            userId: userId,
+            isDeleted: false
+        })
         return details;
     },
 
@@ -31,6 +40,17 @@ module.exports = {
 
     add(details) {
         return db(TABLE_NAME).insert(details);
+    },
+
+    updateTime(courseId, userId, contentId, currentTime) {
+        return db(TABLE_NAME).where({
+            courseId: courseId,
+            userId: userId,
+            contentId: contentId
+        }).update({
+            currentTime: currentTime,
+            lastUpdated: new Date()
+        })
     },
 
     async updatePercent(courseId, userId, contentId, completeRate) {
