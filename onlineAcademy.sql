@@ -14,8 +14,9 @@ create table users(
     lastUpdated timestamp default current_timestamp
 );
 -- tài khoản admin: username: abc@xyz.com, password: qwerty 
+-- tài khoản teacher: username: abcd@xyz.com, password: qwerty
 insert into users (email, username, password, role) values ("abc@xyz.com","qwerty", "$2b$10$wVqUEHpSmq9hJDDf8pLlbu1nO9YHXptHnB3jtZBUKK9ZGWnYPCuve", 2);
-insert into users (email, username, password, role) values ("abc1@xyz.com","abc1", "abc", 1);
+insert into users (email, username, password, role) values ("abcd@xyz.com","qwerty", "$2b$10$wVqUEHpSmq9hJDDf8pLlbu1nO9YHXptHnB3jtZBUKK9ZGWnYPCuve", 1);
 insert into users (email, username, password, role) values ("abc2@xyz.com","abc2", "abc", 1);
 insert into users (email, username, password, role) values ("abc3@xyz.com","abc3", "abc", 1);
 insert into users (email, username, password, role) values ("abc4@xyz.com","abc4", "abc", 1);
@@ -84,9 +85,9 @@ create table course (
 );
 
 insert into course(courseName, subCategoryId, teacherId, price, detailShort, detailLong) values ("Abc def", 1, 1, 0, "abcd", "abcd");
-insert into course(courseName, subCategoryId, teacherId, price, detailShort, detailLong) values ("Abc ghi", 2, 1, 15000, "abcd", "abcd");
+insert into course(courseName, subCategoryId, teacherId, price, detailShort, detailLong) values ("Abc ghi", 2, 2, 15000, "abcd", "abcd");
 insert into course(courseName, subCategoryId, teacherId, price, detailShort, detailLong) values ("Abcd wad", 3, 1, 0, "abcd", "abcd");
-insert into course(courseName, subCategoryId, teacherId, price, detailShort, detailLong) values ("dp e Abc", 4, 1, 30000, "abcd", "abcd");
+insert into course(courseName, subCategoryId, teacherId, price, detailShort, detailLong) values ("dp e Abc", 4, 2, 30000, "abcd", "abcd");
 insert into course(courseName, subCategoryId, teacherId, price, detailShort, detailLong) values ("a w fhe", 5, 1, 50000, "abcd", "abcd");
 
 create table course_content (
@@ -139,8 +140,8 @@ create table register_course(
     constraint FK_RegisterCourse_Users foreign key (userId) references users(id)
 );
 
-insert into register_course(courseId, userId, isFavorite, rating, rateContent) values (1, 1, false, 1, "nice");
-insert into register_course(courseId, userId, isFavorite, rating, rateContent) values (1, 2, false, 1, "nice");
+insert into register_course(courseId, userId, isFavorite, rating, rateContent) values (1, 1, true, 1, "nice");
+insert into register_course(courseId, userId, isFavorite, rating, rateContent) values (1, 2, true, 1, "nice");
 insert into register_course(courseId, userId, isFavorite, rating, rateContent) values (3, 3, false, 1, "nice");
 insert into register_course(courseId, userId, isFavorite, rating, rateContent) values (2, 1, false, 1, "nice");
 insert into register_course(courseId, userId, isFavorite, rating, rateContent) values (4, 6, false, 1, "nice");
