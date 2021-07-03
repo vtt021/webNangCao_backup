@@ -11,7 +11,7 @@ router.post('/', async (req, res, next) => {
     try {
         const user = await userModel.getUserByEmail(req.body.email);
 
-        if (user === null) {
+        if (user === undefined) {
             return res.status(401).json({
                 authenticated: false
             })
@@ -50,8 +50,6 @@ router.post('/', async (req, res, next) => {
             message: 'Something went wrong'
         })
     }
-    
-
 })
 
 router.post('/refresh', async (req, res, next) => {

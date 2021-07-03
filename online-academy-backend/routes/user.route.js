@@ -9,6 +9,8 @@ const adminAuthMdw = require('../middlewares/adminAuth.mdw');
 const userAuthMdw = require('../middlewares/userAuth.mdw');
 const { sendMail } = require('../utils/mailer');
 const saltRounds = 10;
+const otpGenerator = require('../utils/otp-generator')
+
 
 router.get('/', adminAuthMdw, async (req, res) => {
     try {
@@ -23,11 +25,11 @@ router.get('/', adminAuthMdw, async (req, res) => {
     }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/id', async (req, res) => {
     try {
-        const id = req.params.id || 0;
+        const id = req.query.id || 0;
         const user = await userModel.getUserById(id);
-        if (user === null) {
+        if (user === undefined) {
             return res.status(204).end();
         }
         delete user.password;
@@ -47,13 +49,55 @@ router.get('/:id', async (req, res) => {
 
 });
 
+router.post('/verify-otp', async (req, res) => {
+    try {
+        const email = req.body.email;
+        const token = req.body.token;
+
+        if (email === undefined || token === undefined) {
+            return res.status(400).json({
+                message: 'Invalid data'
+            });
+        }
+        const user = await userModel.getUserByIdForVerification(email);
+        if (user === undefined) {
+            return res.status(400).json({
+                message: 'User not exists'
+            });
+        }
+
+        let result = otpGenerator.checkValid(token);
+        if (result === true) {
+            await userModel.unlockAccount(email);
+        }
+        else {
+            return res.status(400).json({
+                message: 'User not exists'
+            });
+        }
+
+        return res.status(200).json({
+            message: 'OK'
+        })
+    }
+    catch (e) {
+        console.log(e.stack);
+        res.status(500).json({
+            message: e.message
+        })
+    }
+})
+
 router.post('/', schemaValidate(schema), async (req, res) => {
     try {
         const user = req.body;
+        if (user.email === undefined || user.password === undefined || user.username === undefined) {
+            res.status(400).json({
+                message: 'Invalid data'
+            })
+        }
         user.password = bcrypt.hashSync(user.password, saltRounds);
-        const ids = await userModel.addUser(user);
-        user.id = ids[0];
-        delete user.password;
+        await userModel.addUser(user);
 
         sendMail(user.email)
 

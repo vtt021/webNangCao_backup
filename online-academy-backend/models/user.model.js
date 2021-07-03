@@ -1,6 +1,11 @@
 const db = require('../utils/db');
 
 const TABLE_NAME = 'users';
+const contentData = [
+    id,
+    email,
+    username
+]
 
 module.exports = {
     async getAllUsers() {
@@ -8,19 +13,36 @@ module.exports = {
     },
 
     async getUserById(id) {
-        const users = await db(TABLE_NAME)
-        .where('id', id);
+        const users = await db.select(contentData).from(TABLE_NAME)
+            .where({
+                id: id,
+                isDeleted: false,
+                isUnlocked: true
+            });
 
-        if (users.length === 0) {
-            return null;
-        }
+        return users[0];
+    },
+
+    async getUserByEmailForVerification(id) {
+        const users = await db.select(contentData).from(TABLE_NAME)
+            .where({
+                email: email,
+                isDeleted: false,
+                isUnlocked: false
+            });
 
         return users[0];
     },
 
     async getUserByEmail(email) {
-        const users = await db(TABLE_NAME)
-        .where('email', email);
+        const users = await db.select(contentData).from(TABLE_NAME)
+            .where(
+                {
+                    email: email,
+                    isDeleted: false,
+                    isUnlocked: true
+                }
+            );
 
         if (users.length === 0) {
             return null;
@@ -35,17 +57,26 @@ module.exports = {
 
     update(id, user) {
         delete user.password;
-        return db('users').where({id : id}).update(user);
+        return db(TABLE_NAME).where({ id: id }).update(user);
     },
 
     updatePassword(id, pass) {
-        return db('users').where({id : id}).update({
+        return db(TABLE_NAME).where({ id: id, isDeleted: false }).update({
             password: pass
         });
     },
 
+    unlockAccount(email) {
+        return db(TABLE_NAME).where({
+            email: email,   
+            isDeleted: false
+        }).update({
+            isUnlocked: true
+        })
+    },
+
     delete(id) {
-        return db('users').where({id : id}).del();
+        return db(TABLE_NAME).where({ id: id }).del();
     },
 
     patchRFToken(id, refreshToken) {

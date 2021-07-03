@@ -14,11 +14,10 @@ const sendMail = (receivedMail) => {
     try {
         let token = otpGenerator.generateToken();
         let mainOptions = {
-            from: 'Online Academy Admin',
+            from: 'ltt.mailreceiver@gmail.com',
             to: receivedMail,
             subject: 'Email verification',
-            text: 'Mã xác nhận của bạn là: ' + token,
-            html: '<h3>' + token + '</h3>'
+            html: '<p>Chào mừng bạn đến với Online Academy, mã xác thực của bạn là</p><h3>' + token + '</h3><p>Mã có hiệu lực trong <b>5</b> phút</p>'
         }
 
         transporter.sendMail(mainOptions, (err, info) => {
