@@ -2,9 +2,9 @@ const db = require('../utils/db');
 
 const TABLE_NAME = 'users';
 const contentData = [
-    id,
-    email,
-    username
+    'id',
+    'email',
+    'username'
 ]
 
 module.exports = {
