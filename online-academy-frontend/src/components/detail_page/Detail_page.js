@@ -3,11 +3,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import userImage from '../common/images/potato.jpg'
 import { Container, Row, Col, Image, Button, Accordion, Card } from 'react-bootstrap'
 import './Detail_page.css'
-
+import Header from '../common/header/header.js'
 import {ShowMoreText} from'./component/showMoreButton'
 export default function DetailPage(props) {
     return (
+        
         <div>
+            <Header/>
             <Container>
                 <Row >
                     <Col lg={4}>

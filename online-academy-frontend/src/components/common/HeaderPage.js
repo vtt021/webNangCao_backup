@@ -26,9 +26,9 @@ export default function HeaderPage(props) {
     }, []);
     return (
         <Container fluid>
-            <Row className="Container-1">
+            {/* <Row className="Container-1">
                 <Image className="HeaderImg" src={HeaderImage} />
-            </Row>
+            </Row> */}
 
             <br />
             <Navbar bg="dark" variant="dark" className='justify-content-between'>
