@@ -37,6 +37,7 @@ router.post('/', async (req, res, next) => {
         await userModel.patchRFToken(user.id, refreshToken);
 
         return res.status(200).json({
+            id: user.id,
             authenticated: true,
             accessToken,
             refreshToken
