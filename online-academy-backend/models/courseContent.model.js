@@ -17,29 +17,49 @@ module.exports = {
         return courseContents;
     },
 
+    async getContentsByContentId(contentId) {
+        const courseContents = await db.select(contentData).from(TABLE_NAME).where({
+            id: contentId,
+            isDeleted: false
+        });
+
+        if (courseContents.length === 0) {
+            return null;
+        }
+
+        if (courseContents[0].isPreview === 0) {
+            delete courseContents[0].video;
+        }
+        return courseContents[0];
+    },
+
     async getContentsByCourseId(courseId) {
         const courseContents = await db.select(contentData).from(TABLE_NAME).where({
             courseId: courseId,
             isDeleted: false
         });
-        return courseContents;
-    },
 
-    async getCourseContentByContentId(id) {
-        const courseContent = await db(TABLE_NAME).select(contentData).from(TABLE_NAME).where({
-            id: id,
-            isDeleted: false
-        });
-        courseContent.forEach(element => {
-            delete element["isDeleted"];
-            delete element["lastUpdated"];
-        });
-        return courseContent;
+        courseContents.forEach(content => {
+            if (content.isPreview === 0) {
+                delete content.video;
+            }
+        })
+        
+        return courseContents;
     },
 
 
     add(courseContent) {
         return db(TABLE_NAME).insert(courseContent);
+    },
+
+    uploadVideoContent(id, video) {
+        return db(TABLE_NAME).where({
+            id: id
+        }).update({
+            lastUpdated: new Date(),
+            video: video
+        })
     },
 
     update(id, courseContent) {

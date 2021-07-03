@@ -143,9 +143,9 @@ router.get('/sub-category', async (req, res) => {
     }
 })
 
-router.get('/:id', async (req, res) => {
+router.get('/id', async (req, res) => {
     try {
-        const courseId = req.params.id;
+        const courseId = req.query.id;
         const data = await courseModel.getCourseById(courseId);
 
         if (data === undefined) {
