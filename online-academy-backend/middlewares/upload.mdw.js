@@ -2,13 +2,15 @@ const multer = require('multer');
 const util = require("util");
 const randomstring = require("randomstring");
 const path = require("path");
+const fs = require("fs");
 
 
 const maxSize = 50 * 1024 * 1024;
+const targetPath = './resources/assets/'
 
 let storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, './resources/assets/');
+        cb(null, targetPath);
     },
     filename: (req, file, cb) => {
         // const fileName = file.originalname.toLowerCase().split(' ').join('-');
@@ -55,7 +57,16 @@ let uploadVideo = multer({
     }
 }).single("file");
 
+let deleteFile = (filename) => {
+    try {
+        fs.unlinkSync(targetPath + filename)
+    }
+    catch (e) {
+        console.log(e.stack);
+    }
+}
+
 let uploadImageMdw = util.promisify(uploadImage);
 let uploadVideoMdw = util.promisify(uploadVideo); 
 
-module.exports = {uploadImageMdw, uploadVideoMdw};
+module.exports = {uploadImageMdw, uploadVideoMdw, deleteFile};

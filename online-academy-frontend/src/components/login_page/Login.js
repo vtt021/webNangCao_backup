@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from 'axios';
 import { useForm } from "react-hook-form";
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -11,14 +12,27 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import './Login.css';
+import Alert from '@material-ui/lab/Alert';
 
+import './Login.css';
 
 export default function Login() {
     const classes = useStyles();
-    const { register, handleSubmit,  formState: { errors } } = useForm();
+    const [loginStatus, setLoginStatus] = useState(true)
+    const { register, handleSubmit, formState: { errors } } = useForm();
 
-    const onSubmit = data => { console.log(data); }
+    const onSubmit = (data) => {
+        localStorage.removeItem("auth")
+        axios.post("http://localhost:3001/api/auth", {
+            email: data.email,
+            password: data.password
+        }).then(res => {
+            localStorage.setItem("auth",JSON.stringify(res.data))
+           window.location.replace("/")
+            
+        })
+            .catch(error => setLoginStatus(false));
+    }
 
     return (
         <Container component="main" maxWidth="xs">
@@ -32,6 +46,7 @@ export default function Login() {
                 </Typography>
                 <form className={classes.form} noValidate onSubmit={handleSubmit(onSubmit)}>
                     <TextField
+                        onClick={(e) => {setLoginStatus(true)}}
                         variant="outlined"
                         margin="normal"
                         required
@@ -46,6 +61,7 @@ export default function Login() {
                     {errors.email && <span className='errors'>*Email chưa đúng định dạng </span>}
 
                     <TextField
+                        onClick={(e) => setLoginStatus(true)}
                         variant="outlined"
                         margin="normal"
                         required
@@ -70,7 +86,7 @@ export default function Login() {
                     </Button>
                     <Grid container>
                         <Grid className='left' item xs>
-                            <Link  href="#" variant="body2">
+                            <Link href="#" variant="body2">
                                 Quên mật khẩu?
                             </Link>
                         </Grid >
@@ -80,6 +96,9 @@ export default function Login() {
                             </Link>
                         </Grid>
                     </Grid>
+                    <Alert hidden={loginStatus} variant="outlined" display="none" severity="error">
+                        Login failed
+                    </Alert>
                 </form>
             </div>
             <Box mt={8}>

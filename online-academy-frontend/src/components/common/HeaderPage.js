@@ -18,6 +18,7 @@ const renderItems = (listCategories) => {
 export default function HeaderPage(props) {
     const [listCategories, setListCategories] = useState([{ id: 1, categoryName: 'aaa' }])
     useEffect(() => {
+        console.log(localStorage.getItem("auth"))
         axios.get("http://localhost:3001/api/categories").then(res => {
             const listCategories = res.data;
             setListCategories(listCategories);

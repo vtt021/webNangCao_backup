@@ -17,12 +17,21 @@ module.exports = {
         return registration;
     },
 
+
     async getRegisterCourseByUserId(userId) {
         const registration = await db.select(contentData).from(TABLE_NAME).where({
             userId: userId,
             isDeleted: false
         });
         return registration;
+    },
+
+    async getRatingDetail(courseId) {
+        const ratings = await db.select([userId, rate, rateContent, lastUpdated]).from(TABLE_NAME).where({
+            courseId: courseId
+        }).andWhere('rate', '>', 0).orderBy('lastUpdated', 'desc');
+
+        return ratings;
     },
 
     async getRegisterUsersByCourseId(courseId) {
@@ -34,25 +43,52 @@ module.exports = {
         return registration;
     },
 
+    async getRegistration(userId, courseId) {
+        const registration = await db(TABLE_NAME).select(contentData).from(TABLE_NAME).where({
+            userId: userId,
+            courseId: courseId,
+            isDeleted: false
+        });
+
+        return registration[0];
+    },
+
+    async changeFavoriteStatus(userId, courseId, isFavorite) {
+        return db(TABLE_NAME).where({
+            courseId: courseId,
+            userId: userId,
+        }).update({
+            isFavorite: isFavorite,
+            lastUpdated: new Date()
+        });
+    },
 
     add(registration) {
         return db(TABLE_NAME).insert(registration);
     },
 
+    markUndeleted(courseId, userId) {
+        return db(TABLE_NAME).where({
+            courseId: courseId,
+            userId: userId,
+        }).update({
+            isDeleted: true,
+            lastUpdated: new Date()
+        });
+    },
 
-    addRate(rate) {
-        let courseId = rate.courseId;
-        let userId = rate.userId;
-        let rating = rate.rating || 0;
-        let rateContent = rate.rateContent || "";
 
+
+
+    addRate(courseId, userId, rating, rateContent) {
         return db(TABLE_NAME).where({
             courseId: courseId,
             userId: userId,
             isDeleted: false
         }).update({
             rate: rating,
-            rateContent: rateContent
+            rateContent: rateContent,
+            lastUpdated: new Date()
         })
     },
 
