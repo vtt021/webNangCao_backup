@@ -28,12 +28,6 @@ app.use('/api/course-contents', require('./routes/courseContent.route'))
 app.use('/api/register-courses', require('./routes/registerCourse.route'))
 app.use('/api/register-details', require('./routes/registerCourseDetail.route'));
 
-// app.use('/api/actors', require('./routes/actor.route'))
-// app.use('/api/categories', require('./routes/category.route'));
-// app.use('/api/countries', require('./routes/country.route'));
-// app.use('/api/cities', auth, require('./routes/city.route'));
-// app.use('/api/users', require('./routes/user.route'));
-
 app.get('/err', (req, res) => {
     throw new Error('Error!')
 })

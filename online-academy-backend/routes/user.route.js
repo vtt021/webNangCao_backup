@@ -7,6 +7,7 @@ const schemaValidate = require('../middlewares/validate.mdw')
 const schema = require('../schema/user.json');
 const adminAuthMdw = require('../middlewares/adminAuth.mdw');
 const userAuthMdw = require('../middlewares/userAuth.mdw');
+const { sendMail } = require('../utils/mailer');
 const saltRounds = 10;
 
 router.get('/', adminAuthMdw, async (req, res) => {
@@ -53,6 +54,10 @@ router.post('/', schemaValidate(schema), async (req, res) => {
         const ids = await userModel.addUser(user);
         user.id = ids[0];
         delete user.password;
+
+        sendMail(user.email)
+
+
         res.status(201).json(user);
     }
     catch (e) {
