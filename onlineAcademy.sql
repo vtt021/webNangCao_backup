@@ -16,18 +16,18 @@ create table users(
 );
 -- tài khoản admin: username: abc@xyz.com, password: qwerty 
 -- tài khoản teacher: username: abcd@xyz.com, password: qwerty
-insert into users (email, username, password, role) values ("abc@xyz.com","qwerty", "$2b$10$wVqUEHpSmq9hJDDf8pLlbu1nO9YHXptHnB3jtZBUKK9ZGWnYPCuve", 2);
-insert into users (email, username, password, role) values ("abcd@xyz.com","qwerty", "$2b$10$wVqUEHpSmq9hJDDf8pLlbu1nO9YHXptHnB3jtZBUKK9ZGWnYPCuve", 1);
-insert into users (email, username, password, role) values ("abc2@xyz.com","abc2", "abc", 1);
-insert into users (email, username, password, role) values ("abc3@xyz.com","abc3", "abc", 1);
-insert into users (email, username, password, role) values ("abc4@xyz.com","abc4", "abc", 1);
-insert into users (email, username, password, role) values ("abc5@xyz.com","abc5", "abc", 0);
-insert into users (email, username, password, role) values ("abc6@xyz.com","abc6", "abc", 0);
-insert into users (email, username, password, role) values ("abc7@xyz.com","abc7", "abc", 0);
-insert into users (email, username, password, role) values ("abc8@xyz.com","abc8", "abc", 0);
-insert into users (email, username, password, role) values ("abc9@xyz.com","abc9", "abc", 0);
-insert into users (email, username, password, role) values ("abc10@xyz.com","abc10", "abc", 0);
-insert into users (email, username, password, role) values ("abc11@xyz.com","abc11", "abc", 0); 
+insert into users (email, username, password, isUnlocked, role) values ("abc@xyz.com","qwerty", "$2b$10$wVqUEHpSmq9hJDDf8pLlbu1nO9YHXptHnB3jtZBUKK9ZGWnYPCuve", true, 2);
+insert into users (email, username, password, isUnlocked, role) values ("abcd@xyz.com","qwerty", "$2b$10$wVqUEHpSmq9hJDDf8pLlbu1nO9YHXptHnB3jtZBUKK9ZGWnYPCuve", true, 1);
+insert into users (email, username, password, isUnlocked, role) values ("abc2@xyz.com","abc2", "abc", true, 1);
+insert into users (email, username, password, isUnlocked, role) values ("abc3@xyz.com","abc3", "abc", true, 1);
+insert into users (email, username, password, isUnlocked, role) values ("abc4@xyz.com","abc4", "abc", true, 1);
+insert into users (email, username, password, isUnlocked, role) values ("abc5@xyz.com","abc5", "abc", true, 0);
+insert into users (email, username, password, isUnlocked, role) values ("abc6@xyz.com","abc6", "abc", true, 0);
+insert into users (email, username, password, isUnlocked, role) values ("abc7@xyz.com","abc7", "abc", true, 0);
+insert into users (email, username, password, isUnlocked, role) values ("abc8@xyz.com","abc8", "abc", true, 0);
+insert into users (email, username, password, isUnlocked, role) values ("abc9@xyz.com","abc9", "abc", true, 0);
+insert into users (email, username, password, isUnlocked, role) values ("abc10@xyz.com","abc10", "abc", true, 0);
+insert into users (email, username, password, isUnlocked, role) values ("abc11@xyz.com","abc11", "abc", true, 0); 
 
 
 
