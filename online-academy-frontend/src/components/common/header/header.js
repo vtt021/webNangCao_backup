@@ -120,7 +120,11 @@ export default function Header() {
   const handleUserClose = () => {
     setUserAnchorEl(null);
   };
-
+  const handleUserLogout = () => {
+    localStorage.removeItem("auth")
+    console.log(localStorage.getItem("auth"))
+    setAuth(false)
+  };
 
 
   const handleCategoriesMenu = (event) => {
@@ -230,6 +234,7 @@ export default function Header() {
               >
                 <MenuItem onClick={handleUserClose}>Profile</MenuItem>
                 <MenuItem onClick={handleUserClose}>My account</MenuItem>
+                <MenuItem onClick={handleUserLogout}>Logout</MenuItem>
               </Menu>
             </div>
           )}

@@ -5,6 +5,7 @@ import UploadTest from '../testComponent/uploadTest';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Login from '../login_page/Login';
 import SignUp from '../login_page/SignUp';
+import Verifyotp from '../verify_otp/VerifyOtp';
 // import css
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
                 <Route exact path="/upload" component={UploadTest} />
                 <Route exact path="/login" component={Login}/> 
                 <Route exact path="/signup" component={SignUp} />
+                <Route exact path="/verify-otp/:email" component={Verifyotp} />
             </div>
             {/* <Home/> */}
             {/* <DetailPage/> */}
