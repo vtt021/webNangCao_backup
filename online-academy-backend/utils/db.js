@@ -1,11 +1,12 @@
+require('dotenv').config();
 const knex = require('knex')({
     client: 'mysql2',
     connection: {
-        host: '127.0.0.1',
-        user: 'root',
-        password: '1900561252',
-        database: 'onlineacademy',
-        port: 3306
+        host: process.env.DB_URL || '127.0.0.1',
+        user: process.env.DB_USERNAME || 'root',
+        password: process.env.DB_PASSWORD || '4294967297',
+        database: process.env.DB_NAME || 'onlineacademy',
+        port: process.env.DB_PORT || 3306
     },
     pool: { min: 0, max: 50 }
 });

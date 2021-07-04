@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
@@ -13,9 +14,9 @@ app.use(morgan('dev'));
 global.__basedir = __dirname;
 
 
-const PORT = 3001;
-app.listen(PORT, () => {
-    console.log(`API is running at http://localhost:${PORT}`);
+let APP_PORT = process.env.PORT || 3000;
+app.listen(APP_PORT, () => {
+    console.log(`API is running at http://localhost:${APP_PORT}`);
 })
 
 app.use('/api/files', require('./routes/upload.route'));

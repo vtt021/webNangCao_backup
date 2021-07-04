@@ -59,7 +59,7 @@ router.post('/verify-otp', async (req, res) => {
                 message: 'Invalid data'
             });
         }
-        const user = await userModel.getUserByIdForVerification(email);
+        const user = await userModel.getUserByEmailForVerification(email);
         if (user === undefined) {
             return res.status(400).json({
                 message: 'User not exists'
@@ -67,7 +67,7 @@ router.post('/verify-otp', async (req, res) => {
         }
 
         let result = otpGenerator.checkValid(token);
-        if (result === true) {
+        if (result == true) {
             await userModel.unlockAccount(email);
         }
         else {
@@ -97,12 +97,40 @@ router.post('/', schemaValidate(schema), async (req, res) => {
             })
         }
         user.password = bcrypt.hashSync(user.password, saltRounds);
-        await userModel.addUser(user);
 
-        sendMail(user.email)
+        const existData = await userModel.getUserByEmailForVerification(user.email);
+
+        if (existData === undefined) {
+            await userModel.addUser(user);
+            sendMail(user.email)
+            return res.status(201).json({
+                message: 'OK'
+            });
+        }
 
 
-        res.status(201).json(user);
+        if (existData.isUnlocked == true) {
+            if (existData.isDeleted == false) {
+                return res.status(400).json({
+                    message: 'User exists'
+                })
+            }
+            else {
+                return res.status(400).json({
+                    message: 'User banned'
+                })
+            }
+        }
+        else {
+            await userModel.update(existData.id, user);
+            sendMail(user.email);
+            res.status(200).json({
+                message: 'OK'
+            });
+        }
+
+
+        
     }
     catch (e) {
         console.log(e.stack);

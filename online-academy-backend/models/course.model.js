@@ -144,11 +144,11 @@ module.exports = {
             .orderBy([
                 {
                     column: 'rating',
-                    order: ratingDesc === true ? 'desc' : 'asc'
+                    order: ratingDesc == true ? 'desc' : 'asc'
                 },
                 {
                     column: 'price',
-                    order: priceAsc === true ? 'asc' : 'desc'
+                    order: priceAsc == true ? 'asc' : 'desc'
                 }
             ])
             .limit(limit)
