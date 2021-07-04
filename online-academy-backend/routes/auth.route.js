@@ -17,6 +17,18 @@ router.post('/', async (req, res, next) => {
             })
         }
 
+        if (user.isUnlocked == false) {
+            return res.status(401).json({
+                authenticated: false
+            })
+        }
+
+        if (user.isDeleted == true) {
+            return res.status(403).json({
+                authenticated: false
+            })
+        }
+
         if (!bcrypt.compareSync(req.body.password, user.password)) {
             return res.status(401).json({
                 authenticated: false
@@ -45,7 +57,7 @@ router.post('/', async (req, res, next) => {
     }
     catch (e) {
         console.log(e.stack)
-        return res.status(400).json({
+        return res.status(500).json({
             authenticated: false,
             message: 'Something went wrong'
         })
@@ -64,7 +76,7 @@ router.post('/refresh', async (req, res, next) => {
 
         const ret = await userModel.isValidRefreshToken(userId, refreshToken);
 
-        if (ret === true) {
+        if (ret == true) {
             const newAccessToken = jwt.sign({ userId }, 'ONLINE_ACADEMY', { expiresIn: 600 })
             return res.json({
                 accessToken: newAccessToken
