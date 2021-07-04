@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.post('/', async (req, res, next) => {
     try {
-        const user = await userModel.getUserByEmail(req.body.email);
+        const user = await userModel.getUserByEmailForVerification(req.body.email);
 
         if (user === undefined) {
             return res.status(401).json({

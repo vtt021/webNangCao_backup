@@ -23,8 +23,8 @@ module.exports = {
         return users[0];
     },
 
-    async getUserByEmailForVerification(id) {
-        const users = await db.select(contentData).from(TABLE_NAME)
+    async getUserByEmailForVerification(email) {
+        const users = await db.from(TABLE_NAME)
             .where({
                 email: email,
                 isDeleted: false,
