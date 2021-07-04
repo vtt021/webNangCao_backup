@@ -46,7 +46,6 @@ export default function Categories() {
         }
     }
 
-    // return focus to the button when we transitioned from !open -> open
     const prevOpen = React.useRef(open);
     React.useEffect(() => {
         if (prevOpen.current === true && open === false) {
@@ -56,16 +55,15 @@ export default function Categories() {
         prevOpen.current = open;
     }, [open]);
 
-
-    const [listCategories, setListCategories] = useState([{ id: 1, categoryName: 'Không có khóa học' }])
-
-    const handleCategoryPage = (selectedCategory) => {
-        // Mở trang category tương ứng
-        // window.location.href = '/'+ {selectedCategory};
+    //TODO: GỌI API GET ALL KHÓA HỌC RỒI BỎ VÔ listCategories NÀY NHA, NHỚ THÊM NAVIGATION CHO TỪNG MENUITEMS
+    const [listCategories, setListCategories] = useState([{ id: 1, categoryName: 'Không có khóa học' }]) 
+    //TODO: CHUYỂN ĐẾN TRANG CHỨ DANH SÁCH KHÓA HỌC TƯƠNG ỨNG
+   const handleCategoryPage = categoryName => () => {
+        console.log(categoryName);
       };
     const renderItems = (listCategories) => {
         return (listCategories.map((title) => (
-            <MenuItem onClick={handleClose}>{title.categoryName}</MenuItem>
+            <MenuItem onClick={handleCategoryPage(title.categoryName)}>{title.categoryName}</MenuItem>
         )))
     }
     useEffect(() => {
