@@ -27,9 +27,9 @@ export default function Login() {
             email: data.email,
             password: data.password
         }).then(res => {
-            localStorage.setItem("auth",JSON.stringify(res.data))
-           window.location.replace("/")
-            
+            localStorage.setItem("auth", JSON.stringify(res.data))
+            window.location.replace("/")
+
         })
             .catch(error => setLoginStatus(false));
     }
@@ -46,7 +46,7 @@ export default function Login() {
                 </Typography>
                 <form className={classes.form} noValidate onSubmit={handleSubmit(onSubmit)}>
                     <TextField
-                        onClick={(e) => {setLoginStatus(true)}}
+                        onClick={(e) => { setLoginStatus(true) }}
                         variant="outlined"
                         margin="normal"
                         required

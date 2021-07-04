@@ -22,225 +22,219 @@ import AppLogo from '../images/AppLogo.png'
 import Fade from '@material-ui/core/Fade';
 import Categories from './components/categories.js'
 const useStyles = makeStyles((theme) => ({
-  grow: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  loginButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    display: 'none',
-    [theme.breakpoints.up('sm')]: {
-      display: 'block',
+    grow: {
+        flexGrow: 1,
     },
-  },
-  search: {
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.25),
-    '&:hover': {
-      backgroundColor: fade(theme.palette.common.white, 0.45),
+    menuButton: {
+        marginRight: theme.spacing(2),
     },
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(2),
-      width: 'auto',
+    loginButton: {
+        marginRight: theme.spacing(2),
     },
-  },
-  searchIcon: {
-    height: '100%',
-    position: 'absolute',
-    display: 'flex',
-    alignItems: 'center',
+    title: {
+        display: 'none',
+        [theme.breakpoints.up('sm')]: {
+            display: 'block',
+        },
+    },
+    search: {
+        position: 'relative',
+        borderRadius: theme.shape.borderRadius,
+        backgroundColor: fade(theme.palette.common.white, 0.25),
+        '&:hover': {
+            backgroundColor: fade(theme.palette.common.white, 0.45),
+        },
+        width: '100%',
+        [theme.breakpoints.up('sm')]: {
+            marginLeft: theme.spacing(2),
+            width: 'auto',
+        },
+    },
+    searchIcon: {
+        height: '100%',
+        position: 'absolute',
+        display: 'flex',
+        alignItems: 'center',
 
-  },
-  inputRoot: {
-    color: 'inherit',
-  },
-  inputInput: {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(1)}px)`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '30ch',
     },
-  },
-  sectionDesktop: {
-    display: 'none',
-    [theme.breakpoints.up('md')]: {
-      display: 'flex',
+    inputRoot: {
+        color: 'inherit',
     },
-  },
-  sectionMobile: {
-    display: 'flex',
-    [theme.breakpoints.up('md')]: {
-      display: 'none',
+    inputInput: {
+        padding: theme.spacing(1, 1, 1, 0),
+        // vertical padding + font size from searchIcon
+        paddingLeft: `calc(1em + ${theme.spacing(1)}px)`,
+        transition: theme.transitions.create('width'),
+        width: '100%',
+        [theme.breakpoints.up('md')]: {
+            width: '30ch',
+        },
     },
-  },
-  appBarStyte: {
+    sectionDesktop: {
+        display: 'none',
+        [theme.breakpoints.up('md')]: {
+            display: 'flex',
+        },
+    },
+    sectionMobile: {
+        display: 'flex',
+        [theme.breakpoints.up('md')]: {
+            display: 'none',
+        },
+    },
+    appBarStyte: {
 
-    background: '#383E56 '
-  },
+        background: '#383E56 '
+    },
 }));
 
 export default function Header() {
-  const classes = useStyles();
+    const classes = useStyles();
+    const user = localStorage.getItem("auth")
+    console.log(user)
+    const [auth, setAuth] = React.useState(user === null ? false : true);
+    const [userAnchorEl, setUserAnchorEl] = React.useState(null); //Menu item
 
-  const [auth, setAuth] = React.useState(true);
+    const [authAdmin, setAuthAdmin] = React.useState(true);
 
-  const [userAnchorEl, setUserAnchorEl] = React.useState(null); //Menu item
+    const userOpen = Boolean(userAnchorEl);
 
-  const [authAdmin, setAuthAdmin] = React.useState(true);
+    const [categoriesAnchorEl, setCategoriesAnchorEl] = React.useState(null);
+    const categoriesOpen = Boolean(categoriesAnchorEl);
 
-  const userOpen = Boolean(userAnchorEl);
+    const handleRefresh = () => {
+        // về lại trang chủ
+        window.location.href = '/';
+    };
 
-  const [categoriesAnchorEl, setCategoriesAnchorEl] = React.useState(null);
-  const categoriesOpen = Boolean(categoriesAnchorEl);
+    const handleChangeAuth = (event) => {
+        setAuth(event.target.checked);
+    };
+    const handleChangeAuthAdmin = (event) => {
+        setAuthAdmin(event.target.checked);
+    };
 
-  const handleRefresh = () => {
-    // về lại trang chủ
-    window.location.href = '/';
-  };
-
-  const handleChangeAuth = (event) => {
-    setAuth(event.target.checked);
-  };
-  const handleChangeAuthAdmin = (event) => {
-    setAuthAdmin(event.target.checked);
-  };
-
-  const handleUserMenu = (event) => {
-    setUserAnchorEl(event.currentTarget);
-  };
-  const handleUserClose = () => {
-    setUserAnchorEl(null);
-  };
-  const handleUserLogout = () => {
-    localStorage.removeItem("auth")
-    console.log(localStorage.getItem("auth"))
-    setAuth(false)
-  };
-
-
-  const handleCategoriesMenu = (event) => {
-    
-    setCategoriesAnchorEl(event.currentTarget);
-  };
-
-  const handleCloseCategories = () => {
-    setCategoriesAnchorEl(null);
-  };
+    const handleUserMenu = (event) => {
+        setUserAnchorEl(event.currentTarget);
+    };
+    const handleUserClose = () => {
+        setUserAnchorEl(null);
+    };
+    const handleUserLogout = () => {
+        localStorage.removeItem("auth")
+        console.log(localStorage.getItem("auth"))
+        setAuth(false)
+    };
 
 
+    const handleCategoriesMenu = (event) => {
 
-  return (
-    <div className={classes.grow}>
-      <FormGroup>
-        <FormControlLabel
-          control={<Switch checked={auth} onChange={handleChangeAuth} aria-label="login switch" />}
-          label={auth ? 'Logout' : 'Login'}
-        />
-      </FormGroup>
-      <FormGroup>
-        <FormControlLabel
-          control={<Switch checked={authAdmin} onChange={handleChangeAuthAdmin} aria-label="login switch" />}
-          label={authAdmin ? 'admin' : 'Noadmin'}
-        />
-      </FormGroup>
-      <AppBar position="relative" className={classes.appBarStyte} >
-        <Toolbar>
-          {/* Logo nè */}
-          <div onClick={handleRefresh}>
-            <IconButton
-              edge="start"
-              className={classes.menuButton}
-              color="inherit"
-              aria-label="open drawer"
-              disableFocusRipple="false"
-            >
-              <Avatar src={AppLogo} className={classes.menuButton} />
-              <Typography className={classes.title} variant="h6" noWrap>
-                My Academy
-              </Typography>
-            </IconButton>
-          </div>
+        setCategoriesAnchorEl(event.currentTarget);
+    };
+
+    const handleCloseCategories = () => {
+        setCategoriesAnchorEl(null);
+    };
 
 
-          <div onClick={() => { console.log('gọi lệnh search nè') }}>
-            <InputBase id="standard-basic" className={classes.search}
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              placeholder="Search…"
-              endAdornment={
-                <InputAdornment>
-                  <IconButton>
-                    <SearchIcon />
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-          </div>
-          <Categories/>
 
-          <div className={classes.grow} />
-          {!auth && (
-            <div>
-              <Button variant="contained" color="primary" href="/login" className={classes.loginButton}>
-                Đăng nhập
-              </Button>
-            </div>
-          )}
-          {
-            authAdmin && (
-              <div>
-              <Button variant="contained" color="primary" href="/admin" className={classes.loginButton}>
-                Admin
-              </Button>
-            </div>
-            )
-          }
-          {auth && (
-            <div>
-              <IconButton
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleUserMenu} //Show menu user.
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={userAnchorEl}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={userOpen}
-                onClose={handleUserClose}
-              >
-                <MenuItem onClick={handleUserClose}>Profile</MenuItem>
-                <MenuItem onClick={handleUserClose}>My account</MenuItem>
-                <MenuItem onClick={handleUserLogout}>Logout</MenuItem>
-              </Menu>
-            </div>
-          )}
+    return (
+        <div className={classes.grow}>
+            <FormGroup>
+                <FormControlLabel
+                    control={<Switch checked={authAdmin} onChange={handleChangeAuthAdmin} aria-label="login switch" />}
+                    label={authAdmin ? 'admin' : 'Noadmin'}
+                />
+            </FormGroup>
+            <AppBar position="relative" className={classes.appBarStyte} >
+                <Toolbar>
+                    {/* Logo nè */}
+                    <div onClick={handleRefresh}>
+                        <IconButton
+                            edge="start"
+                            className={classes.menuButton}
+                            color="inherit"
+                            aria-label="open drawer"
+                            disableFocusRipple="false"
+                        >
+                            <Avatar src={AppLogo} className={classes.menuButton} />
+                            <Typography className={classes.title} variant="h6" noWrap>
+                                My Academy
+                            </Typography>
+                        </IconButton>
+                    </div>
 
-        </Toolbar>
-      </AppBar>
-    </div>
-  );
+
+                    <div onClick={() => { console.log('gọi lệnh search nè') }}>
+                        <InputBase id="standard-basic" className={classes.search}
+                            classes={{
+                                root: classes.inputRoot,
+                                input: classes.inputInput,
+                            }}
+                            placeholder="Search…"
+                            endAdornment={
+                                <InputAdornment>
+                                    <IconButton>
+                                        <SearchIcon />
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                        />
+                    </div>
+                    <Categories />
+
+                    <div className={classes.grow} />
+                    {!auth && (
+                        <div>
+                            <Button variant="contained" color="primary" href="/login" className={classes.loginButton}>
+                                Đăng nhập
+                            </Button>
+                        </div>
+                    )}
+                    {
+                        authAdmin && (
+                            <div>
+                                <Button variant="contained" color="primary" href="/admin" className={classes.loginButton}>
+                                    Admin
+                                </Button>
+                            </div>
+                        )
+                    }
+                    {auth && (
+                        <div>
+                            <IconButton
+                                aria-label="account of current user"
+                                aria-controls="menu-appbar"
+                                aria-haspopup="true"
+                                onClick={handleUserMenu} //Show menu user.
+                                color="inherit"
+                            >
+                                <AccountCircle />
+                            </IconButton>
+                            <Menu
+                                id="menu-appbar"
+                                anchorEl={userAnchorEl}
+                                anchorOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                open={userOpen}
+                                onClose={handleUserClose}
+                            >
+                                <MenuItem onClick={handleUserClose}>Profile</MenuItem>
+                                <MenuItem onClick={handleUserClose}>My account</MenuItem>
+                                <MenuItem onClick={handleUserLogout}>Logout</MenuItem>
+                            </Menu>
+                        </div>
+                    )}
+
+                </Toolbar>
+            </AppBar>
+        </div>
+    );
 }

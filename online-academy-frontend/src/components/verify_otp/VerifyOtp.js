@@ -27,11 +27,11 @@ export default function Verifyotp(props) {
 
     const onSubmit = (data) => {
         axios.post("http://localhost:3001/api/users/verify-otp", {
-            email: data.email,
+            email: email,
             token: data.otp
         }).then(res => {
-            console.log(res.data)
-            //window.location.replace("/login")
+            console.log(data)
+            window.location.replace("/login")
 
         })
             .catch(error => console.log(error));
