@@ -34,6 +34,17 @@ module.exports = {
         return users[0];
     },
 
+    async getUserByEmailLogin(email) {
+        const users = await db.from(TABLE_NAME)
+            .where({
+                email: email,
+                isDeleted: false,
+                isUnlocked: true
+            });
+
+        return users[0];
+    },
+
     async getUserByEmail(email) {
         const users = await db.select(contentData).from(TABLE_NAME)
             .where(
@@ -43,10 +54,6 @@ module.exports = {
                     isUnlocked: true
                 }
             );
-
-        if (users.length === 0) {
-            return null;
-        }
 
         return users[0];
     },
