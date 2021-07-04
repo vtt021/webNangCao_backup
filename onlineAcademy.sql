@@ -11,6 +11,7 @@ create table users(
     refreshToken varchar(255),
 	role int not null default 0,
     isDeleted boolean not null default false,
+	isUnlocked boolean not null default false,
     lastUpdated timestamp default current_timestamp
 );
 -- tài khoản admin: username: abc@xyz.com, password: qwerty 
@@ -170,7 +171,7 @@ create table register_course_detail(
 	courseId int not null,
     userId int not null,
     contentId int not null,
-    completeRate int not null default 0 check (completeRate <= 100 and completeRate >= 0),
+    currentTime int not null default 0 check (currentTime >= 0),
     
 	isDeleted boolean not null default false,
     lastUpdated timestamp default current_timestamp,
@@ -179,11 +180,11 @@ create table register_course_detail(
     constraint FK_ContentId_CourseContent foreign key (contentId) references course_content(id)
 );
 
-insert into register_course_detail(courseId, userId, contentId, completeRate) values(1, 1, 1,20);
-insert into register_course_detail(courseId, userId, contentId, completeRate) values(1, 1, 2,50);
-insert into register_course_detail(courseId, userId, contentId, completeRate) values(1, 1, 3,30);
-insert into register_course_detail(courseId, userId, contentId, completeRate) values(1, 1, 4,20);
-insert into register_course_detail(courseId, userId, contentId, completeRate) values(1, 1, 5,10);
+insert into register_course_detail(courseId, userId, contentId, currentTime) values(1, 1, 1,20);
+insert into register_course_detail(courseId, userId, contentId, currentTime) values(1, 1, 2,50);
+insert into register_course_detail(courseId, userId, contentId, currentTime) values(1, 1, 3,30);
+insert into register_course_detail(courseId, userId, contentId, currentTime) values(1, 1, 4,20);
+insert into register_course_detail(courseId, userId, contentId, currentTime) values(1, 1, 5,10);
 
 -- create table test(
 -- 	id int not null primary key auto_increment,
