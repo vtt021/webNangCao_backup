@@ -1,3 +1,4 @@
+const authConstant = require('../utils/auth.constant');
 const db = require('../utils/db');
 
 const TABLE_NAME = 'users';
@@ -21,6 +22,15 @@ module.exports = {
             });
 
         return users[0];
+    },
+
+    async getAllTeachers() {
+        const teachers = await db.select(['id', 'username']).from(TABLE_NAME)
+        .where({
+            role: authConstant.KEY_TEACHER_AUTH
+        });
+
+        return teachers;
     },
 
     async getUserByEmailForVerification(email) {

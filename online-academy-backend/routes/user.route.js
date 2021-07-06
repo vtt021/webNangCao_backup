@@ -49,6 +49,19 @@ router.get('/id', async (req, res) => {
 
 });
 
+router.get('/teacher', async (req, res) => {
+    try {
+        const list = await userModel.getAllTeachers();
+        return res.json(list);
+    }
+    catch (e) {
+        console.log(e.stack);
+        res.status(500).json({
+            message: e.message
+        })
+    }
+})
+
 router.post('/verify-otp', async (req, res) => {
     try {
         const email = req.body.email;
