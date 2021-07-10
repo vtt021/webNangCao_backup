@@ -91,7 +91,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Header() {
     const classes = useStyles();
     const user = localStorage.getItem("auth")
-    console.log(user)
+
     const [auth, setAuth] = React.useState(user === null ? false : true);
     const [userAnchorEl, setUserAnchorEl] = React.useState(null); //Menu item
 
