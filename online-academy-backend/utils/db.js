@@ -4,7 +4,7 @@ const knex = require('knex')({
     connection: {
         host: process.env.DB_URL || '127.0.0.1',
         user: process.env.DB_USERNAME || 'root',
-        password: process.env.DB_PASSWORD || '4294967297',
+        password: process.env.DB_PASSWORD || '1900561252',
         database: process.env.DB_NAME || 'onlineacademy',
         port: process.env.DB_PORT || 3306
     },

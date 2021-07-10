@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import { useForm } from "react-hook-form";
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -18,7 +17,7 @@ import Alert from '@material-ui/lab/Alert';
 import './Login.css';
 import { useParams } from "react-router-dom";
 export default function Verifyotp(props) {
-    const {email} = useParams()
+    const { email } = useParams()
     console.log(email)
 
     const classes = useStyles();
@@ -33,17 +32,15 @@ export default function Verifyotp(props) {
             console.log(data)
             window.location.replace("/login")
 
-        })
-            .catch(error => console.log(error));
+        }).catch(error => { console.log(error); setLoginStatus(false) });
     }
 
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
             <div className={classes.paper}>
-                <Typography component="h1" variant="h5">
-                    We sent otp to 
-                    <br/>
+                <Typography component="h1" variant="h5" style={{ display: "flex", alignItems: "baseline" }}>
+                    Chúng tôi đã gửi mã OTP đến địa chỉ:  {'\u00A0'}
                     {email}
                 </Typography>
                 <form className={classes.form} noValidate onSubmit={handleSubmit(onSubmit)}>
@@ -60,7 +57,7 @@ export default function Verifyotp(props) {
                         autoFocus
                         {...register("otp", { required: true, pattern: /[0-9]/ })}
                     />
-                    {errors.email && <span className='errors'>*Email chưa đúng định dạng </span>}
+                    {errors.otp && <span className='errors'>Mã xác nhận sai định dạng </span>}
 
 
                     <Button
@@ -70,17 +67,20 @@ export default function Verifyotp(props) {
                         color="primary"
                         className={classes.submit}
                     >
-                        Verify
+                        Xác nhận
                     </Button>
-                    <Grid container>
-                        <Grid className='left' item xs>
-                            Gửi lại
-                        </Grid >
 
-                    </Grid>
-                    <Alert hidden={loginStatus} variant="outlined" display="none" severity="error">
-                        Login failed
-                    </Alert>
+                    <div hidden={loginStatus}>
+                        <Alert variant="outlined" display="none" severity="error" className={classes.optFailed}>
+                            Sai mã xác nhận
+                        </Alert>
+                        <Grid container>
+                            <Grid item xs>
+                                <Button color="primary">Gửi lại</Button>
+                            </Grid >
+
+                        </Grid>
+                    </div>
                 </form>
             </div>
             <Box mt={8}>
@@ -119,5 +119,8 @@ const useStyles = makeStyles((theme) => ({
     },
     submit: {
         margin: theme.spacing(3, 0, 2),
+    },
+    optFailed: {
+        margin: theme.spacing(3, 0, 3, 0),
     },
 }));
