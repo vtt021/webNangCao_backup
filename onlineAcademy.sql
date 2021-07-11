@@ -82,16 +82,16 @@ create table course (
     constraint FK_Course_Category foreign key (subCategoryId) references sub_category(id)
 );
 
-insert into course(courseName, subCategoryId, teacherId, price, detailShort, detailLong) values ("Giới thiệu về Git", 2, 2, 0, "abcd", "abcd");
-insert into course(courseName, subCategoryId, teacherId, price, detailShort, detailLong) values ("Thành thạo ReactJS trong 24 giờ", 1, 2, 15000, "abcd", "abcd");
-insert into course(courseName, subCategoryId, teacherId, price, detailShort, detailLong) values ("Competitive Programming with Errichto", 2, 2, 0, "abcd", "abcd");
-insert into course(courseName, subCategoryId, teacherId, price, detailShort, detailLong) values ("Early Math - Geometry - Khan Academy", 3, 3, 30000, "abcd", "abcd");
-insert into course(courseName, subCategoryId, teacherId, price, detailShort, detailLong) values ("Flutter căn bản", 1, 3, 50000, "abcd", "abcd");
-insert into course(courseName, subCategoryId, teacherId, price, detailShort, detailLong) values ("Decoding Flutter", 1, 3, 50000, "abcd", "abcd");
-insert into course(courseName, subCategoryId, teacherId, price, detailShort, detailLong) values ("Google Search and its uses", 3, 7, 50000, "abcd", "abcd");
-insert into course(courseName, subCategoryId, teacherId, price, detailShort, detailLong) values ("Software Development Methodology - Codecademy", 1, 2, 50000, "abcd", "abcd");
-insert into course(courseName, subCategoryId, teacherId, price, detailShort, detailLong) values ("BBC Learning English - Vocabulary", 4, 7, 50000, "abcd", "abcd");
-insert into course(courseName, subCategoryId, teacherId, price, detailShort, detailLong) values ("Angular Tutorial", 1, 3, 50000, "abcd", "abcd");
+insert into course(courseName, subCategoryId, teacherId, price, detailShort, detailLong, imageThumbnail, imageCourse) values ("Giới thiệu về Git", 2, 2, 0, "Mô tả ngắn", "Mô tả dài", "course1.jpg", "course1.jpg");
+insert into course(courseName, subCategoryId, teacherId, price, detailShort, detailLong, imageThumbnail, imageCourse) values ("Thành thạo ReactJS trong 24 giờ", 1, 2, 15000, "Mô tả ngắn", "Mô tả dài", "course2.png", "course2.png");
+insert into course(courseName, subCategoryId, teacherId, price, detailShort, detailLong, imageThumbnail, imageCourse) values ("Competitive Programming with Errichto", 2, 2, 0, "Mô tả ngắn", "Mô tả dài", "course3.png", "course3.png");
+insert into course(courseName, subCategoryId, teacherId, price, detailShort, detailLong, imageThumbnail, imageCourse) values ("Early Math - Geometry - Khan Academy", 3, 3, 30000, "Mô tả ngắn", "Mô tả dài", "course4.jpg", "course4.jpg");
+insert into course(courseName, subCategoryId, teacherId, price, detailShort, detailLong, imageThumbnail, imageCourse) values ("Flutter căn bản", 1, 3, 50000, "Mô tả ngắn", "Mô tả dài", "course5.png", "course5.png");
+insert into course(courseName, subCategoryId, teacherId, price, detailShort, detailLong, imageThumbnail, imageCourse) values ("Decoding Flutter", 1, 3, 50000, "Mô tả ngắn", "Mô tả dài", "course6.png", "course6.png");
+insert into course(courseName, subCategoryId, teacherId, price, detailShort, detailLong, imageThumbnail, imageCourse) values ("Google Search and its uses", 3, 7, 50000, "Mô tả ngắn", "Mô tả dài", "course7.png", "course7.png");
+insert into course(courseName, subCategoryId, teacherId, price, detailShort, detailLong, imageThumbnail, imageCourse) values ("Software Development Methodology - Codecademy", 1, 2, 50000, "Mô tả ngắn", "Mô tả dài", "course8.png", "course8.png");
+insert into course(courseName, subCategoryId, teacherId, price, detailShort, detailLong, imageThumbnail, imageCourse) values ("BBC Learning English - Vocabulary", 4, 7, 50000, "Mô tả ngắn", "Mô tả dài", "course9.jpg", "course9.jpg");
+insert into course(courseName, subCategoryId, teacherId, price, detailShort, detailLong, imageThumbnail, imageCourse) values ("Angular Tutorial", 1, 3, 50000, "Mô tả ngắn", "Mô tả dài", "course10.png", "course10.png");
 
 
 create table course_content (
