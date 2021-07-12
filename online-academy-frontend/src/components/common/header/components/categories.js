@@ -9,6 +9,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import { makeStyles } from '@material-ui/core/styles';
 import { IconButton, Typography } from '@material-ui/core';
+import { useHistory } from "react-router-dom";
 
 
 
@@ -24,6 +25,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Categories() {
     const classes = useStyles();
+    const history = useHistory();
+
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef(null);
 
@@ -56,14 +59,15 @@ export default function Categories() {
     }, [open]);
 
     //TODO: GỌI API GET ALL KHÓA HỌC RỒI BỎ VÔ listCategories NÀY NHA, NHỚ THÊM NAVIGATION CHO TỪNG MENUITEMS
-    const [listCategories, setListCategories] = useState([{ id: 1, categoryName: 'Không có khóa học' }]) 
+    const [listCategories, setListCategories] = useState([{ id: 1, categoryName: 'Không có khóa học' }])
     //TODO: CHUYỂN ĐẾN TRANG CHỨ DANH SÁCH KHÓA HỌC TƯƠNG ỨNG
-   const handleCategoryPage = categoryName => () => {
-        console.log(categoryName);
-      };
+    const handleCategoryPage = id => () => {
+        console.log(id);
+        history.push("/categories/" + id);
+    };
     const renderItems = (listCategories) => {
-        return (listCategories.map((title) => (
-            <MenuItem onClick={handleCategoryPage(title.categoryName)}>{title.categoryName}</MenuItem>
+        return (listCategories.map((category) => (
+            <MenuItem onClick={handleCategoryPage(category.id)}>{category.categoryName}</MenuItem>
         )))
     }
     useEffect(() => {

@@ -5,11 +5,17 @@ import { Container, Row, Col, Image, Button, Accordion, Card } from 'react-boots
 import './Detail_page.css'
 import Header from '../common/header/header.js'
 import {ShowMoreText} from'./component/showMoreButton'
+
+
 export default function DetailPage(props) {
+    const { id } = props.match.params
+
     return (
         
         <div>
+            <h3>CategoryID: {id}</h3>
             <Header/>
+
             <Container>
                 <Row >
                     <Col lg={4}>

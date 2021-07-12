@@ -14,9 +14,11 @@ const useStyles = makeStyles(() => ({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        flexWrap: "wrap"
     },
     card: {
-        maxWidth: 345,
+        minWidth: 405,
+        maxWidth: 445,
     },
     cardHeader: {
         minHeight: 100,
@@ -73,12 +75,14 @@ export default function CourseCard(props) {
                             <Typography gutterBottom variant="h6" align='justify' className={classes.price}>
                                 {'Học phí: ' + props.couresInfo.price}
                             </Typography>
+                            <Typography >
+                            {'\u00A0'}
+                            </Typography>
 
                         </container>
                     )}
                     {props.couresInfo.salePrice && ( // Có giảm giá
                         <container>
-                            
                             <Typography gutterBottom variant="h6" align='justify' className={classes.price}>
                                 {'Học phí: ' + props.couresInfo.price}
                             </Typography>
