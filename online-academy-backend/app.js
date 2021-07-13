@@ -14,7 +14,7 @@ app.use(morgan('dev'));
 
 global.__basedir = __dirname;
 
-mongoose.connect("mongodb+srv://onlineacademy:webnangcao@onlineacademy.vfzak.mongodb.net/onlineacademy", {
+mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }, (err) => {
