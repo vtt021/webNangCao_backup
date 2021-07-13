@@ -11,8 +11,7 @@ const { sendMail } = require('../utils/mailer');
 const saltRounds = 10;
 const otpGenerator = require('../utils/otp-generator')
 
-
-router.get('/', adminAuthMdw, async (req, res) => {
+router.get('/', /*adminAuthMdw,*/ async (req, res) => {
     try {
         const list = await userModel.getAllUsers();
         return res.json(list);
@@ -38,6 +37,9 @@ router.get('/id', async (req, res) => {
         delete user.isDeleted;
         delete user.lastUpdated;
         return res.json(user);
+
+        
+
     }
     catch (e) {
         console.log(e.stack);
@@ -111,36 +113,36 @@ router.post('/', schemaValidate(schema), async (req, res) => {
         }
         user.password = bcrypt.hashSync(user.password, saltRounds);
 
-        const existData = await userModel.getUserByEmailForVerification(user.email);
+        // const existData = await userModel.getUserByEmailForVerification(user.email);
 
-        if (existData === undefined) {
+        // if (existData === undefined) {
             await userModel.addUser(user);
-            sendMail(user.email)
+            // sendMail(user.email)
             return res.status(201).json({
                 message: 'OK'
             });
-        }
+        // }
 
 
-        if (existData.isUnlocked == true) {
-            if (existData.isDeleted == false) {
-                return res.status(400).json({
-                    message: 'User exists'
-                })
-            }
-            else {
-                return res.status(400).json({
-                    message: 'User banned'
-                })
-            }
-        }
-        else {
-            await userModel.update(existData.id, user);
-            sendMail(user.email);
-            res.status(200).json({
-                message: 'OK'
-            });
-        }
+        // if (existData.isUnlocked == true) {
+        //     if (existData.isDeleted == false) {
+        //         return res.status(400).json({
+        //             message: 'User exists'
+        //         })
+        //     }
+        //     else {
+        //         return res.status(400).json({
+        //             message: 'User banned'
+        //         })
+        //     }
+        // }
+        // else {
+        //     await userModel.update(existData.id, user);
+        //     sendMail(user.email);
+        //     res.status(200).json({
+        //         message: 'OK'
+        //     });
+        // }
 
 
         
