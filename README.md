@@ -5,3 +5,5 @@ Frontend chạy tại port 3000
 Nhớ thay đổi kết nối trong file utils/db.js
 
 File mock database: onlineAcademy.sql
+
+Web host: https://online-academy-789799818.herokuapp.com/
