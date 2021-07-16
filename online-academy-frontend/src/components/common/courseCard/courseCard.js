@@ -12,32 +12,35 @@ import Grid from '@material-ui/core/Grid';
 const useStyles = makeStyles(() => ({
     container: {
         display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        alignItems: "flex-start",
+        justifyContent: "flex-start",
         flexWrap: "wrap"
     },
     card: {
-        minWidth: 405,
-        maxWidth: 445,
+        width: 370,
     },
     cardHeader: {
-        minHeight: 100,
-        maxHeight: 200,
+        height: 100,
         overflow: "hidden",
-        textOverflow: "ellipsis"
+        textOverflow: "ellipsis",
+        display: 'flex',
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
+        
+        
     },
     media: {
         height: 0,
         paddingTop: '56.25%', // 16:9
     },
     price: {
-        color: '#5EAAA8'
+        color: '#5EAAA8',
     },
     oldPrice:
     {
         textDecorationLine: 'line-through',
-         textDecorationStyle: 'solid',
-         color: '#F05945'
+        textDecorationStyle: 'solid',
+        color: '#F05945',
     },
     containerRating: {
         alignItems: "center",
@@ -49,7 +52,6 @@ const useStyles = makeStyles(() => ({
 
 export default function CourseCard(props) {
     const classes = useStyles();
-    const [expanded, setExpanded] = React.useState(false);
 
 
     return (
@@ -59,13 +61,12 @@ export default function CourseCard(props) {
                     <CardHeader
                         title={props.couresInfo.subCategoryId + ': ' + props.couresInfo.courseName}
                         subheader={props.couresInfo.teacherId}
-                        align='justify'
                         className={classes.cardHeader}
                     />
                 </CardActionArea>
                 <CardMedia
                     className={classes.media}
-                    image={props.couresInfo.imageThumbnail===null?'https://images.theconversation.com/files/350865/original/file-20200803-24-50u91u.jpg?ixlib=rb-1.1.0&q=45&auto=format&w=1200&h=1200.0&fit=crop':props.couresInfo.imageThumbnail}
+                    image={props.couresInfo.imageThumbnail === null ? 'https://images.theconversation.com/files/350865/original/file-20200803-24-50u91u.jpg?ixlib=rb-1.1.0&q=45&auto=format&w=1200&h=1200.0&fit=crop' : props.couresInfo.imageThumbnail}
                     title={props.couresInfo.courseName}
                 />
                 <CardContent>
@@ -76,9 +77,8 @@ export default function CourseCard(props) {
                                 {'Học phí: ' + props.couresInfo.price}
                             </Typography>
                             <Typography >
-                            {'\u00A0'}
+                                {'\u00A0'}
                             </Typography>
-
                         </container>
                     )}
                     {props.couresInfo.salePrice && ( // Có giảm giá
@@ -96,7 +96,7 @@ export default function CourseCard(props) {
                     <Grid container justify="flex-start" className={classes.containerRating}>
                         <Rating name="half-rating-read" defaultValue={props.couresInfo.rating} precision={0.1} readOnly />
                         <Typography variant="body2" color="textSecondary" className={classes.numberRating}>
-                            {'('+props.couresInfo.ratingCount + ' đánh giá)'}
+                            {'(' + props.couresInfo.ratingCount + ' đánh giá)'}
                         </Typography>
                     </Grid>
                 </CardContent>

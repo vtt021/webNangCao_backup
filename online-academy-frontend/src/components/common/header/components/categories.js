@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Button from '@material-ui/core/Button';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Grow from '@material-ui/core/Grow';
 import Paper from '@material-ui/core/Paper';
@@ -38,7 +37,6 @@ export default function Categories() {
         if (anchorRef.current && anchorRef.current.contains(event.target)) {
             return;
         }
-
         setOpen(false);
     };
 
@@ -58,9 +56,9 @@ export default function Categories() {
         prevOpen.current = open;
     }, [open]);
 
-    //TODO: GỌI API GET ALL KHÓA HỌC RỒI BỎ VÔ listCategories NÀY NHA, NHỚ THÊM NAVIGATION CHO TỪNG MENUITEMS
+    //DONE: GỌI API GET ALL KHÓA HỌC RỒI BỎ VÔ listCategories NÀY NHA, NHỚ THÊM NAVIGATION CHO TỪNG MENUITEMS
     const [listCategories, setListCategories] = useState([{ id: 1, categoryName: 'Không có khóa học' }])
-    //TODO: CHUYỂN ĐẾN TRANG CHỨ DANH SÁCH KHÓA HỌC TƯƠNG ỨNG
+    //DONE: CHUYỂN ĐẾN TRANG CHỨ DANH SÁCH KHÓA HỌC TƯƠNG ỨNG
     const handleCategoryPage = id => () => {
         console.log(id);
         history.push("/categories/" + id);

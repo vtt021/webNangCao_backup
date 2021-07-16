@@ -2,7 +2,6 @@ import React from 'react'
 import { Container, Col, Row, Image, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import PlayerExample from './component/uploadVideo';
-import userImage from '../common/images/potato.jpg'
 
 export default function uploadTest(props) {
     return (

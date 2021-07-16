@@ -1,19 +1,20 @@
 import React from 'react'
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import userImage from '../common/images/potato.jpg'
-import { Container, Row, Col, Image, Button, Accordion, Card } from 'react-bootstrap'
+import { Container, Row, Col, Image, Accordion, Card } from 'react-bootstrap'
 import './Detail_page.css'
 import Header from '../common/header/header.js'
 import {ShowMoreText} from'./component/showMoreButton'
 
 
 export default function DetailPage(props) {
-    const { id } = props.match.params
+    const id  = props.match.params.id
 
     return (
         
         <div>
-            <h3>CategoryID: {id}</h3>
+            <h3>CategoryID: {id} </h3>
             <Header/>
 
             <Container>

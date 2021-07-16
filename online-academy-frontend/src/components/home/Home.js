@@ -1,18 +1,15 @@
 import React from 'react';
-import { Container, Col } from 'react-bootstrap'
-import MyTab from './images/MyTab'
+import { Container, } from 'react-bootstrap'
 import Header from '../common/header/header.js'
-import Carousel from '../common/carousel/carousel.js'
-import PagingCard from '../categories_page/pagingCourse.js'
+import HotCourese from './child_component/hotCourses.js'
+import HorizonalTab from './child_component/tab/horizonalTab.js'
+
 export default function Home(props) {
     return (
         <Container fluid >
             <Header/>
-            <Carousel/>
-            <PagingCard/>
-            <MyTab/>
-            <MyTab/>
-            <MyTab/>
+            <HotCourese/>
+            <HorizonalTab/>
         </Container>
 
     )

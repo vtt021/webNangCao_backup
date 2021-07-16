@@ -15,13 +15,11 @@ function App() {
                 <Route exact path="/" component={Home} />
                 {/* <Route exact path="/ac" component={AdminCategory}/> */}
                 <Route exact path="/detail" component={() => <DetailPage subjectName='tên khóa học test' />} />
-                {/* <Route>
-                    <DetailPage subjectName='tên khóa học test' />
-                    </Route> */}
+
                 <Route exact path="/categories/:id" 
                 render={(props) => <DetailPage {...props} />}
                 >
-                {/* </DetailPage><DetailPage subjectName='tên khóa học test' /> */}
+                
             </Route>
                 <Route exact path="/upload" component={UploadTest} />
                 <Route exact path="/login" component={Login}/> 

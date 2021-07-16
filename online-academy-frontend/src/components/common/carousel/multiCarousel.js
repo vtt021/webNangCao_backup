@@ -5,7 +5,7 @@ import {  Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import CourseCard from '../courseCard/courseCard.js'
-export default function HomeCarousel(props) {
+export default function MultiCarousel(props) {
     const classes = useStyles();
     const [items, setItems] = useState()
     const [teachers, setTeachers] = useState([{}])
@@ -14,15 +14,14 @@ export default function HomeCarousel(props) {
     const [numEachSlide, setNumEachSlide] = useState(3)
 
 
-    //TODO: GỌI DATABASE BỎ VÀO items ĐỂ HIỂN THỊ 
-    useEffect(() => {
+    const getTeachers = () => {
         axios.get("http://localhost:3001/api/users/teacher").then(res => {
             const listTeacher = res.data;
             setTeachers(listTeacher);
             console.log(listTeacher)
         }).catch(error => console.log(error));
-
-
+    }
+    const getCouresItems = () => {
         axios.get("http://localhost:3001/api/courses/hot").then(res => {
             console.log(teachers)
             const listCourse = res.data;
@@ -35,23 +34,21 @@ export default function HomeCarousel(props) {
             })
             setItems(listCourse);
         }).catch(error => console.log(error));
-    }, []);
-
-    useEffect(() => {
+    }
+    const getSlide=()=>{
         const slideTemp = [];
         if (items) {
             setNumEachSlide(items.length > numEachSlide ? numEachSlide : items.length)
             for (let i = 0; i < items.length; i += numEachSlide) {
                 if (i % numEachSlide === 0) {
                     slideTemp.push(
-                        <Grid container justifyContent="center" justify="center" alignItems="center" spacing={3}>
+                        <Grid container justifyContent="center" justify="center" alignItems="flex-start" spacing={3}>
                             {
                                 items.slice(i, i + numEachSlide).map((item, i) =>
                                 (
                                     <Grid key={i} item>
                                         <CourseCard key={i} couresInfo={item} />
                                     </Grid>
-
                                 )
                                 )
                             }
@@ -63,6 +60,21 @@ export default function HomeCarousel(props) {
         }
         else {
         }
+    }
+    //TODO: LẤY DANH SÁCH KHÓA HỌC THEO categoryId rồi để vào items nha
+    useEffect(() => {
+        getTeachers()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    useEffect(() => {
+        getCouresItems()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+     }, [teachers]);
+
+
+    useEffect(() => {
+        getSlide()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [items]);
 
     return (
@@ -70,9 +82,9 @@ export default function HomeCarousel(props) {
         className={classes.container}
         container
         justifyContent="center"
-        alignItems="center"
+        alignItems="flex-start"
         justify="center" >
-            <Carousel timeout='15' navButtonsAlwaysVisible='true' animation="slide" >
+            <Carousel timeout='60' animation="slide" >
                 {
                     carouselSlide
                 }
@@ -86,5 +98,6 @@ export default function HomeCarousel(props) {
 const useStyles = makeStyles((theme) => ({
     container: {
         display: "flex",
-    }
+        marginTop: 20
+    },
 }));
