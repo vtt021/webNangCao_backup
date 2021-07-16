@@ -9,15 +9,10 @@ const router = express.Router();
 
 router.post('/', async (req, res, next) => {
     try {
-        const user = await userModel.getUserByEmailForVerification(req.body.email);
+        const user = await userModel.getUserByEmailLogin(req.body.email);
 
+        console.log(user)
         if (user === undefined) {
-            return res.status(401).json({
-                authenticated: false
-            })
-        }
-
-        if (user.isUnlocked == false) {
             return res.status(401).json({
                 authenticated: false
             })
@@ -40,7 +35,7 @@ router.post('/', async (req, res, next) => {
         }
 
         const options = {
-            expiresIn: 10 * 60
+            expiresIn: 45
         }
 
         const accessToken = jwt.sign(payload, 'ONLINE_ACADEMY', options);

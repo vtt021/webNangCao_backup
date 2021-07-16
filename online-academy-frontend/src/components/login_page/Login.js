@@ -96,8 +96,9 @@ export default function Login() {
                             </Link>
                         </Grid>
                     </Grid>
-                    <Alert hidden={loginStatus} variant="outlined" display="none" severity="error">
-                        Login failed
+                    <Alert hidden={loginStatus} variant="outlined" display="none" severity="error" className={classes.loginFailed} >
+                        Đăng nhập thất bại!
+                        Sai email hoặc mật khẩu.
                     </Alert>
                 </form>
             </div>
@@ -137,5 +138,8 @@ const useStyles = makeStyles((theme) => ({
     },
     submit: {
         margin: theme.spacing(3, 0, 2),
+    },
+    loginFailed: {
+        margin: theme.spacing(3, 0, 3,0),
     },
 }));

@@ -5,21 +5,17 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
-import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import MailIcon from '@material-ui/icons/Mail';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import MoreIcon from '@material-ui/icons/MoreVert';
 import FormGroup from '@material-ui/core/FormGroup';
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { Button, Avatar, TextField, InputAdornment } from '@material-ui/core';
+import { Button, Avatar, InputAdornment } from '@material-ui/core';
 import AppLogo from '../images/AppLogo.png'
-import Fade from '@material-ui/core/Fade';
+import { useHistory } from "react-router-dom";
+
 import Categories from './components/categories.js'
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -90,8 +86,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Header() {
     const classes = useStyles();
+    const history = useHistory();
+
     const user = localStorage.getItem("auth")
-    console.log(user)
+
     const [auth, setAuth] = React.useState(user === null ? false : true);
     const [userAnchorEl, setUserAnchorEl] = React.useState(null); //Menu item
 
@@ -99,17 +97,13 @@ export default function Header() {
 
     const userOpen = Boolean(userAnchorEl);
 
-    const [categoriesAnchorEl, setCategoriesAnchorEl] = React.useState(null);
-    const categoriesOpen = Boolean(categoriesAnchorEl);
 
     const handleRefresh = () => {
         // về lại trang chủ
-        window.location.href = '/';
+        //window.location.href = '/';
+        history.push("/");
     };
 
-    const handleChangeAuth = (event) => {
-        setAuth(event.target.checked);
-    };
     const handleChangeAuthAdmin = (event) => {
         setAuthAdmin(event.target.checked);
     };
@@ -127,14 +121,7 @@ export default function Header() {
     };
 
 
-    const handleCategoriesMenu = (event) => {
 
-        setCategoriesAnchorEl(event.currentTarget);
-    };
-
-    const handleCloseCategories = () => {
-        setCategoriesAnchorEl(null);
-    };
 
 
 

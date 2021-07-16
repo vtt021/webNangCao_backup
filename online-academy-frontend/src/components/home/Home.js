@@ -1,17 +1,15 @@
 import React from 'react';
-import { Container, Col } from 'react-bootstrap'
-import HeaderPage from '../common/HeaderPage'
-import MyTab from './images/MyTab'
+import { Container, } from 'react-bootstrap'
 import Header from '../common/header/header.js'
+import HotCourese from './child_component/hotCourses.js'
+import HorizonalTab from './child_component/tab/horizonalTab.js'
 
 export default function Home(props) {
     return (
         <Container fluid >
             <Header/>
-
-            <MyTab/>
-            <MyTab/>
-            <MyTab/>
+            <HotCourese/>
+            <HorizonalTab/>
         </Container>
 
     )

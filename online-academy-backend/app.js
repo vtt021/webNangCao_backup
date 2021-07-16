@@ -14,7 +14,7 @@ app.use(morgan('dev'));
 global.__basedir = __dirname;
 
 
-let APP_PORT = process.env.PORT || 3000;
+let APP_PORT = process.env.PORT || 3003;
 app.listen(APP_PORT, () => {
     console.log(`API is running at http://localhost:${APP_PORT}`);
 })
@@ -46,7 +46,7 @@ app.use((req, res, next) => {
     })
 })
 
-app.get('/', (req, res) => {
+app.use('/', (req, res, next) => {
     res.json({
         message: 'Hello'
     });

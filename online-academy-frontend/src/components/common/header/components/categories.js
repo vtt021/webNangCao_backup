@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Button from '@material-ui/core/Button';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Grow from '@material-ui/core/Grow';
 import Paper from '@material-ui/core/Paper';
@@ -9,6 +8,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import { makeStyles } from '@material-ui/core/styles';
 import { IconButton, Typography } from '@material-ui/core';
+import { useHistory } from "react-router-dom";
 
 
 
@@ -24,6 +24,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Categories() {
     const classes = useStyles();
+    const history = useHistory();
+
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef(null);
 
@@ -35,7 +37,6 @@ export default function Categories() {
         if (anchorRef.current && anchorRef.current.contains(event.target)) {
             return;
         }
-
         setOpen(false);
     };
 
@@ -46,7 +47,6 @@ export default function Categories() {
         }
     }
 
-    // return focus to the button when we transitioned from !open -> open
     const prevOpen = React.useRef(open);
     React.useEffect(() => {
         if (prevOpen.current === true && open === false) {
@@ -56,16 +56,16 @@ export default function Categories() {
         prevOpen.current = open;
     }, [open]);
 
-
+    //DONE: GỌI API GET ALL KHÓA HỌC RỒI BỎ VÔ listCategories NÀY NHA, NHỚ THÊM NAVIGATION CHO TỪNG MENUITEMS
     const [listCategories, setListCategories] = useState([{ id: 1, categoryName: 'Không có khóa học' }])
-
-    const handleCategoryPage = (selectedCategory) => {
-        // Mở trang category tương ứng
-        // window.location.href = '/'+ {selectedCategory};
-      };
+    //DONE: CHUYỂN ĐẾN TRANG CHỨ DANH SÁCH KHÓA HỌC TƯƠNG ỨNG
+    const handleCategoryPage = id => () => {
+        console.log(id);
+        history.push("/categories/" + id);
+    };
     const renderItems = (listCategories) => {
-        return (listCategories.map((title) => (
-            <MenuItem onClick={handleClose}>{title.categoryName}</MenuItem>
+        return (listCategories.map((category) => (
+            <MenuItem onClick={handleCategoryPage(category.id)}>{category.categoryName}</MenuItem>
         )))
     }
     useEffect(() => {
