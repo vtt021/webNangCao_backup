@@ -7,9 +7,9 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
     try {
-        const categoryId = req.body.id;
+        const id = req.query.id;
 
-        if (categoryId === undefined) {
+        if (id === undefined) {
             const list = await subCategoryModel.getAll();
             list.forEach(element => {
                 delete element["isDeleted"];
@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
             res.json(list);
         }
         else {
-            const list = await subCategoryModel.getSubcategoryInCategory(categoryId);
+            const list = await subCategoryModel.getSubcategoryInCategory(id);
             list.forEach(element => {
                 delete element["isDeleted"];
                 delete element["lastUpdated"];

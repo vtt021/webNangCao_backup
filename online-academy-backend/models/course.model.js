@@ -1,6 +1,7 @@
 const db = require('../utils/db');
 const courseContentModel = require('./courseContent.model');
 const subCategoryModel = require('./subCategory.model');
+const userModel = require('./user.model');
 const TABLE_NAME = 'course'
 
 const mainPageData = [
@@ -63,15 +64,27 @@ module.exports = {
             throw new Error('page and limit must be both defined or undefined')
         }
         let offset = limit * (page - 1);
-
         const subCategories = await subCategoryModel.getSubcategoryInCategory(categoryId);
 
-        console.log(subCategories);
+        const teachers = await userModel.getAllTeachers();
 
         let subCategoriesId = subCategories.map(cate => {
             return cate.id;
         })
-        console.log(subCategoriesId);
+        let subMap = {}
+        let teacherMap = {}
+
+       for(let i = 0; i < subCategories.length; i++) {
+           subMap[subCategories[i].id] = subCategories[i].subCategoryName;
+       }
+
+        console.log(subMap);
+       console.log(teachers)
+        
+
+       for(let i = 0; i < teachers.length; i++) {
+           teacherMap[teachers[i].id] = teachers[i].username;
+       }
 
 
         const courses = await db.select(mainPageData)
@@ -82,6 +95,13 @@ module.exports = {
             .whereIn('subCategoryId', subCategoriesId)
             .limit(limit)
             .offset(offset);
+
+
+        for(let i = 0; i < courses.length; i++) {
+            courses[i].subCategoryName = subMap[courses[i].subCategoryId.toString()]
+            courses[i].teacherName = teacherMap[courses[i].teacherId.toString()]
+        }
+
 
         return courses;
     },
