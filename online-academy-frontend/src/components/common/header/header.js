@@ -17,72 +17,8 @@ import AppLogo from '../images/AppLogo.png'
 import { useHistory } from "react-router-dom";
 
 import Categories from './components/categories.js'
-const useStyles = makeStyles((theme) => ({
-    grow: {
-        flexGrow: 1,
-    },
-    menuButton: {
-        marginRight: theme.spacing(2),
-    },
-    loginButton: {
-        marginRight: theme.spacing(2),
-    },
-    title: {
-        display: 'none',
-        [theme.breakpoints.up('sm')]: {
-            display: 'block',
-        },
-    },
-    search: {
-        position: 'relative',
-        borderRadius: theme.shape.borderRadius,
-        backgroundColor: fade(theme.palette.common.white, 0.25),
-        '&:hover': {
-            backgroundColor: fade(theme.palette.common.white, 0.45),
-        },
-        width: '100%',
-        [theme.breakpoints.up('sm')]: {
-            marginLeft: theme.spacing(2),
-            width: 'auto',
-        },
-    },
-    searchIcon: {
-        height: '100%',
-        position: 'absolute',
-        display: 'flex',
-        alignItems: 'center',
 
-    },
-    inputRoot: {
-        color: 'inherit',
-    },
-    inputInput: {
-        padding: theme.spacing(1, 1, 1, 0),
-        // vertical padding + font size from searchIcon
-        paddingLeft: `calc(1em + ${theme.spacing(1)}px)`,
-        transition: theme.transitions.create('width'),
-        width: '100%',
-        [theme.breakpoints.up('md')]: {
-            width: '30ch',
-        },
-    },
-    sectionDesktop: {
-        display: 'none',
-        [theme.breakpoints.up('md')]: {
-            display: 'flex',
-        },
-    },
-    sectionMobile: {
-        display: 'flex',
-        [theme.breakpoints.up('md')]: {
-            display: 'none',
-        },
-    },
-    appBarStyte: {
 
-        background: '#383E56 '
-    },
-}));
 
 export default function Header() {
     const classes = useStyles();
@@ -168,8 +104,8 @@ export default function Header() {
                             }
                         />
                     </div>
+                    
                     <Categories />
-
                     <div className={classes.grow} />
                     {!auth && (
                         <div>
@@ -225,3 +161,73 @@ export default function Header() {
         </div>
     );
 }
+const useStyles = makeStyles((theme) => ({
+    grow: {
+        flexGrow: 1,
+    },
+    menuButton: {
+        marginRight: theme.spacing(2),
+    },
+    loginButton: {
+        marginRight: theme.spacing(2),
+        "&:hover":{
+            color: 'white'
+        },
+    },
+    title: {
+        display: 'none',
+        [theme.breakpoints.up('sm')]: {
+            display: 'block',
+        },
+    },
+    search: {
+        position: 'relative',
+        borderRadius: theme.shape.borderRadius,
+        backgroundColor: fade(theme.palette.common.white, 0.25),
+        '&:hover': {
+            backgroundColor: fade(theme.palette.common.white, 0.45),
+        },
+        width: '100%',
+        [theme.breakpoints.up('sm')]: {
+            marginLeft: theme.spacing(2),
+            width: 'auto',
+        },
+    },
+    searchIcon: {
+        height: '100%',
+        position: 'absolute',
+        display: 'flex',
+        alignItems: 'center',
+
+    },
+    inputRoot: {
+        color: 'inherit',
+    },
+    inputInput: {
+        padding: theme.spacing(1, 1, 1, 0),
+        // vertical padding + font size from searchIcon
+        paddingLeft: `calc(1em + ${theme.spacing(1)}px)`,
+        transition: theme.transitions.create('width'),
+        width: '100%',
+        [theme.breakpoints.up('md')]: {
+            width: '30ch',
+        },
+    },
+    sectionDesktop: {
+        display: 'none',
+        [theme.breakpoints.up('md')]: {
+            display: 'flex',
+        },
+    },
+    sectionMobile: {
+        display: 'flex',
+        [theme.breakpoints.up('md')]: {
+            display: 'none',
+        },
+    },
+    appBarStyte: {
+
+        background: '#383E56 '
+    },
+
+}));
