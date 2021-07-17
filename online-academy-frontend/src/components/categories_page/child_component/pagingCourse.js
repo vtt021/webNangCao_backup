@@ -4,7 +4,7 @@ import axios from 'axios'
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid } from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
-import CourseCard from '../common/courseCard/courseCard.js'
+import CourseCard from '../../common/courseCard/courseCard.js'
 
 export default function PagingCard(props) {
     const numEachPage = 6;
@@ -35,8 +35,8 @@ export default function PagingCard(props) {
             console.log(listTeacher)
         }).catch(error => console.log(error));
     }
-    
-    //TODO: LẤY DANH SÁCH KHÓA HỌC THEO categoryId rồi để vào items nha- 
+
+    //TODO: LẤY DANH SÁCH KHÓA HỌC THEO categoryId/subCategoryID rồi để vào items nha- 
     const getCouresItems = () => {
         axios.get("http://localhost:3001/api/courses/hot").then(res => {
             console.log(teachers)
@@ -57,15 +57,15 @@ export default function PagingCard(props) {
     useEffect(() => {
         getCouresItems()
         // eslint-disable-next-line react-hooks/exhaustive-deps
-     }, [teachers]);
+    }, [teachers]);
 
     return (
         <Grid
             className={classes.container}
             container
-            justifyContent="center"
+            justifyContent="flex-start"
             alignItems="flex-start"
-            justify="center"
+            justify="flex-start"
         >
             <Grid container justifyContent="center" justify="center" alignItems="flex-start" spacing={3}>
                 {items && items.length &&
@@ -78,10 +78,13 @@ export default function PagingCard(props) {
                     )
                 }
             </Grid>
-            {
-                items &&
-                <Pagination className={classes.paginControler} count={Math.ceil(items.length / numEachPage)} page={page} onChange={handleChange} />
-            }
+            <Grid container justifyContent="center" justify="center" alignItems="flex-start" spacing={3} className={classes.paginControler}>
+                {
+                    items &&
+                    <Pagination  count={Math.ceil(items.length / numEachPage)} page={page} onChange={handleChange} />
+                }   
+            </Grid>
+
 
         </Grid>
     );
@@ -95,5 +98,6 @@ const useStyles = makeStyles(() => ({
         display: "flex",
         marginTop: 20,
     },
+
 
 }));

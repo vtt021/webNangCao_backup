@@ -6,6 +6,8 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Login from '../login_page/Login';
 import SignUp from '../login_page/SignUp';
 import Verifyotp from '../verify_otp/VerifyOtp';
+import CategoryPage from '../categories_page/getByCategory';
+import SubCategoryPage from '../categories_page/getBySubCategory';
 // import css
 
 function App() {
@@ -16,13 +18,15 @@ function App() {
                 {/* <Route exact path="/ac" component={AdminCategory}/> */}
                 <Route exact path="/detail" component={() => <DetailPage subjectName='tên khóa học test' />} />
 
-                <Route exact path="/categories/:id" 
-                render={(props) => <DetailPage {...props} />}
+                <Route exact path="/categories/:id"
+                    render={(props) => <CategoryPage {...props} />}
                 >
-                
-            </Route>
+                </Route>
+                <Route exact path="/categories/:id/:subId"
+                    render={(props) => <SubCategoryPage {...props} />}
+                ></Route>
                 <Route exact path="/upload" component={UploadTest} />
-                <Route exact path="/login" component={Login}/> 
+                <Route exact path="/login" component={Login} />
                 <Route exact path="/signup" component={SignUp} />
                 <Route exact path="/verify-otp/:email" component={Verifyotp} />
             </div>

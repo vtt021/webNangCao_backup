@@ -1,61 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import Grow from '@material-ui/core/Grow';
-import Paper from '@material-ui/core/Paper';
-import Popper from '@material-ui/core/Popper';
-import MenuItem from '@material-ui/core/MenuItem';
-import MenuList from '@material-ui/core/MenuList';
-import { makeStyles } from '@material-ui/core/styles';
-import { IconButton, Typography } from '@material-ui/core';
 import { useHistory } from "react-router-dom";
 
+import { Menu, MenuItem, Typography, IconButton } from "@material-ui/core";
 
+import NestedMenuItem from "material-ui-nested-menu-item";
 
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-        display: 'flex',
-    },
-    paper: {
-        marginRight: theme.spacing(2),
-    },
-}));
-
-export default function Categories() {
-    const classes = useStyles();
+export default function Category() {
     const history = useHistory();
+    const [menuPosition, setMenuPosition] = useState(null);
 
-    const [open, setOpen] = React.useState(false);
-    const anchorRef = React.useRef(null);
-
-    const handleToggle = () => {
-        setOpen((prevOpen) => !prevOpen);
-    };
-
-    const handleClose = (event) => {
-        if (anchorRef.current && anchorRef.current.contains(event.target)) {
+    const handleRightClick = (event) => {
+        if (menuPosition) {
             return;
         }
-        setOpen(false);
+        event.preventDefault();
+        setMenuPosition({
+            top: event.pageY,
+            left: event.pageX
+        });
     };
 
-    function handleListKeyDown(event) {
-        if (event.key === 'Tab') {
-            event.preventDefault();
-            setOpen(false);
-        }
-    }
+    const handleItemClick = (event) => {
+        setMenuPosition(null);
+    };
 
-    const prevOpen = React.useRef(open);
-    React.useEffect(() => {
-        if (prevOpen.current === true && open === false) {
-            anchorRef.current.focus();
-        }
-
-        prevOpen.current = open;
-    }, [open]);
-
+    
     //DONE: GỌI API GET ALL KHÓA HỌC RỒI BỎ VÔ listCategories NÀY NHA, NHỚ THÊM NAVIGATION CHO TỪNG MENUITEMS
     const [listCategories, setListCategories] = useState([{ id: 1, categoryName: 'Không có khóa học' }])
     //DONE: CHUYỂN ĐẾN TRANG CHỨ DANH SÁCH KHÓA HỌC TƯƠNG ỨNG
@@ -65,7 +35,14 @@ export default function Categories() {
     };
     const renderItems = (listCategories) => {
         return (listCategories.map((category) => (
-            <MenuItem onClick={handleCategoryPage(category.id)}>{category.categoryName}</MenuItem>
+            <NestedMenuItem
+                    label={category.categoryName}
+                    parentMenuOpen={!!menuPosition}
+                    onClick={handleCategoryPage(category.id)}
+                >
+                    <MenuItem onClick={handleItemClick}>Sub-Button 2</MenuItem>
+                    <MenuItem onClick={handleItemClick}>Sub-Button 2</MenuItem>
+                </NestedMenuItem>
         )))
     }
     useEffect(() => {
@@ -76,37 +53,20 @@ export default function Categories() {
             .catch(error => console.log(error));
     }, []);
     return (
-        <div className={classes.root}>
-            <div>
-                <IconButton
-                    ref={anchorRef}
-                    aria-controls={open ? 'menu-list-grow' : undefined}
-                    aria-haspopup="true"
-                    onClick={handleToggle} //Show menu user.
-                    color="inherit"
-                >
-                    <Typography className={classes.title} variant="h6" noWrap>
-                        Categories
-                    </Typography>
-                </IconButton>
+        <IconButton color="inherit"
+            onClick={handleRightClick}>
+            <Typography variant="h6" noWrap>Lĩnh vực</Typography>
+            <Menu
+                open={!!menuPosition}
+                onClose={() => setMenuPosition(null)}
+                anchorReference="anchorPosition"
+                anchorPosition={menuPosition}
+            >
+                {renderItems(listCategories)}
 
-                <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
-                    {({ TransitionProps, placement }) => (
-                        <Grow
-                            {...TransitionProps}
-                            style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
-                        >
-                            <Paper>
-                                <ClickAwayListener onClickAway={handleClose}>
-                                    <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
-                                        {renderItems(listCategories)}
-                                    </MenuList>
-                                </ClickAwayListener>
-                            </Paper>
-                        </Grow>
-                    )}
-                </Popper>
-            </div>
-        </div>
+            </Menu>
+        </IconButton>
     );
-}
+};
+
+
