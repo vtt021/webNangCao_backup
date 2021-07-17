@@ -29,22 +29,22 @@ router.post('/', async (req, res, next) => {
                 authenticated: false
             })
         }
-
+        console.log(user._id);
         const payload = {
-            id: user.id
+            id: user._id
         }
 
         const options = {
-            expiresIn: 45
+            expiresIn: 900
         }
 
         const accessToken = jwt.sign(payload, 'ONLINE_ACADEMY', options);
         const refreshToken = randomstring.generate(80);
 
-        await userModel.patchRFToken(user.id, refreshToken);
+        await userModel.patchRFToken(user._id, refreshToken);
 
         return res.status(200).json({
-            id: user.id,
+            id: user._id,
             authenticated: true,
             accessToken,
             refreshToken

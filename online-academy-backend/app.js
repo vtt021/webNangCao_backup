@@ -3,6 +3,7 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const mongoose = require('mongoose')
+mongoose.set('useCreateIndex', true);
 
 // const auth = require('./middlewares/auth.mdw');
 

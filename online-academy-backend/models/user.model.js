@@ -1,9 +1,9 @@
 const authConstant = require('../utils/auth.constant');
 const db = require('../utils/db');
-const { UserSchema } = require('../schema/mongodb.schema')
+const { User } = require('../schema/mongodb.schema')
 const mongoose = require('mongoose');
 
-const User = mongoose.model('users', UserSchema);
+
 
 const TABLE_NAME = 'users';
 const contentData = '_id email username'
@@ -26,10 +26,17 @@ module.exports = {
 
         const user = await User.findById(id, '_id email username isDeleted isUnlocked').exec();
 
-        if (user.isDeleted === false && user.isUnlocked === true) {
+        console.log(user);
+        console.log("isDeleted", user['isDeleted']);
+        console.log("isUnlocked", user['isUnlocked']);
+
+        if (user.isDeleted == false && user.isUnlocked == true) {
             return user;
         }
-        return undefined;
+        else {
+
+            return undefined;
+        }
     },
 
     async getAllTeachers() {
@@ -41,7 +48,7 @@ module.exports = {
         const teachers = await User.find({
             role: 1,
             isDeleted: false,
-            isUnlocked: false,
+            isUnlocked: true,
         }, contentData).exec();
 
         return teachers;
@@ -82,7 +89,7 @@ module.exports = {
             isUnlocked: true
         }).exec();
 
-        return users;
+        return users[0];
     },
 
     async getUserByEmail(email) {
@@ -115,24 +122,22 @@ module.exports = {
         delete user.password;
         delete user.id;
 
-        await User.updateOne({
-            id: id
-        }, user);
+        await User.where({_id: id}).update(user);
 
         // return db(TABLE_NAME).where({ id: id }).update(user);
     },
 
-    updatePassword(id, pass) {
+    async updatePassword(id, pass) {
         // return db(TABLE_NAME).where({ id: id, isDeleted: false }).update({
         //     password: pass
         // });
 
         await User.updateOne({
             id: id
-        }, { password: password });
+        }, { password: pass });
     },
 
-    unlockAccount(email) {
+    async unlockAccount(email) {
         // return db(TABLE_NAME).where({
         //     email: email,
         //     isDeleted: false
@@ -140,28 +145,26 @@ module.exports = {
         //     isUnlocked: true
         // })
 
-        await User.updateOne({
+        await User.where({
             email: email,
             isDeleted: false
-        }, {
+        }).update({
             isUnlocked: true
-        },{
-            omitUndefined: true
-        })
+        }).exec();
     },
 
-    delete(id) {
+    async delete(id) {
         // return db(TABLE_NAME).where({ id: id }).del();
-        await User.findByIdAndUpdate(id, {
+        await User.where({_id: id}).update({
             isDeleted: true
-        })
+        }).exec();
     },
 
-    patchRFToken(id, refreshToken) {
+    async patchRFToken(id, refreshToken) {
         // return db(TABLE_NAME).where('id', id).update('refreshToken', refreshToken);
-        await User.findByIdAndUpdate(id, {
+        await User.where({_id: id}).updateOne({
             refreshToken: refreshToken
-        })
+        }).exec();
     },
 
     async isValidRefreshToken(id, refreshToken) {
