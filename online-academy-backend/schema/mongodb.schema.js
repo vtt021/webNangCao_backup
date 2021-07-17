@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const UserSchema = mongoose.Schema({
+let mongoose = require('mongoose');
+let UserSchema = mongoose.Schema({
     email: {
         type: String,
         require: true,
@@ -39,7 +39,7 @@ const UserSchema = mongoose.Schema({
     }
 })
 
-const CategorySchema = mongoose.Schema({
+let CategorySchema = mongoose.Schema({
     categoryName: {
         type: String,
         require: true,
@@ -54,7 +54,7 @@ const CategorySchema = mongoose.Schema({
     }
 })
 
-const SubCategorySchema = mongoose.Schema({
+let SubCategorySchema = mongoose.Schema({
     categoryId: {
         type: String,
         require: true,
@@ -73,7 +73,7 @@ const SubCategorySchema = mongoose.Schema({
     }
 })
 
-const CourseSchema = mongoose.Schema({
+let CourseSchema = mongoose.Schema({
     courseName: {
         type: String,
         require: true,
@@ -137,10 +137,22 @@ const CourseSchema = mongoose.Schema({
     createdDate: {
         type: Date,
         default: Date.now
+    },
+    hotPoint: {
+        type: Number,
+        default: 0
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
+    },
+    lastUpdated: {
+        type: Date,
+        default: Date.now
     }
 })
 
-const CourseContentSchema = mongoose.Schema({
+let CourseContentSchema = mongoose.Schema({
     courseId: {
         type: String,
         require: true
@@ -163,10 +175,16 @@ const CourseContentSchema = mongoose.Schema({
     }
 })
 
-const User =  mongoose.model('users', UserSchema);
-const Category = mongoose.model('categories', CategorySchema);
-const SubCategory = mongoose.model('sub_categories', SubCategorySchema);
-const Course = mongoose.model('courses', CourseSchema);
-const CourseContent = mongoose.model('course_contents', CourseContentSchema);
+
+
+CourseSchema.index({
+    courseName: "text"
+})
+
+let User =  mongoose.model('users', UserSchema);
+let Category = mongoose.model('categories', CategorySchema);
+let SubCategory = mongoose.model('sub_categories', SubCategorySchema);
+let Course = mongoose.model('courses', CourseSchema);
+let CourseContent = mongoose.model('course_contents', CourseContentSchema);
 
 module.exports = {User, Category, SubCategory, Course, CourseContent}
