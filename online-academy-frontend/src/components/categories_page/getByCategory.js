@@ -8,7 +8,7 @@ import Footer from '../common/footer/footer.js';
 import LeftList from './child_component/leftList.js';
 export default function CategoryPage(props) {
     const categoryId = props.match.params.id
-
+    const categoryName = "Tên lĩnh vực( lấy từ db)"
 
     return (
         <Container fluid >
@@ -21,7 +21,7 @@ export default function CategoryPage(props) {
                     </Grid>
 
                     <Grid item xs='10' container direction="column" spacing={2} >
-                        <Breadcrumb categoryId={categoryId} />
+                        <Breadcrumb categoryId={categoryId} categoryName={categoryName} />
                         <PagingCard categoryId={categoryId} />
                     </Grid>
 

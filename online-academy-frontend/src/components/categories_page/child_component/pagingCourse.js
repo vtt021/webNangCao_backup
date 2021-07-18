@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Grid } from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
 import CourseCard from '../../common/courseCard/courseCard.js'
-
+import SpecialCourseCard from '../../common/courseCard/specialCourseCard.js';
 export default function PagingCard(props) {
     const numEachPage = 6;
     const classes = useStyles();
@@ -36,7 +36,7 @@ export default function PagingCard(props) {
         }).catch(error => console.log(error));
     }
 
-    //TODO: LẤY DANH SÁCH KHÓA HỌC THEO categoryId/subCategoryID rồi để vào items nha- 
+    //TODO: LẤY DANH SÁCH KHÓA HỌC TUỲ VÀO YÊU CẦU => TRUYỀN VÀO ITEMS ĐỂ HIỂN THỊ
     const getCouresItems = () => {
         axios.get("http://localhost:3001/api/courses/hot").then(res => {
             console.log(teachers)
@@ -70,22 +70,30 @@ export default function PagingCard(props) {
             <Grid container justifyContent="center" justify="center" alignItems="flex-start" spacing={3}>
                 {items && items.length &&
                     items.slice(minValue, maxValue).map((item, i) =>
-                    (
-                        <Grid key={i} item>
-                            <CourseCard key={i} couresInfo={item} />
-                        </Grid>
-                    )
+                        i % 2 === 0 /*TODO: Kiểm tra là khoá học mới đăng 
+                                    hoặc các khoá học có nhiều học viên đăng ký học (Best Seller) 
+                                    sẽ có thể hiện khác với các khoá học còn lại*/
+                            ? (
+                                <Grid key={i} item>
+                                    <CourseCard key={i} couresInfo={item} />
+                                </Grid>
+                            )
+                            : (
+                                <Grid key={i} item >
+                                    <SpecialCourseCard key={i} couresInfo={item} />
+                                </Grid>
+                            )
+
                     )
                 }
             </Grid>
+
             <Grid container justifyContent="center" justify="center" alignItems="flex-start" spacing={3} className={classes.paginControler}>
                 {
                     items &&
-                    <Pagination  count={Math.ceil(items.length / numEachPage)} page={page} onChange={handleChange} />
-                }   
+                    <Pagination count={Math.ceil(items.length / numEachPage)} page={page} onChange={handleChange} />
+                }
             </Grid>
-
-
         </Grid>
     );
 }
@@ -97,7 +105,7 @@ const useStyles = makeStyles(() => ({
     paginControler: {
         display: "flex",
         marginTop: 20,
-    },
+    }
 
 
 }));

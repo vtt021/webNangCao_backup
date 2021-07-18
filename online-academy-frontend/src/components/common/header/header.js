@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect }  from 'react';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -31,6 +31,8 @@ export default function Header() {
 
     const [authAdmin, setAuthAdmin] = React.useState(true);
 
+    const [searchText, setSearchText] = useState();
+
     const userOpen = Boolean(userAnchorEl);
 
 
@@ -56,7 +58,19 @@ export default function Header() {
         setAuth(false)
     };
 
-
+    const onChangeSearchText = (event) => {
+        console.log(event.target.value);
+        setSearchText(event.target.value);
+    };
+    const handleSeachClick = (event) => {
+        if (searchText)
+        {
+            history.push('/search/' + searchText);
+        }
+        else{
+            console.log('chưa nhập gì hết');
+        }
+    };
 
 
 
@@ -88,23 +102,24 @@ export default function Header() {
                     </div>
 
 
-                    <div onClick={() => { console.log('gọi lệnh search nè') }}>
+                    <div>
                         <InputBase id="standard-basic" className={classes.search}
                             classes={{
                                 root: classes.inputRoot,
                                 input: classes.inputInput,
                             }}
-                            placeholder="Search…"
+                            placeholder="Tìm kiếm…"
+                            onChange={onChangeSearchText}
                             endAdornment={
                                 <InputAdornment>
-                                    <IconButton>
+                                    <IconButton onClick={handleSeachClick}>
                                         <SearchIcon />
                                     </IconButton>
                                 </InputAdornment>
                             }
                         />
                     </div>
-                    
+
                     <Categories />
                     <div className={classes.grow} />
                     {!auth && (
@@ -170,7 +185,7 @@ const useStyles = makeStyles((theme) => ({
     },
     loginButton: {
         marginRight: theme.spacing(2),
-        "&:hover":{
+        "&:hover": {
             color: 'white'
         },
     },

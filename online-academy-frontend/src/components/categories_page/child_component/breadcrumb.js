@@ -3,28 +3,18 @@ import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Link from '@material-ui/core/Link';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
+import Typography from '@material-ui/core/Typography';
 
 
-function handleClickHome(event) {
-    event.preventDefault();
-    console.info('Quay về trang chủ');
-}
-function handleClickCategory(event) {
-    event.preventDefault();
-    console.info('Về trang Category');
-}
-function handleClickSubCategory(event) {
-    event.preventDefault();
-    console.info('Tải lại trang');
-    window.location.reload(false);
-}
 
 export default function Breadcrumb(props) {
     const classes = useStyles();
     const history = useHistory();
 
-    const category = "Tên lĩnh vực"
-    const subCategory = "Tên lĩnh vực phụ"
+    const categoryName = props.categoryName
+    const subCategoryName = props.subCategoryName
+    const keyword = props.keyword
+
 
     function handleClickHome(event) {
         event.preventDefault();
@@ -32,7 +22,7 @@ export default function Breadcrumb(props) {
         history.push("/");
 
     }
-    function handleClickCategory(event) { 
+    function handleClickCategory(event) {
         event.preventDefault();
         console.info('Về trang Category');
         history.push("/categories/" + props.categoryId);
@@ -43,7 +33,7 @@ export default function Breadcrumb(props) {
         console.info('Tải lại trang');
         window.location.reload(false);
     }
-    
+
 
 
     return (
@@ -52,13 +42,34 @@ export default function Breadcrumb(props) {
                 Trang chủ
             </Link>
 
-            <Link color="inherit" href="/getting-started/installation/" onClick={handleClickCategory} variant='h5'>
-                {category}
-            </Link>
-
-            {/* Nếu ở trang xem khóa học theo subCategory thì hiển thị */}
+            {/* Nếu ở trang xem khóa học theo Category 
+              HOẶC ở trang tìm kiếm có lọc theo Category
+             thì hiển thị tên lĩnh vực*/}
             {
-                props.subCategory && (
+                props.categoryName && props.categoryName.length > 0 && (
+                    <Link color="inherit" href="/getting-started/installation/" onClick={handleClickCategory} variant='h5'>
+                        {categoryName}
+                    </Link>
+                )
+            }
+
+            {/* Nếu ở trang tìm kiếm thì hiển thị từ khóa*/}
+            {props.keyword && (
+                <Typography color="inherit" variant='h5'>Tìm kiếm</Typography>
+
+            )
+            }
+            {props.keyword && props.keyword.length > 0 && (
+
+                <Typography color="inherit" variant='h5'>
+                    {keyword}
+                </Typography>
+            )
+            }
+
+            {/* Nếu ở trang xem khóa học theo subCategory thì hiển thị tên lĩnh vực phụ*/}
+            {
+                props.subCategoryName && (
                     <Link
                         color="textPrimary"
                         href="/components/breadcrumbs/"
@@ -66,7 +77,7 @@ export default function Breadcrumb(props) {
                         aria-current="page"
                         variant='h5'
                     >
-                        {subCategory}
+                        {subCategoryName}
                     </Link>
                 )
             }
