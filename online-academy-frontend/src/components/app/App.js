@@ -8,6 +8,7 @@ import SignUp from '../login_page/SignUp';
 import Verifyotp from '../verify_otp/VerifyOtp';
 import CategoryPage from '../categories_page/getByCategory';
 import SubCategoryPage from '../categories_page/getBySubCategory';
+import SearchPage from '../search_page/searchResult';
 // import css
 
 function App() {
@@ -22,9 +23,16 @@ function App() {
                     render={(props) => <CategoryPage {...props} />}
                 >
                 </Route>
+
                 <Route exact path="/categories/:id/:subId"
                     render={(props) => <SubCategoryPage {...props} />}
                 ></Route>
+
+                <Route exact path="/search/:keyword/:sort?/:categoryId?"
+                    render={(props) => <SearchPage {...props} />}
+                >
+                </Route>
+
                 <Route exact path="/upload" component={UploadTest} />
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/signup" component={SignUp} />

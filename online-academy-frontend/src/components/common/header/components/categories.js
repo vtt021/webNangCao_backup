@@ -21,18 +21,23 @@ export default function Category() {
         });
     };
 
-    const handleItemClick = (event) => {
-        setMenuPosition(null);
-    };
+    
 
     
     //DONE: GỌI API GET ALL KHÓA HỌC RỒI BỎ VÔ listCategories NÀY NHA, NHỚ THÊM NAVIGATION CHO TỪNG MENUITEMS
     const [listCategories, setListCategories] = useState([{ id: 1, categoryName: 'Không có khóa học' }])
-    //DONE: CHUYỂN ĐẾN TRANG CHỨ DANH SÁCH KHÓA HỌC TƯƠNG ỨNG
+
+    //DONE: CHUYỂN ĐẾN TRANG CHỨA DANH SÁCH KHÓA HỌC THEO LĨNH VỰC TƯƠNG ỨNG
     const handleCategoryPage = id => () => {
-        console.log(id);
         history.push("/categories/" + id);
     };
+    //DONE: CHUYỂN ĐẾN TRANG CHỨ DANH SÁCH KHÓA HỌC THEO LĨNH VỰC PHỤ TƯƠNG ỨNG
+
+    const handleSubCategoryClick = categoryId => (event) => {
+        history.push("/categories/" + categoryId + '/'+ event.target.id);
+    };
+
+    //TODO: GỌI API ĐỂ TẠO ITEMS SUBCATEGORY TƯƠNG ỨNG
     const renderItems = (listCategories) => {
         return (listCategories.map((category) => (
             <NestedMenuItem
@@ -40,8 +45,8 @@ export default function Category() {
                     parentMenuOpen={!!menuPosition}
                     onClick={handleCategoryPage(category.id)}
                 >
-                    <MenuItem onClick={handleItemClick}>Sub-Button 2</MenuItem>
-                    <MenuItem onClick={handleItemClick}>Sub-Button 2</MenuItem>
+                    <MenuItem id='1' onClick={handleSubCategoryClick(category.id)}>Sub-Button 2</MenuItem>
+                    <MenuItem id='2' onClick={handleSubCategoryClick(category.id)}>Sub-Button 2</MenuItem>
                 </NestedMenuItem>
         )))
     }

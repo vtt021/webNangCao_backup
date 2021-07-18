@@ -9,6 +9,8 @@ import LeftList from './child_component/leftList.js';
 export default function SubCategoryPage(props) {
     const categoryId = props.match.params.id
     const subCategoryId = props.match.params.subId
+    const categoryName = "Tên lĩnh vực( lấy từ db)"
+    const subCategoryName = "Tên lĩnh vực phụ( cũng lấy từ db)"
 
     return (
         <Container fluid >
@@ -21,7 +23,7 @@ export default function SubCategoryPage(props) {
                     </Grid>
 
                     <Grid item xs='10' container direction="column" spacing={2} >
-                        <Breadcrumb categoryId={categoryId} subCategory />
+                        <Breadcrumb categoryId={categoryId} categoryName={categoryName} subCategoryName={subCategoryName} />
                         <PagingCard categoryId={categoryId} subCategory= {subCategoryId}/>
                     </Grid>
 

@@ -9,49 +9,7 @@ import CardActionArea from '@material-ui/core/CardActionArea';
 import Rating from '@material-ui/lab/Rating';
 import Grid from '@material-ui/core/Grid';
 
-const useStyles = makeStyles(() => ({
-    container: {
-        display: "flex",
-        alignItems: "flex-start",
-        justifyContent: "flex-start",
-        flexWrap: "wrap",
-
-    },
-    card: {
-        width: 370,
-    },
-    cardHeader: {
-        height: 100,
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-        display: 'flex',
-        alignItems: 'flex-start',
-        justifyContent: 'flex-start',
-        
-        
-    },
-    media: {
-        height: 0,
-        paddingTop: '56.25%', // 16:9
-    },
-    price: {
-        color: '#5EAAA8',
-    },
-    oldPrice:
-    {
-        textDecorationLine: 'line-through',
-        textDecorationStyle: 'solid',
-        color: '#F05945',
-    },
-    containerRating: {
-        alignItems: "center",
-    },
-    numberRating: {
-        marginLeft: 10
-    }
-}));
-
-export default function CourseCard(props) {
+export default function SpecialCourseCard(props) {
     const classes = useStyles();
 
 
@@ -106,3 +64,45 @@ export default function CourseCard(props) {
         </div>
     );
 }
+
+const useStyles = makeStyles(() => ({
+    container: {
+        display: "flex",
+        alignItems: "flex-start",
+        justifyContent: "flex-start",
+        flexWrap: "wrap",
+        border: '2px solid red'
+    },
+    card: {
+        width: 370,
+    },
+    cardHeader: {
+        height: 100,
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        display: 'flex',
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
+        
+        
+    },
+    media: {
+        height: 0,
+        paddingTop: '56.25%', // 16:9
+    },
+    price: {
+        color: '#5EAAA8',
+    },
+    oldPrice:
+    {
+        textDecorationLine: 'line-through',
+        textDecorationStyle: 'solid',
+        color: '#F05945',
+    },
+    containerRating: {
+        alignItems: "center",
+    },
+    numberRating: {
+        marginLeft: 10
+    }
+}));
