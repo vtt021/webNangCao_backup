@@ -27,10 +27,10 @@ module.exports = {
     },
 
     async update(id, categoryName) {
-        await Category.where({_id: id}).update({categoryName: categoryName}).exec();
+        await Category.where({_id: id}).updateMany({categoryName: categoryName}).exec();
     },
 
     async delete(id) {
-        await Category.where({_id: id}).update({isDeleted: true}).exec();
+        await Category.where({_id: id}).updateMany({isDeleted: true}).exec();
     },
 }

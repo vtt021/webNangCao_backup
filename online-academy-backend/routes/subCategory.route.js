@@ -1,5 +1,6 @@
 const express = require('express');
 const adminAuthMdw = require('../middlewares/adminAuth.mdw');
+const courseModel = require('../models/course.model');
 const subCategoryModel = require('../models/subCategory.model');
 
 const router = express.Router();
@@ -88,8 +89,20 @@ router.put('/', async (req, res) => {
 router.delete('/', async (req, res) => {
     try {
         const id = req.body.id;
-        await subCategoryModel.delete(id);
-        return res.status(200).json(ret);
+        const courseInSubcategory = await courseModel.getCoursesBySubCategory(id);
+
+        if (courseInSubcategory.length === 0) {
+            await subCategoryModel.delete(id);
+        }
+        else {
+            return res.status(400).json({
+                message: 'There are courses in this sub-category'
+            });
+        }
+        
+        return res.status(200).json({
+            message: 'OK'
+        });
     }
     catch (e) {
         console.log(e.stack);

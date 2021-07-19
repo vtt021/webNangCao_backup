@@ -140,7 +140,9 @@ router.post('/', userAuthMdw,  async (req, res) => {
             });
         }
         else {
-            await registerCourseModel.markUndeleted(courseId, userId);
+            return res.status(400).json({
+                message: 'User registered this'
+            })
         }
         
         return res.status(201).json({

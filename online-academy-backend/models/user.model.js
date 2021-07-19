@@ -54,6 +54,12 @@ module.exports = {
         return teachers;
     },
 
+    async getAllUsernameWithId() {
+        const users = await User.find({}, [_id, username]).exec();
+
+        return users;
+    },
+
     async getUserByEmailForVerification(email) {
         // const users = await db.from(TABLE_NAME)
         //     .where({
@@ -122,7 +128,7 @@ module.exports = {
         delete user.password;
         delete user.id;
 
-        await User.where({_id: id}).update(user);
+        await User.where({_id: id}).updateMany(user);
 
         // return db(TABLE_NAME).where({ id: id }).update(user);
     },
@@ -132,8 +138,8 @@ module.exports = {
         //     password: pass
         // });
 
-        await User.updateOne({
-            id: id
+        await User.updateMany({
+            _id: id
         }, { password: pass });
     },
 
@@ -148,14 +154,14 @@ module.exports = {
         await User.where({
             email: email,
             isDeleted: false
-        }).update({
+        }).updateMany({
             isUnlocked: true
         }).exec();
     },
 
     async delete(id) {
         // return db(TABLE_NAME).where({ id: id }).del();
-        await User.where({_id: id}).update({
+        await User.where({_id: id}).updateMany({
             isDeleted: true
         }).exec();
     },

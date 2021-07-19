@@ -66,6 +66,6 @@ module.exports = {
         //     isDeleted: true,
         //     lastUpdated: new Date()
         // });
-        await SubCategory.where({_id: id}).update({isDeleted: true}).exec();
+        await SubCategory.where({_id: id}).updateMany({isDeleted: true}).exec();
     },
 }

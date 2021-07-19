@@ -232,14 +232,14 @@ module.exports = {
         //     imageThumbnail: filename,
         //     lastUpdated: lastUpdated
         // })
-        await Course.find({isDeleted: false, _id: id}).update({
+        await Course.find({isDeleted: false, _id: id}).updateMany({
             lastUpdated: new Date(),
             imageThumbnail: filename
         }).exec();
     },
 
     async uploadCourseImage(id, filename) {
-        await Course.find({isDeleted: false, _id: id}).update({
+        await Course.find({isDeleted: false, _id: id}).updateMany({
             lastUpdated: new Date(),
             imageCourse: filename
         }).exec();
@@ -252,7 +252,7 @@ module.exports = {
         //     isDeleted: false
         // }).update(course);
 
-        await Course.find({isDeleted: false, _id: id}).update(course).exec();
+        await Course.find({isDeleted: false, _id: id}).updateMany(course).exec();
     },
 
     async delete(id) {
@@ -264,6 +264,6 @@ module.exports = {
         //     lastUpdated: new Date()
         // });
 
-        await Course.find({isDeleted: false, _id: id}).update({isDeleted: true}).exec()
+        await Course.find({isDeleted: false, _id: id}).updateMany({isDeleted: true}).exec()
     },
 }

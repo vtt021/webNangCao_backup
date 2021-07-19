@@ -165,7 +165,7 @@ let CourseContentSchema = mongoose.Schema({
     },  
     video: {
         type: String,
-        require: true,
+        default: null,
         min: 1,
         max: 255
     },
@@ -173,6 +173,44 @@ let CourseContentSchema = mongoose.Schema({
         type: String,
         default: false
     }
+})
+
+let RegisterCourseSchema = mongoose.Schema({
+    courseId: {
+        type: String,
+        require: true
+    },
+    userId: {
+        type: String,
+        require: true
+    },
+    isFavorite: {
+        type: Boolean,
+        default: false
+    },
+    rating: {
+        type: Number,
+        min: 0,
+        max: 5,
+        default: 0
+    },
+    rateContent: {
+        type: String,
+        default: ""
+    },
+    progress: [
+        {
+            _id: false,
+            contentId: {
+                type: String,
+                require: true
+            },
+            currentTime: {
+                type: Number,
+                default: 0
+            }
+        }
+    ]
 })
 
 
@@ -186,5 +224,7 @@ let Category = mongoose.model('categories', CategorySchema);
 let SubCategory = mongoose.model('sub_categories', SubCategorySchema);
 let Course = mongoose.model('courses', CourseSchema);
 let CourseContent = mongoose.model('course_contents', CourseContentSchema);
+let RegisterCourse = mongoose.model('register_courses', RegisterCourseSchema);
 
-module.exports = {User, Category, SubCategory, Course, CourseContent}
+
+module.exports = {User, Category, SubCategory, Course, CourseContent, RegisterCourse}
