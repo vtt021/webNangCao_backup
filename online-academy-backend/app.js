@@ -33,6 +33,12 @@ app.listen(APP_PORT, () => {
     console.log(`API is running at http://localhost:${APP_PORT}`);
 })
 
+app.use('/', (req, res, next) => {
+    res.status(200).json({
+        message: 'Hello'
+    });
+})
+
 app.use('/api/files', require('./routes/upload.route'));
 app.use('/api/categories', require('./routes/category.route'));
 app.use('/api/sub-categories', require('./routes/subCategory.route'))
@@ -60,8 +66,4 @@ app.use((req, res, next) => {
     })
 })
 
-app.use('/', (req, res, next) => {
-    res.json({
-        message: 'Hello'
-    });
-})
+
