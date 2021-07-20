@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useState,useEffect} from 'react';
+import axios from 'axios'
 import { Container, } from 'react-bootstrap'
 import Header from '../common/header/header.js'
 import Grid from '@material-ui/core/Grid';
@@ -8,8 +9,15 @@ import Footer from '../common/footer/footer.js';
 import LeftList from './child_component/leftList.js';
 export default function CategoryPage(props) {
     const categoryId = props.match.params.id
-    const categoryName = "Tên lĩnh vực( lấy từ db)"
-
+    const [categoryName,setName] = useState("a")
+    useEffect(() => {
+        axios.get("http://localhost:3001/api/categories/id?id="+categoryId).then(res => {
+            const listCategories = res.data;
+            setName(res.data.categoryName)
+            console.log(res.data)
+        })
+            .catch(error => console.log(error));
+    }, []);
     return (
         <Container fluid >
             <Header />
