@@ -6,8 +6,6 @@ const adminAuthMdw = require('../middlewares/adminAuth.mdw')
 const upload = require('../middlewares/upload.mdw')
 
 const router = express.Router();
-const schema = require('../schema/course.json');
-const schemaValidate = require('../middlewares/validate.mdw')
 
 
 router.get('/', adminAuthMdw, async (req, res) => {
@@ -79,6 +77,18 @@ router.get('/search', async (req, res) => {
         if (keyword === undefined || keyword.length < 3) {
             return res.status(500).json({
                 message: 'No keyword or keyword length < 3'
+            })
+        }
+
+
+        if (page != undefined && page <= 0) {
+            return res.status(400).json({
+                message: 'Invalid page'
+            })
+        }
+        if (limit != undefined && limit <= 0) {
+            return res.status(400).json({
+                message: 'Invalid limit'
             })
         }
 
@@ -162,7 +172,7 @@ router.get('/id', async (req, res) => {
     }
 })
 
-router.post('/', schemaValidate(schema), teacherAuthMdw, async (req, res) => {
+router.post('/', teacherAuthMdw, async (req, res) => {
     try {
         let data = req.body;
         data.teacherId = req.accessTokenPayload.id;
@@ -180,7 +190,7 @@ router.post('/', schemaValidate(schema), teacherAuthMdw, async (req, res) => {
     }
 })
 
-router.post('/admin', schemaValidate(schema), adminAuthMdw, async (req, res) => {
+router.post('/admin', adminAuthMdw, async (req, res) => {
     try {
         const course = await courseModel.add(req.body);
         return res.status(201).json({
@@ -262,6 +272,85 @@ router.post('/thumbnail-image/admin', adminAuthMdw, upload.uploadImageMdw, async
         }
 
         await courseModel.uploadThumbnailImage(courseId, file.filename);
+        res.status(200).json({
+            message: 'OK',
+            filename: file.filename
+        })
+    }
+    catch (e) {
+        console.log(e.stack);
+        res.status(500).json({
+            message: e.message
+        })
+    }
+})
+
+router.post('/course-image', teacherAuthMdw, upload.uploadImageMdw, async (req, res) => {
+    try {
+        const file = req.file;
+        const teacherId = req.accessTokenPayload.id;
+        const courseId = req.body.courseId;
+
+        if (courseId === undefined) {
+            return res.status(400).json({
+                message: 'Invalid courseId'
+            })
+        }
+
+        if (file === undefined) {
+            return res.status(400).json({
+                message: 'Invalid file'
+            })
+        }
+
+        const course = await courseModel.getCourseById(courseId);
+        console.log(course);
+        console.log(teacherId);
+
+        if (course === undefined || course.teacherId !== teacherId) {
+            res.status(400).json({
+                message: 'Incorrect courseId or wrong teacher'
+            })
+        }
+
+        await courseModel.uploadCourseImage(courseId, file.filename);
+        res.status(200).json({
+            message: 'OK',
+            filename: file.filename
+        })
+    }
+    catch (e) {
+        console.log(e.stack);
+        res.status(500).json({
+            message: e.message
+        })
+    }
+})
+
+router.post('/course-image/admin', adminAuthMdw, upload.uploadImageMdw, async (req, res) => {
+    try {
+        const file = req.file;
+        const courseId = req.body.courseId;
+
+        if (courseId === undefined) {
+            return res.status(400).json({
+                message: 'Invalid courseId'
+            })
+        }
+        if (file === undefined) {
+            return res.status(400).json({
+                message: 'Invalid file'
+            })
+        }
+
+        const course = await courseModel.getCourseById(courseId);
+        if (course === undefined) {
+            res.status(400).json({
+                message: 'Incorrect courseId'
+            })
+        }
+
+        await courseModel.uploadCourseImage(courseId, file.filename);
         res.status(200).json({
             message: 'OK',
             filename: file.filename

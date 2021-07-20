@@ -3,16 +3,13 @@ const userModel = require('../models/user.model');
 const bcrypt = require('bcrypt');
 
 const router = express.Router();
-const schemaValidate = require('../middlewares/validate.mdw')
-const schema = require('../schema/user.json');
 const adminAuthMdw = require('../middlewares/adminAuth.mdw');
 const userAuthMdw = require('../middlewares/userAuth.mdw');
 const { sendMail } = require('../utils/mailer');
 const saltRounds = 10;
 const otpGenerator = require('../utils/otp-generator')
 
-
-router.get('/', adminAuthMdw, async (req, res) => {
+router.get('/', /*adminAuthMdw,*/ async (req, res) => {
     try {
         const list = await userModel.getAllUsers();
         return res.json(list);
@@ -38,6 +35,9 @@ router.get('/id', async (req, res) => {
         delete user.isDeleted;
         delete user.lastUpdated;
         return res.json(user);
+
+        
+
     }
     catch (e) {
         console.log(e.stack);
@@ -85,7 +85,7 @@ router.post('/verify-otp', async (req, res) => {
         }
         else {
             return res.status(400).json({
-                message: 'User not exists'
+                message: 'Wrong otp'
             });
         }
 
@@ -101,7 +101,7 @@ router.post('/verify-otp', async (req, res) => {
     }
 })
 
-router.post('/', schemaValidate(schema), async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const user = req.body;
         if (user.email === undefined || user.password === undefined || user.username === undefined) {
@@ -112,12 +112,13 @@ router.post('/', schemaValidate(schema), async (req, res) => {
         user.password = bcrypt.hashSync(user.password, saltRounds);
 
         const existData = await userModel.getUserByEmailForVerification(user.email);
+        console.log("existData", existData)
 
         if (existData === undefined) {
             await userModel.addUser(user);
             sendMail(user.email)
             return res.status(201).json({
-                message: 'OK'
+                message: 'User added, check email for OTP'
             });
         }
 
@@ -138,7 +139,7 @@ router.post('/', schemaValidate(schema), async (req, res) => {
             await userModel.update(existData.id, user);
             sendMail(user.email);
             res.status(200).json({
-                message: 'OK'
+                message: 'User already added, check email for OTP'
             });
         }
 

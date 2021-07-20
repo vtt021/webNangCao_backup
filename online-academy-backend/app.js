@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
+const mongoose = require('mongoose')
+mongoose.set('useCreateIndex', true);
 
 // const auth = require('./middlewares/auth.mdw');
 
@@ -12,6 +14,18 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 global.__basedir = __dirname;
+
+mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}, (err) => {
+    if (err) {
+        console.log(err);
+    }
+    else {
+        console.log('Connect success!')
+    }
+})
 
 
 let APP_PORT = process.env.PORT || 3003;

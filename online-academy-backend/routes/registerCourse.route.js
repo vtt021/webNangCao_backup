@@ -5,8 +5,6 @@ const userAuthMdw = require('../middlewares/userAuth.mdw');
 const adminAuthMdw = require('../middlewares/adminAuth.mdw');
 
 const router = express.Router();
-const schema = require('../schema/registerCourse.json');
-const schemaValidate = require('../middlewares/validate.mdw');
 const registerCourseDetailModel = require('../models/registerCourseDetail.model');
 
 
@@ -140,7 +138,9 @@ router.post('/', userAuthMdw,  async (req, res) => {
             });
         }
         else {
-            await registerCourseModel.markUndeleted(courseId, userId);
+            return res.status(400).json({
+                message: 'User registered this'
+            })
         }
         
         return res.status(201).json({

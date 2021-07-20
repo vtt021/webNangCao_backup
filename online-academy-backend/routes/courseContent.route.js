@@ -3,8 +3,7 @@ const courseContentModel = require('../models/courseContent.model');
 const teacherAuthMdw = require('../middlewares/teacherAuth.mdw');
 const userAuthMdw = require('../middlewares/userAuth.mdw');
 const adminAuthMdw = require('../middlewares/adminAuth.mdw');
-const schema = require('../schema/courseContent.json');
-const schemaValidate = require('../middlewares/validate.mdw');
+
 const courseModel = require('../models/course.model');
 const router = express.Router();
 const upload = require('../middlewares/upload.mdw')
@@ -62,7 +61,7 @@ router.get('/course', async (req, res) => {
 
 // })
 
-router.post('/', schemaValidate(schema), teacherAuthMdw, async (req, res) => {
+router.post('/', teacherAuthMdw, async (req, res) => {
     try {
         const courseId = req.body.courseId;
         const teacherId = req.accessTokenPayload.id;
@@ -91,7 +90,7 @@ router.post('/', schemaValidate(schema), teacherAuthMdw, async (req, res) => {
     }
 })
 
-router.post('/', schemaValidate(schema), adminAuthMdw, async (req, res) => {
+router.post('/', adminAuthMdw, async (req, res) => {
     try {
         const courseId = req.body.courseId;
 
