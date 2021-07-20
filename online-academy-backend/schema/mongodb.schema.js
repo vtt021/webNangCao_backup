@@ -17,10 +17,6 @@ let UserSchema = mongoose.Schema({
         type: String,
         default: null
     },
-    isDeleted: {
-        type: Boolean,
-        default: false
-    },
     role: {
         type: Number,
         default: 0
@@ -172,6 +168,10 @@ let CourseContentSchema = mongoose.Schema({
     isPreview: {
         type: String,
         default: false
+    },
+    index: {
+        type: Number,
+        default: 0
     }
 })
 

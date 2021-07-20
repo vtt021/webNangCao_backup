@@ -1,6 +1,7 @@
 const db = require('../utils/db');
 const courseContentModel = require('./courseContent.model');
 const subCategoryModel = require('./subCategory.model');
+const userModel = require('./user.model');
 const TABLE_NAME = 'course'
 
 const { Course } = require('../schema/mongodb.schema');
@@ -36,7 +37,10 @@ module.exports = {
         // if (limit !== undefined) {
         //     courses = courses.limit(limit);
         // }
-        const courses = await Course.find({ isDeleted: false }, mainPageData, {
+        let users = await userModel.getAllUsernameWithId();
+
+
+        let courses = await Course.find({ isDeleted: false }, mainPageData, {
             skip: 0,
             limit: parseInt(limit),
             sort: {
@@ -44,7 +48,29 @@ module.exports = {
             }
         }).exec();
 
-        return courses;
+        let newCourses = [];
+        for (let i = 0; i < courses.length; i++) {
+            let user = users.find(u => {
+                let a = u['_id'];
+                let b = courses[i]['teacherId'];
+                return a == b
+            });
+
+            let data = {};
+
+            data["teacherName"] = user.username;
+            data['courseName'] = courses[i]['courseName']
+            data['subCategoryId'] = courses[i]['subCategoryId']
+            data['teacherId'] = courses[i]['teacherId']
+            data['rating'] = courses[i]['rating']
+            data['ratingCount'] = courses[i]['ratingCount']
+            data['imageThumbnail'] = courses[i]['imageThumbnail']
+            data['imageCourse'] = courses[i]['imageCourse']
+            data['price'] = courses[i]['price']
+            data['salePrice'] = courses[i]['salePrice']
+            newCourses.push(data)
+        }
+        return newCourses;
     },
 
     async getTopNewCourses(limit) {
@@ -55,7 +81,30 @@ module.exports = {
                 createdDate: -1
             }
         }).exec();
-        return courses;
+
+        let newCourses = [];
+        for (let i = 0; i < courses.length; i++) {
+            let user = users.find(u => {
+                let a = u['_id'];
+                let b = courses[i]['teacherId'];
+                return a == b
+            });
+
+            let data = {};
+
+            data["teacherName"] = user.username;
+            data['courseName'] = courses[i]['courseName']
+            data['subCategoryId'] = courses[i]['subCategoryId']
+            data['teacherId'] = courses[i]['teacherId']
+            data['rating'] = courses[i]['rating']
+            data['ratingCount'] = courses[i]['ratingCount']
+            data['imageThumbnail'] = courses[i]['imageThumbnail']
+            data['imageCourse'] = courses[i]['imageCourse']
+            data['price'] = courses[i]['price']
+            data['salePrice'] = courses[i]['salePrice']
+            newCourses.push(data)
+        }
+        return newCourses;
     },
 
     async getTopWatchCourses(limit) {
@@ -71,7 +120,30 @@ module.exports = {
                 viewCount: -1
             }
         }).exec();
-        return courses;
+
+        let newCourses = [];
+        for (let i = 0; i < courses.length; i++) {
+            let user = users.find(u => {
+                let a = u['_id'];
+                let b = courses[i]['teacherId'];
+                return a == b
+            });
+
+            let data = {};
+
+            data["teacherName"] = user.username;
+            data['courseName'] = courses[i]['courseName']
+            data['subCategoryId'] = courses[i]['subCategoryId']
+            data['teacherId'] = courses[i]['teacherId']
+            data['rating'] = courses[i]['rating']
+            data['ratingCount'] = courses[i]['ratingCount']
+            data['imageThumbnail'] = courses[i]['imageThumbnail']
+            data['imageCourse'] = courses[i]['imageCourse']
+            data['price'] = courses[i]['price']
+            data['salePrice'] = courses[i]['salePrice']
+            newCourses.push(data)
+        }
+        return newCourses;
     },
 
     async getCoursesByCategory(categoryId, limit, page) {
@@ -107,7 +179,29 @@ module.exports = {
             }
         }).exec();
 
-        return courses;
+        let newCourses = [];
+        for (let i = 0; i < courses.length; i++) {
+            let user = users.find(u => {
+                let a = u['_id'];
+                let b = courses[i]['teacherId'];
+                return a == b
+            });
+
+            let data = {};
+
+            data["teacherName"] = user.username;
+            data['courseName'] = courses[i]['courseName']
+            data['subCategoryId'] = courses[i]['subCategoryId']
+            data['teacherId'] = courses[i]['teacherId']
+            data['rating'] = courses[i]['rating']
+            data['ratingCount'] = courses[i]['ratingCount']
+            data['imageThumbnail'] = courses[i]['imageThumbnail']
+            data['imageCourse'] = courses[i]['imageCourse']
+            data['price'] = courses[i]['price']
+            data['salePrice'] = courses[i]['salePrice']
+            newCourses.push(data)
+        }
+        return newCourses;
     },
 
     async getCourseById(id) {
@@ -116,8 +210,35 @@ module.exports = {
         //     isDeleted: false
         // });
 
-        const course = await Course.find({_id: id, isDeleted: false }, mainPageData).exec();
-        return course[0];
+        const courses = await Course.find({ _id: id, isDeleted: false }, mainPageData).exec();
+
+        if (courses[0] !== undefined) {
+            let newCourses = [];
+            for (let i = 0; i < courses.length; i++) {
+                let user = users.find(u => {
+                    let a = u['_id'];
+                    let b = courses[i]['teacherId'];
+                    return a == b
+                });
+
+                let data = {};
+
+                data["teacherName"] = user.username;
+                data['courseName'] = courses[i]['courseName']
+                data['subCategoryId'] = courses[i]['subCategoryId']
+                data['teacherId'] = courses[i]['teacherId']
+                data['rating'] = courses[i]['rating']
+                data['ratingCount'] = courses[i]['ratingCount']
+                data['imageThumbnail'] = courses[i]['imageThumbnail']
+                data['imageCourse'] = courses[i]['imageCourse']
+                data['price'] = courses[i]['price']
+                data['salePrice'] = courses[i]['salePrice']
+                newCourses.push(data)
+            }
+            return newCourses;
+        }
+
+        return courses[0];
     },
 
 
@@ -145,7 +266,29 @@ module.exports = {
         }).exec();
 
 
-        return courses;
+        let newCourses = [];
+        for (let i = 0; i < courses.length; i++) {
+            let user = users.find(u => {
+                let a = u['_id'];
+                let b = courses[i]['teacherId'];
+                return a == b
+            });
+
+            let data = {};
+
+            data["teacherName"] = user.username;
+            data['courseName'] = courses[i]['courseName']
+            data['subCategoryId'] = courses[i]['subCategoryId']
+            data['teacherId'] = courses[i]['teacherId']
+            data['rating'] = courses[i]['rating']
+            data['ratingCount'] = courses[i]['ratingCount']
+            data['imageThumbnail'] = courses[i]['imageThumbnail']
+            data['imageCourse'] = courses[i]['imageCourse']
+            data['price'] = courses[i]['price']
+            data['salePrice'] = courses[i]['salePrice']
+            newCourses.push(data)
+        }
+        return newCourses;
     },
 
     // async getCourseDetail(id) {
@@ -189,11 +332,11 @@ module.exports = {
         //     .limit(limit)
         //     .offset(offset)
 
-        const courses = await Course.find({ 
+        const courses = await Course.find({
             $text: {
                 $search: queryString
             }
-         }, mainPageData, {
+        }, mainPageData, {
             skip: parseInt(offset),
             limit: parseInt(limit),
             sort: {
@@ -202,9 +345,33 @@ module.exports = {
             }
         }).exec();
 
+        let newCourses = [];
+        for (let i = 0; i < courses.length; i++) {
+            let user = users.find(u => {
+                let a = u['_id'];
+                let b = courses[i]['teacherId'];
+                return a == b
+            });
+
+            let data = {};
+
+            data["teacherName"] = user.username;
+            data['courseName'] = courses[i]['courseName']
+            data['subCategoryId'] = courses[i]['subCategoryId']
+            data['teacherId'] = courses[i]['teacherId']
+            data['rating'] = courses[i]['rating']
+            data['ratingCount'] = courses[i]['ratingCount']
+            data['imageThumbnail'] = courses[i]['imageThumbnail']
+            data['imageCourse'] = courses[i]['imageCourse']
+            data['price'] = courses[i]['price']
+            data['salePrice'] = courses[i]['salePrice']
+            newCourses.push(data)
+        }
+        // return newCourses;
+
         return {
-            total: courses.length,
-            courses: courses.slice(offset, offset + limit)
+            total: newCourses.length,
+            courses: newCourses.slice(offset, offset + limit)
         };
     },
 
@@ -232,14 +399,14 @@ module.exports = {
         //     imageThumbnail: filename,
         //     lastUpdated: lastUpdated
         // })
-        await Course.find({isDeleted: false, _id: id}).updateMany({
+        await Course.find({ isDeleted: false, _id: id }).updateMany({
             lastUpdated: new Date(),
             imageThumbnail: filename
         }).exec();
     },
 
     async uploadCourseImage(id, filename) {
-        await Course.find({isDeleted: false, _id: id}).updateMany({
+        await Course.find({ isDeleted: false, _id: id }).updateMany({
             lastUpdated: new Date(),
             imageCourse: filename
         }).exec();
@@ -252,7 +419,7 @@ module.exports = {
         //     isDeleted: false
         // }).update(course);
 
-        await Course.find({isDeleted: false, _id: id}).updateMany(course).exec();
+        await Course.find({ isDeleted: false, _id: id }).updateMany(course).exec();
     },
 
     async delete(id) {
@@ -264,6 +431,6 @@ module.exports = {
         //     lastUpdated: new Date()
         // });
 
-        await Course.find({isDeleted: false, _id: id}).updateMany({isDeleted: true}).exec()
+        await Course.find({ isDeleted: false, _id: id }).updateMany({ isDeleted: true }).exec()
     },
 }

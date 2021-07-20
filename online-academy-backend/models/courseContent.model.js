@@ -21,23 +21,14 @@ module.exports = {
     },
 
     async getContentsByContentId(contentId) {
-        // const courseContents = await db.select(contentData).from(TABLE_NAME).where({
-        //     id: contentId,
-        //     isDeleted: false
-        // });
-
         const courseContents = await CourseContent.find({_id: contentId}, contentData).exec();
         return courseContents[0];
     },
 
     async getContentsByCourseId(courseId) {
-        // const courseContents = await db.select(contentData).from(TABLE_NAME).where({
-        //     courseId: courseId,
-        //     isDeleted: false
-        // });
-
+        console.log(courseId);
         const courseContents = await CourseContent.find({courseId: courseId}).exec();
-
+        console.log(courseContents)
         // courseContents.forEach(content => {
         //     if (content.isPreview === 0) {
         //         delete content.video;

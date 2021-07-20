@@ -3,8 +3,6 @@ const userModel = require('../models/user.model');
 const bcrypt = require('bcrypt');
 
 const router = express.Router();
-const schemaValidate = require('../middlewares/validate.mdw')
-const schema = require('../schema/user.json');
 const adminAuthMdw = require('../middlewares/adminAuth.mdw');
 const userAuthMdw = require('../middlewares/userAuth.mdw');
 const { sendMail } = require('../utils/mailer');
@@ -87,7 +85,7 @@ router.post('/verify-otp', async (req, res) => {
         }
         else {
             return res.status(400).json({
-                message: 'User not exists'
+                message: 'Wrong otp'
             });
         }
 
@@ -103,7 +101,7 @@ router.post('/verify-otp', async (req, res) => {
     }
 })
 
-router.post('/', schemaValidate(schema), async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const user = req.body;
         if (user.email === undefined || user.password === undefined || user.username === undefined) {
@@ -113,36 +111,37 @@ router.post('/', schemaValidate(schema), async (req, res) => {
         }
         user.password = bcrypt.hashSync(user.password, saltRounds);
 
-        // const existData = await userModel.getUserByEmailForVerification(user.email);
+        const existData = await userModel.getUserByEmailForVerification(user.email);
+        console.log("existData", existData)
 
-        // if (existData === undefined) {
+        if (existData === undefined) {
             await userModel.addUser(user);
-            // sendMail(user.email)
+            sendMail(user.email)
             return res.status(201).json({
-                message: 'OK'
+                message: 'User added, check email for OTP'
             });
-        // }
+        }
 
 
-        // if (existData.isUnlocked == true) {
-        //     if (existData.isDeleted == false) {
-        //         return res.status(400).json({
-        //             message: 'User exists'
-        //         })
-        //     }
-        //     else {
-        //         return res.status(400).json({
-        //             message: 'User banned'
-        //         })
-        //     }
-        // }
-        // else {
-        //     await userModel.update(existData.id, user);
-        //     sendMail(user.email);
-        //     res.status(200).json({
-        //         message: 'OK'
-        //     });
-        // }
+        if (existData.isUnlocked == true) {
+            if (existData.isDeleted == false) {
+                return res.status(400).json({
+                    message: 'User exists'
+                })
+            }
+            else {
+                return res.status(400).json({
+                    message: 'User banned'
+                })
+            }
+        }
+        else {
+            await userModel.update(existData.id, user);
+            sendMail(user.email);
+            res.status(200).json({
+                message: 'User already added, check email for OTP'
+            });
+        }
 
 
         

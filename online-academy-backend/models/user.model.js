@@ -55,7 +55,7 @@ module.exports = {
     },
 
     async getAllUsernameWithId() {
-        const users = await User.find({}, [_id, username]).exec();
+        const users = await User.find({}, ['_id', 'username']).exec();
 
         return users;
     },
@@ -76,7 +76,7 @@ module.exports = {
             isUnlocked: false
         }).exec();
 
-        return users;
+        return users[0];
     },
 
     async getUserByEmailLogin(email) {
