@@ -41,7 +41,7 @@ app.use('/api/courses', require('./routes/course.route'))
 app.use('/api/users', require('./routes/user.route'))
 app.use('/api/course-contents', require('./routes/courseContent.route'))
 app.use('/api/register-courses', require('./routes/registerCourse.route'))
-app.use('/api/register-details', require('./routes/registerCourseDetail.route'));
+// app.use('/api/register-details', require('./routes/registerCourseDetail.route'));
 
 app.get('/err', (req, res) => {
     throw new Error('Error!')
