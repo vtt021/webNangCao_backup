@@ -15,20 +15,16 @@ const useStyles = makeStyles(() => ({
         alignItems: "flex-start",
         justifyContent: "flex-start",
         flexWrap: "wrap",
-
     },
     card: {
         width: 370,
     },
     cardHeader: {
-        height: 100,
-        overflow: "hidden",
         textOverflow: "ellipsis",
-        display: 'flex',
-        alignItems: 'flex-start',
-        justifyContent: 'flex-start',
-        
-        
+        display: "block",
+        overflow: "hidden",
+
+
     },
     media: {
         height: 0,
@@ -60,8 +56,18 @@ export default function CourseCard(props) {
             <Card className={classes.card}>
                 <CardActionArea>
                     <CardHeader
-                        title={props.couresInfo.subCategoryId + ': ' + props.couresInfo.courseName}
-                        subheader={props.couresInfo.teacherId}
+                        title={
+                            <Typography noWrap gutterBottom variant="h6" component="h4" align='left'>
+                                {props.couresInfo.subCategoryId + ': ' + props.couresInfo.courseName}
+                            </Typography>
+                        }
+                        //subheader={props.couresInfo.teacherId}
+
+                        subheader={
+                            <Typography noWrap align='left'>
+                                {props.couresInfo.teacherId}
+                            </Typography>
+                        }
                         className={classes.cardHeader}
                     />
                 </CardActionArea>
@@ -77,23 +83,22 @@ export default function CourseCard(props) {
                             <Typography gutterBottom variant="h6" align='justify' className={classes.price}>
                                 {'Học phí: ' + props.couresInfo.price}
                             </Typography>
-                            <Typography >
+                            <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
                                 {'\u00A0'}
                             </Typography>
                         </container>
                     )}
-                    {props.couresInfo.salePrice && ( // Có giảm giá
+
+                    {props.couresInfo.salePrice!=0 && ( // Có giảm giá
                         <container>
                             <Typography gutterBottom variant="h6" align='justify' className={classes.price}>
-                                {'Học phí: ' + props.couresInfo.price}
+                                {'Học phí: ' + props.couresInfo.salePrice}
                             </Typography>
                             <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
                                 {'( Học phí gốc: ' + props.couresInfo.price + ' )'}
                             </Typography>
                         </container>
                     )}
-
-
                     <Grid container justify="flex-start" className={classes.containerRating}>
                         <Rating name="half-rating-read" defaultValue={props.couresInfo.rating} precision={0.1} readOnly />
                         <Typography variant="body2" color="textSecondary" className={classes.numberRating}>
