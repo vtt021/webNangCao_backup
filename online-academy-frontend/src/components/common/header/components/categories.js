@@ -22,11 +22,16 @@ export default function Category() {
     };
 
     
-
+    const getSubCategory =()=>{
+        axios.get("http://localhost:3001/api/sub-categories/").then(res => {    
+            setListSub(res.data)
+            console.log(listSubCategory)
+        }).catch(error => console.log(error))
+    }
     
     //DONE: GỌI API GET ALL KHÓA HỌC RỒI BỎ VÔ listCategories NÀY NHA, NHỚ THÊM NAVIGATION CHO TỪNG MENUITEMS
     const [listCategories, setListCategories] = useState([{ id: 1, categoryName: 'Không có khóa học' }])
-
+    const [listSubCategory,setListSub]=useState([{}])
     //DONE: CHUYỂN ĐẾN TRANG CHỨA DANH SÁCH KHÓA HỌC THEO LĨNH VỰC TƯƠNG ỨNG
     const handleCategoryPage = id => () => {
         history.push("/categories/" + id);
@@ -45,9 +50,13 @@ export default function Category() {
                     parentMenuOpen={!!menuPosition}
                     onClick={handleCategoryPage(category.id)}
                 >
-                    <MenuItem id='1' onClick={handleSubCategoryClick(category.id)}>Sub-Button 2</MenuItem>
-                    <MenuItem id='2' onClick={handleSubCategoryClick(category.id)}>Sub-Button 2</MenuItem>
-                </NestedMenuItem>
+                    {listSubCategory.map((sub)=>{
+                        console.log(sub.categoryId === category.id)
+                        
+                        if(sub.categoryId===category.id){
+                            <MenuItem id={sub.id} onClick={handleSubCategoryClick(category.id)}>{sub.subCategoryName}</MenuItem>
+                    }})}
+                    </NestedMenuItem>
         )))
     }
     useEffect(() => {
@@ -57,6 +66,11 @@ export default function Category() {
         })
             .catch(error => console.log(error));
     }, []);
+
+    useEffect(() => {
+        getSubCategory()
+    }, [listCategories]);
+
     return (
         <IconButton color="inherit"
             onClick={handleRightClick}>
