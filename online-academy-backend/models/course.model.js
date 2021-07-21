@@ -17,7 +17,8 @@ const mainPageData = [
     'imageThumbnail',
     'imageCourse',
     'price',
-    'salePrice'
+    'salePrice',
+    '_id'
 ];
 
 
@@ -58,6 +59,7 @@ module.exports = {
 
             let data = {};
 
+            data['_id'] = courses[i]['_id'];
             data["teacherName"] = user.username;
             data['courseName'] = courses[i]['courseName']
             data['subCategoryId'] = courses[i]['subCategoryId']
@@ -94,6 +96,7 @@ module.exports = {
 
             let data = {};
 
+            data['_id'] = courses[i]['_id'];
             data["teacherName"] = user.username;
             data['courseName'] = courses[i]['courseName']
             data['subCategoryId'] = courses[i]['subCategoryId']
@@ -135,6 +138,7 @@ module.exports = {
 
             let data = {};
 
+            data['_id'] = courses[i]['_id'];
             data["teacherName"] = user.username;
             data['courseName'] = courses[i]['courseName']
             data['subCategoryId'] = courses[i]['subCategoryId']
@@ -232,6 +236,7 @@ module.exports = {
 
                 let data = {};
 
+            data['_id'] = courses[i]['_id'];
                 data["teacherName"] = user.username;
                 data['courseName'] = courses[i]['courseName']
                 data['subCategoryId'] = courses[i]['subCategoryId']
@@ -288,6 +293,7 @@ module.exports = {
 
             let data = {};
 
+            data['_id'] = courses[i]['_id'];
             data["teacherName"] = user.username;
             data['courseName'] = courses[i]['courseName']
             data['subCategoryId'] = courses[i]['subCategoryId']
@@ -366,7 +372,7 @@ module.exports = {
             });
 
             let data = {};
-
+            data['_id'] = courses[i]['_id'];
             data["teacherName"] = user.username;
             data['courseName'] = courses[i]['courseName']
             data['subCategoryId'] = courses[i]['subCategoryId']
