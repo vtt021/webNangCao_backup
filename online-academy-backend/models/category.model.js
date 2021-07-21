@@ -16,7 +16,7 @@ module.exports = {
     },
 
     async getCategoryName(id) {
-        const category = await Category.findOne(id).exec();
+        const category = await Category.findOne({_id: id, isDeleted: false}, ['_id', 'categoryName']).exec();
         return category;
     },
 

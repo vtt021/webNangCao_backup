@@ -35,6 +35,21 @@ router.get('/', async (req, res) => {
     }
 })
 
+router.get('/id', async (req, res, next) => {
+    try {
+        let id = req.query.id;
+        const list = await subCategoryModel.getSubcategoryName(id);
+        console.log(list)
+        return res.status(200).json(list)
+    }
+    catch (e) {
+        console.log(e.stack);
+        res.status(500).json({
+            message: e.message
+        })
+    }
+})
+
 router.get('/admin', adminAuthMdw, async (req, res) => {
     try {
         const categoryId = req.body.id;

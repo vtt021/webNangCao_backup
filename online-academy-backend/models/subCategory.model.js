@@ -12,13 +12,10 @@ module.exports = {
         return subCategories;
     },
 
-    // async getSubcategoryName(id) {
-    //     const subCategory = await db(TABLE_NAME).where({
-    //         id: id,
-    //         isDeleted: false
-    //     });
-    //     return subCategory;
-    // },
+    async getSubcategoryName(id) {
+        const subCategory = await SubCategory.findOne({_id: id, isDeleted: false}, ['_id', 'subCategoryName']).exec();
+        return subCategory;
+    },
 
     async getSubcategoryInCategory(categoryId) {
         // const subCategories = await db(TABLE_NAME).where({ isDeleted: false, categoryId: categoryId });
