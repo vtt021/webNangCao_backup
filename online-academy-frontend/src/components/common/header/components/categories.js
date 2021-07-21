@@ -34,11 +34,14 @@ export default function Category() {
     //DONE: CHUYỂN ĐẾN TRANG CHỨA DANH SÁCH KHÓA HỌC THEO LĨNH VỰC TƯƠNG ỨNG
     const handleCategoryPage = id => () => {
         history.push("/categories/" + id);
+        window.location.reload();
+        
     };
     //DONE: CHUYỂN ĐẾN TRANG CHỨ DANH SÁCH KHÓA HỌC THEO LĨNH VỰC PHỤ TƯƠNG ỨNG
 
     const handleSubCategoryClick = categoryId => (event) => {
         history.push("/categories/" + categoryId + '/'+ event.target.id);
+        window.location.reload();
     };
 
     //TODO: GỌI API ĐỂ TẠO ITEMS SUBCATEGORY TƯƠNG ỨNG

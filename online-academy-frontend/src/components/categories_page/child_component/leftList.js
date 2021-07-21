@@ -52,6 +52,7 @@ export default function LeftList(props) {
     };
     const handleClickSubCategory = (categoryId, id) => {
         history.push("/categories/" + categoryId + "/" + id);
+        window.location.reload();
 
     };
 
@@ -81,7 +82,7 @@ export default function LeftList(props) {
                     {listSubCategory.map((sub,subIndex)=>{
                         if((new String(sub.categoryId)).localeCompare(new String(category._id))===0){
                         return(
-                        <ListItem button className={classes.nested} onClick={handleClickSubCategory.bind(this, {index},{subIndex})}>
+                        <ListItem button className={classes.nested} onClick={handleClickSubCategory.bind(this, category._id,sub._id)}>
                         <ListItemText primary={sub.subCategoryName} />
                     </ListItem>
                 )}})}

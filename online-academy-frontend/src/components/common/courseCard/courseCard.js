@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState,useEffect } from 'react';
+import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -53,21 +54,24 @@ const useStyles = makeStyles(() => ({
 
 export default function CourseCard(props) {
     const classes = useStyles();
-
+    const [image,setImage] = useState('https://images.theconversation.com/files/350865/original/file-20200803-24-50u91u.jpg?ixlib=rb-1.1.0&q=45&auto=format&w=1200&h=1200.0&fit=crop')
+    useEffect(() => {
+        setImage("http://localhost:3001/api/files/send?fileName="+props.couresInfo.imageThumbnail)
+    }, []);
 
     return (
         <div className={classes.container}>
             <Card className={classes.card}>
                 <CardActionArea>
                     <CardHeader
-                        title={props.couresInfo.subCategoryId + ': ' + props.couresInfo.courseName}
-                        subheader={props.couresInfo.teacherId}
+                        title={props.couresInfo.courseName}
+                        subheader={props.couresInfo.teacherName}
                         className={classes.cardHeader}
                     />
                 </CardActionArea>
                 <CardMedia
                     className={classes.media}
-                    image={props.couresInfo.imageThumbnail === null ? 'https://images.theconversation.com/files/350865/original/file-20200803-24-50u91u.jpg?ixlib=rb-1.1.0&q=45&auto=format&w=1200&h=1200.0&fit=crop' : props.couresInfo.imageThumbnail}
+                    image= {image}
                     title={props.couresInfo.courseName}
                 />
                 <CardContent>

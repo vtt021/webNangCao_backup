@@ -28,32 +28,28 @@ export default function PagingCard(props) {
         }
     };
 
-    const getTeachers = () => {
-        axios.get("http://localhost:3001/api/users/teacher").then(res => {
-            const listTeacher = res.data;
-            setTeachers(listTeacher);
-            console.log(listTeacher)
-        }).catch(error => console.log(error));
-    }
+    
 
     //TODO: LẤY DANH SÁCH KHÓA HỌC TUỲ VÀO YÊU CẦU => TRUYỀN VÀO ITEMS ĐỂ HIỂN THỊ
     const getCouresItems = () => {
-        axios.get("http://localhost:3001/api/courses/hot").then(res => {
-            console.log(teachers)
+        let url = "http://localhost:3001/api/courses/"
+        if(props.search){
+            url = url+"search"
+        }else{
+            if(props.subCategory != null){
+                url = url +"sub-category?subCategoryId="+ props.subCategory
+            }else{
+                url = url +"category?categoryId="+ props.categoryId
+            }
+         }
+         console.log(url)
+        axios.get(url).then(res => {
             const listCourse = res.data;
-            listCourse.forEach((item) => {
-                teachers.forEach(element => {
-                    if (element.id === item.teacherId) {
-                        item.teacherId = element.username
-                    }
-                });
-            })
+            
             setItems(listCourse);
         }).catch(error => console.log(error));
     }
-    useEffect(() => {
-        getTeachers()
-    }, []);
+
     useEffect(() => {
         getCouresItems()
         // eslint-disable-next-line react-hooks/exhaustive-deps
