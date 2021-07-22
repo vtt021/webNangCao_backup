@@ -332,6 +332,9 @@ module.exports = {
         let offset = limit * (page - 1);
         console.log("queryString = " + queryString);
 
+        let users = await userModel.getAllUsernameWithId();
+
+
         // const countCourse = await db(TABLE_NAME).count()
         //     .whereRaw('match(courseName) against(\'' + queryString + '\' in boolean mode) and isDeleted = false');
 
