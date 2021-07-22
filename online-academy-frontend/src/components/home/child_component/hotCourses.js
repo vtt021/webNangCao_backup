@@ -4,6 +4,42 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import SingleCarousel from '../../common/carousel/singleCarousel.js'
 import './hotCourses.css'
+
+
+export default function HotCourses() {
+  const classes = useStyles();
+
+  return (
+    <div className={classes.container}>
+      <Paper className={classes.paper} >
+        <Grid container spacing={2}>
+
+            <Grid item xs container direction="column" spacing={2} className={classes.leftContainer} >
+              <div class="box">
+                <div class="inner">
+                  <span>My Academy</span>
+                </div>
+                <div class="inner">
+                  <span>My Academy</span>
+                </div>
+              </div>
+              <div className={classes.title}>
+              <h3 class="text" >Chào mừng đến với My Academy 
+              </h3>
+              <h3 class="text" >Sẵn sàng cho những khóa học tuyệt vời</h3>
+              </div>
+            </Grid>
+
+          {/* TODO: truyền lệnh gọi API vào path để lấy data*/}
+          <Grid item>
+            <SingleCarousel coursesPath='hot' /> 
+          </Grid>
+
+        </Grid>
+      </Paper>
+    </div>
+  );
+}
 const useStyles = makeStyles((theme) => ({
   container: {
     flexGrow: 1,
@@ -39,38 +75,3 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: '100%',
   },
 }));
-
-export default function HotCourese() {
-  const classes = useStyles();
-
-  return (
-    <div className={classes.container}>
-      <Paper className={classes.paper} >
-        <Grid container spacing={2}>
-
-            <Grid item xs container direction="column" spacing={2} className={classes.leftContainer} >
-              <div class="box">
-                <div class="inner">
-                  <span>My Academy</span>
-                </div>
-                <div class="inner">
-                  <span>My Academy</span>
-                </div>
-              </div>
-              <div className={classes.title}>
-              <h3 class="text" >Chào mừng đến với My Academy 
-              </h3>
-              <h3 class="text" >Sẵn sàng cho những khóa học tuyệt vời</h3>
-              </div>
-            </Grid>
-
-          {/* TODO: truyền lệnh gọi API vào path để lấy data*/}
-          <Grid item>
-            <SingleCarousel coursesPath='hot' /> 
-          </Grid>
-
-        </Grid>
-      </Paper>
-    </div>
-  );
-}

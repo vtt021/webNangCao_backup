@@ -17,7 +17,7 @@ export default function SingleCarousel(props) {
             console.log(listTeacher)
         }).catch(error => console.log(error));
     }
-    const getCouresItems = () => {
+    const getCourseItems = () => {
         const path = 'http://localhost:3001/api/courses/' + props.coursesPath;
         axios.get(path).then(res => {
             console.log(teachers)
@@ -38,7 +38,7 @@ export default function SingleCarousel(props) {
         getTeachers()
     }, []);
     useEffect(() => {
-        getCouresItems()
+        getCourseItems()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [teachers]);
 
@@ -52,7 +52,7 @@ export default function SingleCarousel(props) {
             <Carousel timeout='60'  animation = 'slide'>
                 {items &&
                     items.map((item, i) =>
-                        <CourseCard key={i} couresInfo={item} />
+                        <CourseCard key={i} courseInfo={item} />
                     )
                 }
                 </Carousel>

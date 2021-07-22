@@ -65,7 +65,8 @@ export default function Header() {
     const handleSeachClick = (event) => {
         if (searchText)
         {
-            history.push('/search/' + searchText);
+            //history.push('/search/' + searchText);
+            window.location.href = '/search/' +searchText;
         }
         else{
             console.log('chưa nhập gì hết');

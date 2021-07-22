@@ -1,4 +1,6 @@
 import React from 'react';
+import { useHistory } from "react-router-dom";
+
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -9,6 +11,79 @@ import CardActionArea from '@material-ui/core/CardActionArea';
 import Rating from '@material-ui/lab/Rating';
 import Grid from '@material-ui/core/Grid';
 
+
+
+export default function CourseCard(props) {
+    const classes = useStyles();
+
+    const history = useHistory();
+
+    const gotoCourseDetail = () => {
+        history.push({
+            pathname: '/detail/' + props.courseInfo.id || props.courseInfo._id,
+          });
+    }
+    return (
+        <div className={classes.container}>
+            <Card className={classes.card}>
+                <CardActionArea  onClick={gotoCourseDetail}>
+                    <CardHeader
+                        title={
+                            <Typography noWrap gutterBottom variant="h6" component="h4" align='left'>
+                                {props.courseInfo.subCategoryId + ': ' + props.courseInfo.courseName}
+                            </Typography>
+                        }
+                        //subheader={props.courseInfo.teacherId}
+
+                        subheader={
+                            <Typography noWrap align='left'>
+                                {props.courseInfo.teacherId}
+                            </Typography>
+                        }
+                        className={classes.cardHeader}
+                    />
+
+                    <CardMedia
+                        className={classes.media}
+                        image={props.courseInfo.imageThumbnail === null ? 'https://images.theconversation.com/files/350865/original/file-20200803-24-50u91u.jpg?ixlib=rb-1.1.0&q=45&auto=format&w=1200&h=1200.0&fit=crop' : props.courseInfo.imageThumbnail}
+                        title={props.courseInfo.courseName}
+                    />
+                </CardActionArea>
+                <CardContent>
+
+                    {!props.courseInfo.salePrice && ( //Không có giảm giá
+                        <container>
+                            <Typography gutterBottom variant="h6" align='justify' className={classes.price}>
+                                {'Học phí: ' + props.courseInfo.price}
+                            </Typography>
+                            <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
+                                {'\u00A0'}
+                            </Typography>
+                        </container>
+                    )}
+
+                    {props.courseInfo.salePrice != 0 && ( // Có giảm giá
+                        <container>
+                            <Typography gutterBottom variant="h6" align='justify' className={classes.price}>
+                                {'Học phí: ' + props.courseInfo.salePrice}
+                            </Typography>
+                            <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
+                                {'( Học phí gốc: ' + props.courseInfo.price + ' )'}
+                            </Typography>
+                        </container>
+                    )}
+                    <Grid container justify="flex-start" className={classes.containerRating}>
+                        <Rating name="half-rating-read" defaultValue={props.courseInfo.rating} precision={0.1} readOnly />
+                        <Typography variant="body2" color="textSecondary" className={classes.numberRating}>
+                            {'(' + props.courseInfo.ratingCount + ' đánh giá)'}
+                        </Typography>
+                    </Grid>
+                </CardContent>
+
+            </Card>
+        </div>
+    );
+}
 const useStyles = makeStyles(() => ({
     container: {
         display: "flex",
@@ -51,68 +126,3 @@ const useStyles = makeStyles(() => ({
         marginLeft: 10
     }
 }));
-
-export default function CourseCard(props) {
-    const classes = useStyles();
-
-
-    return (
-        <div className={classes.container}>
-            <Card className={classes.card}>
-                <CardActionArea>
-                    <CardHeader
-                        title={
-                            <Typography noWrap gutterBottom variant="h6" component="h4" align='left'>
-                                {props.couresInfo.subCategoryId + ': ' + props.couresInfo.courseName}
-                            </Typography>
-                        }
-                        //subheader={props.couresInfo.teacherId}
-
-                        subheader={
-                            <Typography noWrap align='left'>
-                                {props.couresInfo.teacherId}
-                            </Typography>
-                        }
-                        className={classes.cardHeader}
-                    />
-                </CardActionArea>
-                <CardMedia
-                    className={classes.media}
-                    image={props.couresInfo.imageThumbnail === null ? 'https://images.theconversation.com/files/350865/original/file-20200803-24-50u91u.jpg?ixlib=rb-1.1.0&q=45&auto=format&w=1200&h=1200.0&fit=crop' : props.couresInfo.imageThumbnail}
-                    title={props.couresInfo.courseName}
-                />
-                <CardContent>
-
-                    {!props.couresInfo.salePrice && ( //Không có giảm giá
-                        <container>
-                            <Typography gutterBottom variant="h6" align='justify' className={classes.price}>
-                                {'Học phí: ' + props.couresInfo.price}
-                            </Typography>
-                            <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
-                                {'\u00A0'}
-                            </Typography>
-                        </container>
-                    )}
-
-                    {props.couresInfo.salePrice != 0 && ( // Có giảm giá
-                        <container>
-                            <Typography gutterBottom variant="h6" align='justify' className={classes.price}>
-                                {'Học phí: ' + props.couresInfo.salePrice}
-                            </Typography>
-                            <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
-                                {'( Học phí gốc: ' + props.couresInfo.price + ' )'}
-                            </Typography>
-                        </container>
-                    )}
-                    <Grid container justify="flex-start" className={classes.containerRating}>
-                        <Rating name="half-rating-read" defaultValue={props.couresInfo.rating} precision={0.1} readOnly />
-                        <Typography variant="body2" color="textSecondary" className={classes.numberRating}>
-                            {'(' + props.couresInfo.ratingCount + ' đánh giá)'}
-                        </Typography>
-                    </Grid>
-                </CardContent>
-
-            </Card>
-        </div>
-    );
-}

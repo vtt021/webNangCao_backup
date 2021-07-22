@@ -37,9 +37,10 @@ export default function PagingCard(props) {
     }
 
     //TODO: LẤY DANH SÁCH KHÓA HỌC TUỲ VÀO YÊU CẦU => TRUYỀN VÀO ITEMS ĐỂ HIỂN THỊ
-    const getCouresItems = () => {
+    const getCourseItems = () => {
         axios.get("http://localhost:3001/api/courses/hot").then(res => {
             console.log(teachers)
+            console.log(res.data)
             const listCourse = res.data;
             listCourse.forEach((item) => {
                 teachers.forEach(element => {
@@ -55,7 +56,7 @@ export default function PagingCard(props) {
         getTeachers()
     }, []);
     useEffect(() => {
-        getCouresItems()
+        getCourseItems()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [teachers]);
 
@@ -75,12 +76,12 @@ export default function PagingCard(props) {
                                     sẽ có thể hiện khác với các khoá học còn lại*/
                             ? (
                                 <Grid key={i} item>
-                                    <CourseCard key={i} couresInfo={item} />
+                                    <CourseCard key={i} courseInfo={item} />
                                 </Grid>
                             )
                             : (
                                 <Grid key={i} item >
-                                    <SpecialCourseCard key={i} couresInfo={item} />
+                                    <SpecialCourseCard key={i} courseInfo={item} />
                                 </Grid>
                             )
 

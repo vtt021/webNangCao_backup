@@ -26,11 +26,10 @@ export default function SearchPage(props) {
 
     const handleSeachClick = (event) => {
 
-        if (searchText)
-        {
-            history.push('/search/' + searchText);
+        if (searchText) {
+            window.location.href = '/search/' +searchText;
         }
-        else{
+        else {
             console.log('chưa nhập gì hết');
         }
 
@@ -85,7 +84,7 @@ export default function SearchPage(props) {
                             - Chú ý truyền keyword vào Paging, có 2 cái để sử dụng là searchText và finalKeyword
                              sử dụng tham số tùy theo cách search muốn làm ( thay đổi dữ liệu theo onChange hay onClick)
                         */}
-                        <Breadcrumb keyword={finalKeyword} categoryId={categoryId}  categoryName={categoryName}/>
+                        <Breadcrumb keyword={finalKeyword} categoryId={categoryId} categoryName={categoryName} />
                         <PagingCard />
                     </Grid>
 
