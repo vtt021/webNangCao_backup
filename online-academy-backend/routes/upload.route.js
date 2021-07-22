@@ -12,16 +12,14 @@ const router = express.Router();
 
 router.get("/send", async (req, res) => {
     const fileName = req.query.fileName;
-    const stat = fs.statSync(pathName + fileName);
+    // const stat = await fs.statSync(pathName + fileName);
 
-    res.sendFile(pathName + fileName, err => {
-        if (err) {
-            console.log(err)
-            res.status(500).send({
-                message: "File cannot be sent" + err
-            })
-        }
-    })
+    res.sendFile(pathName + fileName)
+
+    // let readStream = fs.createReadStream(pathName + fileName);
+    // readStream.pipe(res);
+
+    // await res.status(200).send(stat);
 });
 
 router.get("/download", async (req, res) => {
