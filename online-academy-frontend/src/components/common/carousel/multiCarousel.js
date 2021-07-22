@@ -21,7 +21,7 @@ export default function MultiCarousel(props) {
             console.log(listTeacher)
         }).catch(error => console.log(error));
     }
-    const getCouresItems = () => {
+    const getCourseItems = () => {
         axios.get("http://localhost:3001/api/courses/hot").then(res => {
             console.log(teachers)
             const listCourse = res.data;
@@ -47,7 +47,7 @@ export default function MultiCarousel(props) {
                                 items.slice(i, i + numEachSlide).map((item, i) =>
                                 (
                                     <Grid key={i} item>
-                                        <CourseCard key={i} couresInfo={item} />
+                                        <CourseCard key={i} courseInfo={item} />
                                     </Grid>
                                 )
                                 )
@@ -67,7 +67,7 @@ export default function MultiCarousel(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     useEffect(() => {
-        getCouresItems()
+        getCourseItems()
         // eslint-disable-next-line react-hooks/exhaustive-deps
      }, [teachers]);
 

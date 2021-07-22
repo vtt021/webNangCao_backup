@@ -217,6 +217,7 @@ module.exports = {
         //     id: id,
         //     isDeleted: false
         // });
+        let users = await userModel.getAllUsernameWithId();
 
         const courses = await Course.find({ _id: id, isDeleted: false }, mainPageData).exec();
 
@@ -255,6 +256,7 @@ module.exports = {
             throw new Error('page and limit must be both defined or undefined')
         }
         let offset = limit * (page - 1);
+        let users = await userModel.getAllUsernameWithId();
 
         // const courses = await db.select(mainPageData)
         //     .from(TABLE_NAME)
@@ -272,6 +274,8 @@ module.exports = {
                 viewCount: -1
             }
         }).exec();
+
+        console.log(courses)
 
 
         let newCourses = [];

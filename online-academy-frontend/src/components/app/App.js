@@ -17,7 +17,8 @@ function App() {
             <div className="App">
                 <Route exact path="/" component={Home} />
                 {/* <Route exact path="/ac" component={AdminCategory}/> */}
-                <Route exact path="/detail" component={() => <DetailPage subjectName='tên khóa học test' />} />
+                <Route exact path="/detail/:id"
+                    render={(props) => <DetailPage {...props} />} />
 
                 <Route exact path="/categories/:id"
                     render={(props) => <CategoryPage {...props} />}
