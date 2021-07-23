@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from "react-router-dom";
 import axios from 'axios';
 import Carousel from 'react-material-ui-carousel'
 import { Grid } from '@material-ui/core';
@@ -9,6 +10,7 @@ export default function SingleCarousel(props) {
     const classes = useStyles();
     const [items, setItems] = useState()
     const [teachers, setTeachers] = useState([{}])
+
 
     const getCouresItems = () => {
         const path = 'http://localhost:3001/api/courses/' + props.coursesPath;
@@ -22,8 +24,7 @@ export default function SingleCarousel(props) {
     //TODO: LẤY DANH SÁCH KHÓA HỌC theo yêu cầu từ FE rồi để vào items nha
     useEffect(() => {
         getCouresItems()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [teachers]);
+    }, []);
 
     return (
         <Grid
