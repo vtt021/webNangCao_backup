@@ -16,11 +16,18 @@ import Grid from '@material-ui/core/Grid';
 
 export default function CourseCard(props) {
     const classes = useStyles();
+    const [subCategoryName,setSubName] = useState("Tên lĩnh vực phụ( cũng lấy từ db)")
     const [image,setImage] = useState('https://images.theconversation.com/files/350865/original/file-20200803-24-50u91u.jpg?ixlib=rb-1.1.0&q=45&auto=format&w=1200&h=1200.0&fit=crop')
     useEffect(() => {
         setImage("http://localhost:3001/api/files/send?fileName="+props.courseInfo.imageThumbnail)
     }, []);
-
+    useEffect(() => {
+        axios.get("http://localhost:3001/api/sub-categories/id?id="+props.courseInfo.subCategoryId).then(res => {
+            setSubName(res.data.subCategoryName)
+            console.log(res.data)
+        })
+            .catch(error => console.log(error));
+    }, []);
     const history = useHistory();
 
     const gotoCourseDetail = () => {
@@ -37,7 +44,7 @@ export default function CourseCard(props) {
                         subheader={props.courseInfo.teacherName}
                         title={
                             <Typography noWrap gutterBottom variant="h6" component="h4" align='left'>
-                                {props.courseInfo.subCategoryId + ': ' + props.courseInfo.courseName}
+                                {subCategoryName+ ': ' + props.courseInfo.courseName}
                             </Typography>
                         }
                         //subheader={props.courseInfo.teacherId}
