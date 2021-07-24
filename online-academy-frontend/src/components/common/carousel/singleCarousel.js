@@ -22,7 +22,6 @@ export default function SingleCarousel(props) {
     //TODO: LẤY DANH SÁCH KHÓA HỌC theo yêu cầu từ FE rồi để vào items nha
     useEffect(() => {
         getCouresItems()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [teachers]);
 
     return (

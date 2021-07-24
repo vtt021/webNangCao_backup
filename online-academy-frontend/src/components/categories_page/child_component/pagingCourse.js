@@ -51,7 +51,7 @@ export default function PagingCard(props) {
     }
 
     useEffect(() => {
-        getCouresItems()
+        getCourseItems()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [teachers]);
 
@@ -71,12 +71,12 @@ export default function PagingCard(props) {
                                     sẽ có thể hiện khác với các khoá học còn lại*/
                             ? (
                                 <Grid key={i} item>
-                                    <CourseCard key={i} couresInfo={item} />
+                                    <CourseCard key={i} courseInfo={item} />
                                 </Grid>
                             )
                             : (
                                 <Grid key={i} item >
-                                    <SpecialCourseCard key={i} couresInfo={item} />
+                                    <SpecialCourseCard key={i} courseInfo={item} />
                                 </Grid>
                             )
 

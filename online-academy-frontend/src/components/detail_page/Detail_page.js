@@ -1,94 +1,51 @@
-import React from 'react'
+import React, { useState } from 'react';
+import { useHistory } from "react-router-dom";
+import { makeStyles } from '@material-ui/core/styles';
 
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { Paper,Typography } from '@material-ui/core';
+import { Container, } from 'react-bootstrap'
+import Grid from '@material-ui/core/Grid';
 import userImage from '../common/images/potato.jpg'
-import { Container, Row, Col, Image, Accordion, Card } from 'react-bootstrap'
-import './Detail_page.css'
-import Header from '../common/header/header.js'
-import {ShowMoreText} from'./component/showMoreButton'
-
-
+import Header from '../common/header/header';
+import CourseInfo from './component/courseInfo';
+import Footer from '../common/footer/footer';
+import Accordions from './component/accordion';
+import VideoPlayer from './component/videoPlayer';
 export default function DetailPage(props) {
-    const id  = props.match.params.id
+    const classes = useStyles();
+
+    const id = props.match.params.id
+    const [searchText, setSearchText] = useState(props.id ? '' : props.id);
 
     return (
-        
-        <div>
-            <h3>CategoryID: {id} </h3>
-            <Header/>
+        <Container fluid>
 
-            <Container>
-                <Row >
-                    <Col lg={4}>
-                        <Image className='userImage' src={userImage}>
-                        </Image>
-                    </Col>
-                    <Col lg={8}>
-                        <div className='subjectsName'>
-                            Khóa học về Khoai tây + 
-                            {props.subjectName}
-                        </div>
-                        <ShowMoreText content='noi dung khoa hoc ne hihihi' />
-                    </Col>
+            <Header />
+            <CourseInfo courseInfo={''} />
+            <Grid container spacing={2} className={classes.container}>
+                <Grid item xs={9} container >
+                    <Typography variant="h4" gutterBottom >
+                        Đề cương khóa học
+                    </Typography>
 
-                </Row>
-                <Accordion defaultActiveKey="0">
-                    <Card>
-                        <Accordion.Toggle as={Card.Header} eventKey="0">
-                            <div>
-                            <p className='nameLession'>Lession 1: What is potato?</p>
-                            <p className='priceLession'>1 hour 25 min</p>
-                            </div>
-                            
-                        </Accordion.Toggle>
-                        <Accordion.Collapse eventKey="0">
-                            <Card.Body className='detailInfomation'>Hello! I'm the body</Card.Body>
-                        </Accordion.Collapse>
-                    </Card>
-                    <Card>
-                        <Accordion.Toggle as={Card.Header} eventKey="1">
-                            <div>
-                            <p className='nameLession'>Lession 2: What is potato 222?</p>
-                            <p className='priceLession'>1 hour 25 min</p>
-                            </div>
-                            
-                        </Accordion.Toggle>
-                        <Accordion.Collapse eventKey="1">
-                            <Card.Body className='detailInfomation'>Hello! I'm the body</Card.Body>
-                        </Accordion.Collapse>
-                    </Card>
-                    <Card>
-                        <Accordion.Toggle as={Card.Header} eventKey="2">
-                            <div>
-                            <p className='nameLession'>Lession 3: What is potato?</p>
-                            <p className='priceLession'>1 hour 25 min</p>
-                            </div>
-                            
-                        </Accordion.Toggle>
-                        <Accordion.Collapse eventKey="2">
-                            <Card.Body className='detailInfomation'>
-                                    Hello! I'm the bodyHello! I'm the bodyHello! I'm the bodyHello! I'm the bodyHello! I'm the bodyHello! I'm the bodyHello! I'm the bodyHello! I'm the body
-Hello! I'm the bodyHello! I'm the bodyHello! I'm the bodyHello! I'm the bodyHello! I'm the bodyHello! I'm the body
-                            </Card.Body>
-                        </Accordion.Collapse>
-                    </Card>
-                    <Card>
-                        <Accordion.Toggle as={Card.Header} eventKey="3">
-                            <div>
-                            <p className='nameLession'>Lession 4: What is potato?</p>
-                            <p className='priceLession'>1 hour 25 min</p>
-                            </div>
-                            
-                        </Accordion.Toggle>
-                        <Accordion.Collapse eventKey="3">
-                            <Card.Body className='detailInfomation'>Hello! I'm the body</Card.Body>
-                        </Accordion.Collapse>
-                    </Card>
+                    <Accordions courseId='truyền vô để lấy thông tin đề cương' />
                     
-                </Accordion>
-       
-            </Container>
-        </div>
+                </Grid>
+                <Grid item xs={3} >
+                    {/*Sẽ chèn thêm cái gì đó vào cho đỡ trống nếu rảnh :v */}
+                </Grid>
+            </Grid>
+            
 
+            <Footer />
+        </Container>
     )
 }
+const useStyles = makeStyles((theme) => ({
+    container: {
+        flexGrow: 1,
+        marginTop: 50,
+        justifyContent: 'flex-start'
+    },
+
+}));

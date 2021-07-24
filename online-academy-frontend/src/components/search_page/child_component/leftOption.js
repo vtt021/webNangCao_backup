@@ -19,7 +19,7 @@ export default function LeftOption(props) {
                         input: classes.inputInput,
                     }}
                     placeholder="Tìm kiếm…"
-                    defaultValue={props.searchText}
+                    value={props.searchText}
                     onChange={props.onChange}
                     endAdornment={
                         <InputAdornment>
