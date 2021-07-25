@@ -31,6 +31,19 @@ module.exports = {
         return subCategories;
     },
 
+    async getSubcategoryByCategoryName(categoryName) {
+        const category = await Category.find({ isDeleted: false, categoryName: categoryName}).exec();
+
+        let cate = category[0];
+
+        if (cate == undefined) {
+            return undefined;
+        }
+
+        const subCategories = await SubCategory.find({ isDeleted: false, categoryId: cate._id }).exec();
+        return subCategories;
+    },
+
     async add(subCategory) {
         // return db(TABLE_NAME).insert(subCategory);
         let newSub = new SubCategory;
