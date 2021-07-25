@@ -1,4 +1,4 @@
-const express = require('express');
+    const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const randomstring = require('randomstring');
@@ -45,6 +45,7 @@ router.post('/', async (req, res, next) => {
 
         return res.status(200).json({
             id: user._id,
+            role: user.role,
             authenticated: true,
             accessToken,
             refreshToken,
@@ -68,12 +69,15 @@ router.post('/refresh', async (req, res, next) => {
             ignoreExpiration: true
         });
 
+        console.log(decoded);
+
         let userId = decoded.id;
+        console.log(userId);
 
         const ret = await userModel.isValidRefreshToken(userId, refreshToken);
 
         if (ret == true) {
-            const newAccessToken = jwt.sign({ userId }, 'ONLINE_ACADEMY', { expiresIn: 600 })
+            const newAccessToken = jwt.sign({ id: userId }, 'ONLINE_ACADEMY', { expiresIn: 600 })
             return res.json({
                 accessToken: newAccessToken
             })
