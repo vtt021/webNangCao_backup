@@ -21,7 +21,7 @@ import Select from '@material-ui/core/Select';
 import { FormControl, MenuItem } from '@material-ui/core';
 import { getDate } from 'date-fns';
 import Refreshtoken from '../../../refreshToken';
-import CategoryAction from '../common/CategoryAction';
+import CategoryAction from './CategoryAction';
 import { formatDateTime } from '../../../utils/helpers';
 
 let stt = 0;
@@ -149,9 +149,8 @@ export default function AdminCategory() {
     const [categories, setCategories] = useState([]);
 
     useEffect(() => {
-        //Refreshtoken()
+        Refreshtoken()
         setUser(JSON.parse(localStorage.getItem("auth")))
-        console.log(user)
         const getCategory = async() => {
             await axios.get('http://localhost:3001/api/categories/admin',{
                 headers:{

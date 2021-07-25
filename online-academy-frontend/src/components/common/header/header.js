@@ -53,7 +53,9 @@ export default function Header() {
     };
     const handleUserLogout = () => {
         localStorage.removeItem("auth")
+        localStorage.removeItem("time")
         setAuth(false)
+        setAuthAdmin(false)
         setUser(null)
     };
 

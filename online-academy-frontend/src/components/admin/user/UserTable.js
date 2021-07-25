@@ -21,16 +21,21 @@ import Select from '@material-ui/core/Select';
 import { FormControl, MenuItem } from '@material-ui/core';
 import { getDate } from 'date-fns';
 import { formatDateTime } from '../../../utils/helpers';
+import Refreshtoken from '../../../refreshToken';
+import Lockaction from './LockAction'
+import Deleteaction from './DeleteAction';
 let stt = 0;
 const columns = [
     { id: 'stt', label: '#', minWidth: 10 },
-    { id: 'name', label: 'Tên', minWidth: 170 },
-    { id: 'email', label: 'email', minWidth: 100 },
-    { id: 'usersRole', label: 'Phân hệ', minWidth: 100 },
-    { id: 'last', label: 'Cập nhật lần cuối', minWidth: 100 },
+    { id: 'name', label: 'Tên', minWidth: 150 },
+    { id: 'email', label: 'email', minWidth: 70 },
+    { id: 'usersRole', label: 'Phân hệ', minWidth: 80 },
+    { id: 'last', label: 'Cập nhật lần cuối', minWidth: 150 },
+    { id: 'locked', label: '', minWidth: 20 },
+    { id: 'deleted', label: '', minWidth: 50 },
 ];
 
-function createData(_id,name, email, role, lastUpdated) {
+function createData(_id,name, email, role,isUnlocked, lastUpdated) {
     stt += 1;
     let id = _id;
     let usersRole;
@@ -42,7 +47,9 @@ function createData(_id,name, email, role, lastUpdated) {
         usersRole="Quản trị viên"
     }
     let last = formatDateTime(new Date(lastUpdated)).toLocaleString()
-    return { stt, name, email, usersRole, last };
+    let locked = (<Lockaction isUnlocked = {isUnlocked}/>)
+    let deleted = (<Deleteaction/>)
+    return { stt, name, email, usersRole, last ,locked,deleted};
 }
 
 const StyledTableCell = withStyles(theme => ({
@@ -148,15 +155,15 @@ export default function AdminUser({projects}) {
     const [rowsPerPage, _] = useState(5);
     const [rows, setRows] = useState(data)
     const [lastRows, setLastRows] = useState(data)
-    const [status, setStatus] = useState("All Status")
+    const [role, setRole] = useState("Tất cả")
+    const [isSearch,setSearch] = useState(false)
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
     const [users, setUser] = useState([]);
     useEffect(() => {
-        //Refreshtoken()
+        Refreshtoken()
         setAuth(JSON.parse(localStorage.getItem("auth")))
-        console.log(auth)
         const getUsers = async() => {
             await axios.get('http://localhost:3001/api/users',{
                 headers:{
@@ -179,54 +186,69 @@ export default function AdminUser({projects}) {
     useEffect(()=>{
         stt = 0;
         const temp = users.map((user=>{
-            return createData(user._id,user.username,user.email,user.role,user.lastUpdated)
+            return createData(user._id,user.username,user.email,user.role,user.isUnlocked,user.lastUpdated)
         }));
         setData(temp);
         setRows(temp.slice());
+        setLastRows(temp.slice());
     },[users])
 
     const filterData = (value) => {
         if (value) {
+            setSearch(true)
             const filtered = data.filter(d => {
                 if (d.name.search(new RegExp(value, "i")) >= 0
-                    || d.start.search(new RegExp(value, "i")) >= 0
-                    || d.end.search(new RegExp(value, "i")) >= 0
-                    || d.amount === parseInt(value)){
+                    || d.email.search(new RegExp(value, "i")) >= 0){
                         setPage(0);
-                        if(status === "All Status")
+                        if(role === "Tất cả")
                         {
                             return d;
                         }
                         else
                         {
-                            if(d.tag.props.content===status)
+                            if(d.usersRole===role)
                             {
                                 return d;
                             }
                         }
                 }
             });
-
-
             setRows(filtered)
         } else {
-            setRows(data)
+            setSearch(false)
+            if (role != 'Tất cả') {
+                const filtered = data.filter(d => {
+                    if (d.usersRole.search(new RegExp(role, "i")) >= 0) {
+                        setPage(0)
+                        return d;
+                    }
+                });
+                setRows(filtered)
+            } else {
+                setRows(data)
+            }
         }
         setLastRows(rows)
+        console.log(lastRows)
     }
     
-    const handleStatusChange = (event) => {
-        setStatus(event.target.value);
-        if (event.target.value != 'All Status') {
+    const handleRoleChange = (event) => {
+        setRole(event.target.value);
+        if (event.target.value != 'Tất cả') {
             const filtered = lastRows.filter(d => {
-                if (d.tag.props.content.search(new RegExp(event.target.value, "i")) >= 0) {
+                if (d.usersRole.search(new RegExp(event.target.value, "i")) >= 0) {
                     setPage(0)
                     return d;
                 }
             });
             setRows(filtered)
         } else {
-            setRows(lastRows)
+            if(isSearch){
+                setRows(lastRows)
+            }else{
+            setRows(data)
+            setLastRows(data)
+            }
         }
 
     };
@@ -242,19 +264,19 @@ export default function AdminUser({projects}) {
                     filterData(e.target.value)}}
             />
             <FormControl  style={{ width: '20%', paddingLeft: '2%' }} className={classes.formControl}>
-            <InputLabel style={{ width: '50%', paddingLeft: '13%' }} id ="demo-simple-select-outlined-label">Status</InputLabel>
+            <InputLabel style={{ width: '50%', paddingLeft: '13%' }} id ="demo-simple-select-outlined-label">role</InputLabel>
                 <Select
                     labelId="demo-simple-select-outlined-label"
                     id="demo-simple-select-outlined"
-                    value={status}
-                    onChange={handleStatusChange}
+                    value={role}
+                    onChange={handleRoleChange}
                     displayEmpty
                     className={classes.selectEmpty}>
 
-                    <MenuItem value="All Status"> All Status</MenuItem>
-                    <MenuItem value="End">End</MenuItem>
-                    <MenuItem value="Processing">Processing</MenuItem>
-                    <MenuItem value="Waiting">Waiting</MenuItem>
+                    <MenuItem value="Tất cả"> Tất cả</MenuItem>
+                    <MenuItem value="Học viên">Học viên</MenuItem>
+                    <MenuItem value="Quản trị viên">Quản trị viên</MenuItem>
+                    <MenuItem value="Giáo viên">Giáo viên</MenuItem>
                 </Select>
             </FormControl>
 
@@ -279,7 +301,6 @@ export default function AdminUser({projects}) {
                                 <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                                     {columns.map((column) => {
                                         const value = row[column.id];
-                                        console.log(value)
                                         return (
                                             <TableCell key={column.id} align={column.align}>
                                                 {column.format && typeof value === 'number' ? column.format(value) : value}

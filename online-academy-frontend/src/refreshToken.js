@@ -8,9 +8,11 @@ export default function Refreshtoken() {
                 accessToken: user.accessToken,
                 refreshToken: user.refreshToken
             }).then(res => {
-                    return res.data.accessToken
+                    user.accessToken = res.data.accessToken
+                    localStorage.removeItem("auth")
+                    localStorage.removeItem("time")
+                    localStorage.setItem("auth", JSON.stringify(res.data))
+                    localStorage.setItem("time",new Date())
                 }).catch((e)=>{console.log(e)})
-    }else{
-        return user.accessToken
     }
 }
