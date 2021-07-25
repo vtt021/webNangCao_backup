@@ -283,7 +283,6 @@ module.exports = {
         return newCourses;
     },
 
-
     async getCourseById(id) {
         // const course = await db.select(mainPageData).from(TABLE_NAME).where({
         //     id: id,
@@ -291,7 +290,7 @@ module.exports = {
         // });
         let users = await userModel.getAllUsernameWithId();
 
-        const courses = await Course.find({ _id: id, isDeleted: false }, mainPageData).exec();
+        const courses = await Course.find({ _id: id, isDeleted: false }).exec();
 
         if (courses[0] !== undefined) {
             let newCourses = [];
@@ -304,7 +303,7 @@ module.exports = {
 
                 let data = {};
 
-            data['_id'] = courses[i]['_id'];
+                data['_id'] = courses[i]['_id'];
                 data["teacherName"] = user.username;
                 data['courseName'] = courses[i]['courseName']
                 data['subCategoryId'] = courses[i]['subCategoryId']
@@ -315,13 +314,24 @@ module.exports = {
                 data['imageCourse'] = courses[i]['imageCourse']
                 data['price'] = courses[i]['price']
                 data['salePrice'] = courses[i]['salePrice']
+                data['detailShort'] = courses[i]['detailShort']
+                data['detailLong'] = courses[i]['detailLong']
+                data['isCompleted'] = courses[i]['isCompleted']
+
+                await Course.find({_id: id, isDeleted: false}).updateMany({viewCount: courses[i]['viewCount'] + 1})
+
                 newCourses.push(data)
             }
-            return newCourses;
-        }
 
+
+           
+
+
+            return newCourses[0];
+        }
         return courses[0];
     },
+
 
 
     async getCoursesBySubCategory(subCategoryId, limit, page) {
