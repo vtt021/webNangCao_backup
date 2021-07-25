@@ -35,7 +35,7 @@ router.post('/', async (req, res, next) => {
         }
 
         const options = {
-            expiresIn: 900
+            expiresIn: 60
         }
 
         const accessToken = jwt.sign(payload, 'ONLINE_ACADEMY', options);
@@ -47,7 +47,8 @@ router.post('/', async (req, res, next) => {
             id: user._id,
             authenticated: true,
             accessToken,
-            refreshToken
+            refreshToken,
+	    role: user.role
         });
     }
     catch (e) {

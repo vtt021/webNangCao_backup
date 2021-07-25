@@ -17,6 +17,7 @@ import AppLogo from '../images/AppLogo.png'
 import { useHistory } from "react-router-dom";
 
 import Categories from './components/categories.js'
+import { getCurrentDate } from '../../../checkTime';
 
 
 
@@ -24,12 +25,12 @@ export default function Header() {
     const classes = useStyles();
     const history = useHistory();
 
-    const user = localStorage.getItem("auth")
+    const [user,setUser] = useState(JSON.parse(localStorage.getItem("auth")))
 
     const [auth, setAuth] = React.useState(user === null ? false : true);
     const [userAnchorEl, setUserAnchorEl] = React.useState(null); //Menu item
 
-    const [authAdmin, setAuthAdmin] = React.useState(true);
+    const [authAdmin, setAuthAdmin] = React.useState(user!=null&&user.role === 2 ? true : false);
 
     const [searchText, setSearchText] = useState();
 
@@ -42,9 +43,7 @@ export default function Header() {
         history.push("/");
     };
 
-    const handleChangeAuthAdmin = (event) => {
-        setAuthAdmin(event.target.checked);
-    };
+    
 
     const handleUserMenu = (event) => {
         setUserAnchorEl(event.currentTarget);
@@ -54,8 +53,8 @@ export default function Header() {
     };
     const handleUserLogout = () => {
         localStorage.removeItem("auth")
-        console.log(localStorage.getItem("auth"))
         setAuth(false)
+        setUser(null)
     };
 
     const onChangeSearchText = (event) => {
@@ -73,17 +72,12 @@ export default function Header() {
         }
     };
 
-
-
+    useEffect(()=>{console.log(user.accessToken)},[])
 
     return (
+        
         <div className={classes.grow}>
-            <FormGroup>
-                <FormControlLabel
-                    control={<Switch checked={authAdmin} onChange={handleChangeAuthAdmin} aria-label="login switch" />}
-                    label={authAdmin ? 'admin' : 'Noadmin'}
-                />
-            </FormGroup>
+            
             <AppBar position="relative" className={classes.appBarStyte} >
                 <Toolbar>
                     {/* Logo nè */}

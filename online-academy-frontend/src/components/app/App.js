@@ -9,6 +9,7 @@ import Verifyotp from '../verify_otp/VerifyOtp';
 import CategoryPage from '../categories_page/getByCategory';
 import SubCategoryPage from '../categories_page/getBySubCategory';
 import SearchPage from '../search_page/searchResult';
+import AdminCategory from '../admin/courses/AdminCategory';
 // import css
 
 function App() {
@@ -16,7 +17,7 @@ function App() {
         <Router>
             <div className="App">
                 <Route exact path="/" component={Home} />
-                {/* <Route exact path="/ac" component={AdminCategory}/> */}
+                <Route exact path="/admin" component={AdminCategory}/>
                 <Route exact path="/detail/:id"
                     render={(props) => <DetailPage {...props} />} />
 
