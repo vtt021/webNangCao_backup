@@ -35,7 +35,7 @@ router.post('/', async (req, res, next) => {
         }
 
         const options = {
-            expiresIn: 60
+            expiresIn: 900
         }
 
         const accessToken = jwt.sign(payload, 'ONLINE_ACADEMY', options);

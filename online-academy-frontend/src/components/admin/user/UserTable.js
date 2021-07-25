@@ -20,24 +20,29 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import { FormControl, MenuItem } from '@material-ui/core';
 import { getDate } from 'date-fns';
-import Refreshtoken from '../../../refreshToken';
-import CategoryAction from '../common/CategoryAction';
 import { formatDateTime } from '../../../utils/helpers';
-
 let stt = 0;
-const actions = (<CategoryAction/>)
 const columns = [
     { id: 'stt', label: '#', minWidth: 10 },
-    { id: 'name', label: 'Tên', minWidth: 100 },
+    { id: 'name', label: 'Tên', minWidth: 170 },
+    { id: 'email', label: 'email', minWidth: 100 },
+    { id: 'usersRole', label: 'Phân hệ', minWidth: 100 },
     { id: 'last', label: 'Cập nhật lần cuối', minWidth: 100 },
-    { id: 'actions', label: 'Hành động',align:'center', minWidth: 300 },
-
 ];
 
-function createData(id,name, lastUpdated) {
+function createData(_id,name, email, role, lastUpdated) {
     stt += 1;
-    var last = formatDateTime(new Date(lastUpdated)).toLocaleString()
-    return { stt,id, name, last,actions };
+    let id = _id;
+    let usersRole;
+    if(role===0){
+        usersRole="Học viên"
+    }else if(role === 1){
+        usersRole="Giáo viên"
+    }else{
+        usersRole="Quản trị viên"
+    }
+    let last = formatDateTime(new Date(lastUpdated)).toLocaleString()
+    return { stt, name, email, usersRole, last };
 }
 
 const StyledTableCell = withStyles(theme => ({
@@ -135,37 +140,37 @@ TablePaginationActions.propTypes = {
 
 
 
-export default function AdminCategory() {
+export default function AdminUser({projects}) {
     const [data,setData] = useState([]);
-    const [user,setUser] = useState(JSON.parse(localStorage.getItem("auth")))
+    const [auth,setAuth] = useState(JSON.parse(localStorage.getItem("auth")))
     const classes = useStyles();
     const [page, setPage] = useState(0);
     const [rowsPerPage, _] = useState(5);
     const [rows, setRows] = useState(data)
-    
+    const [lastRows, setLastRows] = useState(data)
+    const [status, setStatus] = useState("All Status")
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
-    const [categories, setCategories] = useState([]);
-
+    const [users, setUser] = useState([]);
     useEffect(() => {
         //Refreshtoken()
-        setUser(JSON.parse(localStorage.getItem("auth")))
-        console.log(user)
-        const getCategory = async() => {
-            await axios.get('http://localhost:3001/api/categories/admin',{
+        setAuth(JSON.parse(localStorage.getItem("auth")))
+        console.log(auth)
+        const getUsers = async() => {
+            await axios.get('http://localhost:3001/api/users',{
                 headers:{
-                    "x-access-token":user.accessToken
+                    "x-access-token":auth.accessToken
                 }
             })
             .then(res => {
                 console.log(res.data)
-                setCategories(res.data);
+                setUser(res.data);
             })
         }
 
         const init = async() => {
-            getCategory();
+            getUsers();
         }
 
         init();
@@ -173,26 +178,58 @@ export default function AdminCategory() {
     }, []);
     useEffect(()=>{
         stt = 0;
-        const temp = categories.map((category=>{
-            return createData(category._id,category.categoryName,category.lastUpdated)
+        const temp = users.map((user=>{
+            return createData(user._id,user.username,user.email,user.role,user.lastUpdated)
         }));
         setData(temp);
         setRows(temp.slice());
-    },[categories])
+    },[users])
 
-    const searchData = (value) => {
+    const filterData = (value) => {
         if (value) {
             const filtered = data.filter(d => {
-                if (d.name.search(new RegExp(value, "i")) >= 0){
-                    setPage(0);
+                if (d.name.search(new RegExp(value, "i")) >= 0
+                    || d.start.search(new RegExp(value, "i")) >= 0
+                    || d.end.search(new RegExp(value, "i")) >= 0
+                    || d.amount === parseInt(value)){
+                        setPage(0);
+                        if(status === "All Status")
+                        {
+                            return d;
+                        }
+                        else
+                        {
+                            if(d.tag.props.content===status)
+                            {
+                                return d;
+                            }
+                        }
+                }
+            });
+
+
+            setRows(filtered)
+        } else {
+            setRows(data)
+        }
+        setLastRows(rows)
+    }
+    
+    const handleStatusChange = (event) => {
+        setStatus(event.target.value);
+        if (event.target.value != 'All Status') {
+            const filtered = lastRows.filter(d => {
+                if (d.tag.props.content.search(new RegExp(event.target.value, "i")) >= 0) {
+                    setPage(0)
                     return d;
                 }
             });
             setRows(filtered)
         } else {
-            setRows(data)
+            setRows(lastRows)
         }
-    }
+
+    };
     return (
         <Paper className={classes.root}>
             <TextField
@@ -202,8 +239,24 @@ export default function AdminCategory() {
                 variant="outlined"
                 style={{ paddingBottom: '1%', width: '80%' }}
                 onChange={(e) => {
-                    searchData(e.target.value)}}
+                    filterData(e.target.value)}}
             />
+            <FormControl  style={{ width: '20%', paddingLeft: '2%' }} className={classes.formControl}>
+            <InputLabel style={{ width: '50%', paddingLeft: '13%' }} id ="demo-simple-select-outlined-label">Status</InputLabel>
+                <Select
+                    labelId="demo-simple-select-outlined-label"
+                    id="demo-simple-select-outlined"
+                    value={status}
+                    onChange={handleStatusChange}
+                    displayEmpty
+                    className={classes.selectEmpty}>
+
+                    <MenuItem value="All Status"> All Status</MenuItem>
+                    <MenuItem value="End">End</MenuItem>
+                    <MenuItem value="Processing">Processing</MenuItem>
+                    <MenuItem value="Waiting">Waiting</MenuItem>
+                </Select>
+            </FormControl>
 
             <TableContainer className={classes.container}>
                 <Table stickyHeader aria-label="sticky table">
@@ -229,9 +282,8 @@ export default function AdminCategory() {
                                         console.log(value)
                                         return (
                                             <TableCell key={column.id} align={column.align}>
-                                                {value}
+                                                {column.format && typeof value === 'number' ? column.format(value) : value}
                                             </TableCell>
-                                            
                                         );
                                     })}
                                 </TableRow>

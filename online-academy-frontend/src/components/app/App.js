@@ -10,6 +10,8 @@ import CategoryPage from '../categories_page/getByCategory';
 import SubCategoryPage from '../categories_page/getBySubCategory';
 import SearchPage from '../search_page/searchResult';
 import AdminCategory from '../admin/courses/AdminCategory';
+import AdminHome from '../admin/home/AdminHome';
+import AdminUser from '../admin/user/UserTable';
 // import css
 
 function App() {
@@ -17,7 +19,9 @@ function App() {
         <Router>
             <div className="App">
                 <Route exact path="/" component={Home} />
-                <Route exact path="/admin" component={AdminCategory}/>
+                <Route exact path="/admin" component={AdminHome}/>
+                <Route exact path="/admin/categories" component={AdminCategory}/>
+                <Route exact path="/admin/users" component={AdminUser}/>
                 <Route exact path="/detail/:id"
                     render={(props) => <DetailPage {...props} />} />
 
