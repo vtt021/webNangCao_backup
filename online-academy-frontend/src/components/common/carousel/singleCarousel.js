@@ -12,7 +12,7 @@ export default function SingleCarousel(props) {
     const [teachers, setTeachers] = useState([{}])
 
 
-    const getCouresItems = () => {
+    const getCourseIItems = () => {
         const path = 'http://localhost:3001/api/courses/' + props.coursesPath;
         axios.get(path).then(res => {
             console.log(teachers)
@@ -23,7 +23,7 @@ export default function SingleCarousel(props) {
 
     //TODO: LẤY DANH SÁCH KHÓA HỌC theo yêu cầu từ FE rồi để vào items nha
     useEffect(() => {
-        getCouresItems()
+        getCourseIItems()
     }, []);
 
     return (
@@ -33,13 +33,13 @@ export default function SingleCarousel(props) {
             justifyContent="center"
             alignItems="flex-start"
             justify="center" >
-            <Carousel timeout='60'  animation = 'slide'>
+            <Carousel timeout='60' animation='slide'>
                 {items &&
                     items.map((item, i) =>
-                        <CourseCard key={i} couresInfo={item}/>
+                        <CourseCard key={i} courseInfo={item} />
                     )
                 }
-                </Carousel>
+            </Carousel>
         </Grid >
 
     )

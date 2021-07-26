@@ -13,6 +13,7 @@ export default function MultiCarousel(props) {
     const [carouselSlide, setCarouselSlide] = useState([])
     const [numEachSlide, setNumEachSlide] = useState(3)
 
+    
 
     const getTeachers = () => {
         axios.get("http://localhost:3001/api/users/teacher").then(res => {
