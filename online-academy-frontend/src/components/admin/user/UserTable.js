@@ -20,24 +20,36 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import { FormControl, MenuItem } from '@material-ui/core';
 import { getDate } from 'date-fns';
-import Refreshtoken from '../../../refreshToken';
-import CategoryAction from './CategoryAction';
 import { formatDateTime } from '../../../utils/helpers';
-
+import Refreshtoken from '../../../refreshToken';
+import Lockaction from './LockAction'
+import Deleteaction from './DeleteAction';
 let stt = 0;
-const actions = (<CategoryAction/>)
 const columns = [
     { id: 'stt', label: '#', minWidth: 10 },
-    { id: 'name', label: 'Tên', minWidth: 100 },
-    { id: 'last', label: 'Cập nhật lần cuối', minWidth: 100 },
-    { id: 'actions', label: 'Hành động',align:'center', minWidth: 300 },
-
+    { id: 'name', label: 'Tên', minWidth: 150 },
+    { id: 'email', label: 'email', minWidth: 70 },
+    { id: 'usersRole', label: 'Phân hệ', minWidth: 80 },
+    { id: 'last', label: 'Cập nhật lần cuối', minWidth: 150 },
+    { id: 'locked', label: '', minWidth: 20 },
+    { id: 'deleted', label: '', minWidth: 50 },
 ];
 
-function createData(id,name, lastUpdated) {
+function createData(_id,name, email, role,isUnlocked, lastUpdated) {
     stt += 1;
-    var last = formatDateTime(new Date(lastUpdated)).toLocaleString()
-    return { stt,id, name, last,actions };
+    let id = _id;
+    let usersRole;
+    if(role===0){
+        usersRole="Học viên"
+    }else if(role === 1){
+        usersRole="Giáo viên"
+    }else{
+        usersRole="Quản trị viên"
+    }
+    let last = formatDateTime(new Date(lastUpdated)).toLocaleString()
+    let locked = (<Lockaction isUnlocked = {isUnlocked}/>)
+    let deleted = (<Deleteaction/>)
+    return { stt, name, email, usersRole, last ,locked,deleted};
 }
 
 const StyledTableCell = withStyles(theme => ({
@@ -135,36 +147,37 @@ TablePaginationActions.propTypes = {
 
 
 
-export default function AdminCategory() {
+export default function AdminUser({projects}) {
     const [data,setData] = useState([]);
-    const [user,setUser] = useState(JSON.parse(localStorage.getItem("auth")))
+    const [auth,setAuth] = useState(JSON.parse(localStorage.getItem("auth")))
     const classes = useStyles();
     const [page, setPage] = useState(0);
     const [rowsPerPage, _] = useState(5);
     const [rows, setRows] = useState(data)
-    
+    const [lastRows, setLastRows] = useState(data)
+    const [role, setRole] = useState("Tất cả")
+    const [isSearch,setSearch] = useState(false)
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
-    const [categories, setCategories] = useState([]);
-
+    const [users, setUser] = useState([]);
     useEffect(() => {
         Refreshtoken()
-        setUser(JSON.parse(localStorage.getItem("auth")))
-        const getCategory = async() => {
-            await axios.get('http://localhost:3001/api/categories/admin',{
+        setAuth(JSON.parse(localStorage.getItem("auth")))
+        const getUsers = async() => {
+            await axios.get('http://localhost:3001/api/users',{
                 headers:{
-                    "x-access-token":user.accessToken
+                    "x-access-token":auth.accessToken
                 }
             })
             .then(res => {
                 console.log(res.data)
-                setCategories(res.data);
+                setUser(res.data);
             })
         }
 
         const init = async() => {
-            getCategory();
+            getUsers();
         }
 
         init();
@@ -172,26 +185,73 @@ export default function AdminCategory() {
     }, []);
     useEffect(()=>{
         stt = 0;
-        const temp = categories.map((category=>{
-            return createData(category._id,category.categoryName,category.lastUpdated)
+        const temp = users.map((user=>{
+            return createData(user._id,user.username,user.email,user.role,user.isUnlocked,user.lastUpdated)
         }));
         setData(temp);
         setRows(temp.slice());
-    },[categories])
+        setLastRows(temp.slice());
+    },[users])
 
-    const searchData = (value) => {
+    const filterData = (value) => {
         if (value) {
+            setSearch(true)
             const filtered = data.filter(d => {
-                if (d.name.search(new RegExp(value, "i")) >= 0){
-                    setPage(0);
+                if (d.name.search(new RegExp(value, "i")) >= 0
+                    || d.email.search(new RegExp(value, "i")) >= 0){
+                        setPage(0);
+                        if(role === "Tất cả")
+                        {
+                            return d;
+                        }
+                        else
+                        {
+                            if(d.usersRole===role)
+                            {
+                                return d;
+                            }
+                        }
+                }
+            });
+            setRows(filtered)
+        } else {
+            setSearch(false)
+            if (role != 'Tất cả') {
+                const filtered = data.filter(d => {
+                    if (d.usersRole.search(new RegExp(role, "i")) >= 0) {
+                        setPage(0)
+                        return d;
+                    }
+                });
+                setRows(filtered)
+            } else {
+                setRows(data)
+            }
+        }
+        setLastRows(rows)
+        console.log(lastRows)
+    }
+    
+    const handleRoleChange = (event) => {
+        setRole(event.target.value);
+        if (event.target.value != 'Tất cả') {
+            const filtered = lastRows.filter(d => {
+                if (d.usersRole.search(new RegExp(event.target.value, "i")) >= 0) {
+                    setPage(0)
                     return d;
                 }
             });
             setRows(filtered)
         } else {
+            if(isSearch){
+                setRows(lastRows)
+            }else{
             setRows(data)
+            setLastRows(data)
+            }
         }
-    }
+
+    };
     return (
         <Paper className={classes.root}>
             <TextField
@@ -201,8 +261,24 @@ export default function AdminCategory() {
                 variant="outlined"
                 style={{ paddingBottom: '1%', width: '80%' }}
                 onChange={(e) => {
-                    searchData(e.target.value)}}
+                    filterData(e.target.value)}}
             />
+            <FormControl  style={{ width: '20%', paddingLeft: '2%' }} className={classes.formControl}>
+            <InputLabel style={{ width: '50%', paddingLeft: '13%' }} id ="demo-simple-select-outlined-label">role</InputLabel>
+                <Select
+                    labelId="demo-simple-select-outlined-label"
+                    id="demo-simple-select-outlined"
+                    value={role}
+                    onChange={handleRoleChange}
+                    displayEmpty
+                    className={classes.selectEmpty}>
+
+                    <MenuItem value="Tất cả"> Tất cả</MenuItem>
+                    <MenuItem value="Học viên">Học viên</MenuItem>
+                    <MenuItem value="Quản trị viên">Quản trị viên</MenuItem>
+                    <MenuItem value="Giáo viên">Giáo viên</MenuItem>
+                </Select>
+            </FormControl>
 
             <TableContainer className={classes.container}>
                 <Table stickyHeader aria-label="sticky table">
@@ -225,12 +301,10 @@ export default function AdminCategory() {
                                 <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                                     {columns.map((column) => {
                                         const value = row[column.id];
-                                        console.log(value)
                                         return (
                                             <TableCell key={column.id} align={column.align}>
-                                                {value}
+                                                {column.format && typeof value === 'number' ? column.format(value) : value}
                                             </TableCell>
-                                            
                                         );
                                     })}
                                 </TableRow>

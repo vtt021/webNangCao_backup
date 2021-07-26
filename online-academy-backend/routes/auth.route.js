@@ -48,7 +48,8 @@ router.post('/', async (req, res, next) => {
             role: user.role,
             authenticated: true,
             accessToken,
-            refreshToken
+            refreshToken,
+	    role: user.role
         });
     }
     catch (e) {

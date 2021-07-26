@@ -1,7 +1,7 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState,useEffect } from 'react';
 import axios from 'axios';
 import { useHistory } from "react-router-dom";
+
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -27,6 +27,12 @@ export default function CourseCard(props) {
         })
             .catch(error => console.log(error));
     }, []);
+    
+    useEffect(() => {
+        console.log(props.courseInfo._id)
+        setImage("http://localhost:3001/api/files/send?fileName="+props.courseInfo.imageThumbnail)
+    }, []);
+    const history = useHistory();
 
     const handleDetailPage = id => () => {
         console.log(id);
