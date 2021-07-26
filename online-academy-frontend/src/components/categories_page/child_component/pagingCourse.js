@@ -50,7 +50,7 @@ export default function PagingCard(props) {
     }
 
     useEffect(() => {
-        getCourseIItems()
+        getCourseItems()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [teachers]);
 

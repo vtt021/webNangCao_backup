@@ -33,7 +33,7 @@ export default function ControlledAccordions(props) {
                         <Grid container className={classes.root} >
                             <Grid item xs={12}>
                                 <Link align='left'
-                                    rel="noopener noreferrer" href="http://localhost:3001/api/files/send?fileName=1_1.mp4" target="_blank"
+                                    rel="noopener noreferrer" href={'/video/'+ props.courseId} target="_blank"
                                 >
                                     Xem bài giảng
                                 </Link>
