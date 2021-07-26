@@ -28,35 +28,31 @@ export default function PagingCard(props) {
         }
     };
 
-    const getTeachers = () => {
-        axios.get("http://localhost:3001/api/users/teacher").then(res => {
-            const listTeacher = res.data;
-            setTeachers(listTeacher);
-            console.log(listTeacher)
-        }).catch(error => console.log(error));
-    }
+
 
     //TODO: LẤY DANH SÁCH KHÓA HỌC TUỲ VÀO YÊU CẦU => TRUYỀN VÀO ITEMS ĐỂ HIỂN THỊ
-    const getCourseItems = () => {
-        axios.get("http://localhost:3001/api/courses/hot").then(res => {
-            console.log(teachers)
-            console.log(res.data)
+    const getCourseIItems = () => {
+        let url = "http://localhost:3001/api/courses/"
+        if (props.search) {
+            url = url + "search"
+        } else {
+            if (props.subCategory != null) {
+                url = url + "sub-category?subCategoryId=" + props.subCategory
+            } else {
+                url = url + "category?categoryId=" + props.categoryId
+            }
+        }
+        console.log(url)
+        axios.get(url).then(res => {
+
             const listCourse = res.data;
-            listCourse.forEach((item) => {
-                teachers.forEach(element => {
-                    if (element.id === item.teacherId) {
-                        item.teacherId = element.username
-                    }
-                });
-            })
+
             setItems(listCourse);
         }).catch(error => console.log(error));
     }
+
     useEffect(() => {
-        getTeachers()
-    }, []);
-    useEffect(() => {
-        getCourseItems()
+        getCourseIItems()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [teachers]);
 
@@ -69,7 +65,7 @@ export default function PagingCard(props) {
             justify="flex-start"
         >
             <Grid container justifyContent="center" justify="center" alignItems="flex-start" spacing={3}>
-                {items && items.length &&
+                {items && items.length > 0 &&
                     items.slice(minValue, maxValue).map((item, i) =>
                         i % 2 === 0 /*TODO: Kiểm tra là khoá học mới đăng 
                                     hoặc các khoá học có nhiều học viên đăng ký học (Best Seller) 
@@ -85,6 +81,11 @@ export default function PagingCard(props) {
                                 </Grid>
                             )
 
+                    )
+                }
+                {
+                  items && items.length === 0 && (
+                        <div> Không có khóa học thuộc lĩnh vực này</div>
                     )
                 }
             </Grid>

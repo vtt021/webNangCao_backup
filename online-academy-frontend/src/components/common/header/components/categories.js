@@ -25,7 +25,6 @@ export default function Category() {
     const getSubCategory =()=>{
         axios.get("http://localhost:3001/api/sub-categories/").then(res => {    
             setListSub(res.data)
-            console.log(listSubCategory)
         }).catch(error => console.log(error))
     }
     
@@ -35,11 +34,14 @@ export default function Category() {
     //DONE: CHUYỂN ĐẾN TRANG CHỨA DANH SÁCH KHÓA HỌC THEO LĨNH VỰC TƯƠNG ỨNG
     const handleCategoryPage = id => () => {
         history.push("/categories/" + id);
+        window.location.reload();
+        
     };
     //DONE: CHUYỂN ĐẾN TRANG CHỨ DANH SÁCH KHÓA HỌC THEO LĨNH VỰC PHỤ TƯƠNG ỨNG
 
     const handleSubCategoryClick = categoryId => (event) => {
         history.push("/categories/" + categoryId + '/'+ event.target.id);
+        window.location.reload();
     };
 
     //TODO: GỌI API ĐỂ TẠO ITEMS SUBCATEGORY TƯƠNG ỨNG
@@ -48,14 +50,13 @@ export default function Category() {
             <NestedMenuItem
                     label={category.categoryName}
                     parentMenuOpen={!!menuPosition}
-                    onClick={handleCategoryPage(category.id)}
+                    onClick={handleCategoryPage(category._id)}
                 >
                     {listSubCategory.map((sub)=>{
-                        console.log(sub.categoryId === category.id)
-                        
-                        if(sub.categoryId===category.id){
-                            <MenuItem id={sub.id} onClick={handleSubCategoryClick(category.id)}>{sub.subCategoryName}</MenuItem>
-                    }})}
+                        if((new String(sub.categoryId)).localeCompare(new String(category._id))===0){
+                            return(
+                                <MenuItem id={sub._id} onClick={handleSubCategoryClick(category._id)}>{sub.subCategoryName}</MenuItem>
+                    )}})}
                     </NestedMenuItem>
         )))
     }
@@ -63,6 +64,7 @@ export default function Category() {
         axios.get("http://localhost:3001/api/categories").then(res => {
             const listCategories = res.data;
             setListCategories(listCategories);
+            
         })
             .catch(error => console.log(error));
     }, []);

@@ -17,7 +17,8 @@ const mainPageData = [
     'imageThumbnail',
     'imageCourse',
     'price',
-    'salePrice'
+    'salePrice',
+    '_id'
 ];
 
 
@@ -58,6 +59,7 @@ module.exports = {
 
             let data = {};
 
+            data['_id'] = courses[i]['_id'];
             data["teacherName"] = user.username;
             data['courseName'] = courses[i]['courseName']
             data['subCategoryId'] = courses[i]['subCategoryId']
@@ -94,6 +96,7 @@ module.exports = {
 
             let data = {};
 
+            data['_id'] = courses[i]['_id'];
             data["teacherName"] = user.username;
             data['courseName'] = courses[i]['courseName']
             data['subCategoryId'] = courses[i]['subCategoryId']
@@ -135,6 +138,7 @@ module.exports = {
 
             let data = {};
 
+            data['_id'] = courses[i]['_id'];
             data["teacherName"] = user.username;
             data['courseName'] = courses[i]['courseName']
             data['subCategoryId'] = courses[i]['subCategoryId']
@@ -232,6 +236,7 @@ module.exports = {
 
                 let data = {};
 
+            data['_id'] = courses[i]['_id'];
                 data["teacherName"] = user.username;
                 data['courseName'] = courses[i]['courseName']
                 data['subCategoryId'] = courses[i]['subCategoryId']
@@ -288,6 +293,7 @@ module.exports = {
 
             let data = {};
 
+            data['_id'] = courses[i]['_id'];
             data["teacherName"] = user.username;
             data['courseName'] = courses[i]['courseName']
             data['subCategoryId'] = courses[i]['subCategoryId']
@@ -325,6 +331,9 @@ module.exports = {
 
         let offset = limit * (page - 1);
         console.log("queryString = " + queryString);
+
+        let users = await userModel.getAllUsernameWithId();
+
 
         // const countCourse = await db(TABLE_NAME).count()
         //     .whereRaw('match(courseName) against(\'' + queryString + '\' in boolean mode) and isDeleted = false');
@@ -366,7 +375,7 @@ module.exports = {
             });
 
             let data = {};
-
+            data['_id'] = courses[i]['_id'];
             data["teacherName"] = user.username;
             data['courseName'] = courses[i]['courseName']
             data['subCategoryId'] = courses[i]['subCategoryId']

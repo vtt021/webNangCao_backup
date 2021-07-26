@@ -42,26 +42,7 @@ function a11yProps(index) {
     };
 }
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        flexGrow: 1,
-        backgroundColor: theme.palette.background.paper,
-        display: 'flex',
-        minHeight: 500
-    },
-    tabs: {
-        borderRight: `1px solid ${theme.palette.divider}`,
-    },
-    carouselContainer: {
-        padding: theme.spacing(2),
-        margin: 'auto',
-        justifyContent: "center",
-        alignItems: "flex-start",
-        justify: "center"
 
-    },
-
-}));
 
 export default function VerticalTabs(props) {
     const classes = useStyles();
@@ -110,3 +91,23 @@ export default function VerticalTabs(props) {
         </div>
     );
 }
+const useStyles = makeStyles((theme) => ({
+    root: {
+        flexGrow: 1,
+        backgroundColor: theme.palette.background.paper,
+        display: 'flex',
+        minHeight: 500
+    },
+    tabs: {
+        borderRight: `1px solid ${theme.palette.divider}`,
+    },
+    carouselContainer: {
+        padding: theme.spacing(2),
+        margin: 'auto',
+        justifyContent: "center",
+        alignItems: "flex-start",
+        justify: "center"
+
+    },
+
+}));

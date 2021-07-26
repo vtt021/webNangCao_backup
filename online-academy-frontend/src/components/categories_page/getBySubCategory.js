@@ -1,4 +1,5 @@
-import React from 'react';
+import React,{useState,useEffect} from 'react';
+import axios from 'axios';
 import { Container, } from 'react-bootstrap'
 import Header from '../common/header/header.js'
 import Grid from '@material-ui/core/Grid';
@@ -9,9 +10,22 @@ import LeftList from './child_component/leftList.js';
 export default function SubCategoryPage(props) {
     const categoryId = props.match.params.id
     const subCategoryId = props.match.params.subId
-    const categoryName = "Tên lĩnh vực( lấy từ db)"
-    const subCategoryName = "Tên lĩnh vực phụ( cũng lấy từ db)"
-
+    const [categoryName,setCategoryName] = useState("")
+    const [subCategoryName,setSubName] = useState("")
+    useEffect(() => {
+        axios.get("http://localhost:3001/api/categories/id?id="+categoryId).then(res => {
+            setCategoryName(res.data.categoryName)
+            console.log(res.data)
+        })
+            .catch(error => console.log(error));
+    }, []);
+    useEffect(() => {
+        axios.get("http://localhost:3001/api/sub-categories/id?id="+subCategoryId).then(res => {
+            setSubName(res.data.subCategoryName)
+            console.log(res.data)
+        })
+            .catch(error => console.log(error));
+    }, []);
     return (
         <Container fluid >
             <Header />
@@ -24,7 +38,7 @@ export default function SubCategoryPage(props) {
 
                     <Grid item xs='10' container direction="column" spacing={2} >
                         <Breadcrumb categoryId={categoryId} categoryName={categoryName} subCategoryName={subCategoryName} />
-                        <PagingCard categoryId={categoryId} subCategory= {subCategoryId}/>
+                        <PagingCard search={false}  categoryId={categoryId} subCategory= {subCategoryId}/>
                     </Grid>
 
                 </Grid>

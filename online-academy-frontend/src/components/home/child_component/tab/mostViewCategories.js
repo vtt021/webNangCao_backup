@@ -4,14 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import { useHistory } from "react-router-dom";
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        '& > *': {
-            margin: theme.spacing(1),
-        },
-        minHeight: 550,
-    },
-}));
+
 
 export default function MostViewCategories() {
     const classes = useStyles();
@@ -38,7 +31,7 @@ export default function MostViewCategories() {
         <div className={classes.root}>
             {   //Chuyển trang theo từng Category
                 listCategories && (listCategories.map((category, i) => (
-                    <Button key={i} variant="outlined" color="primary" onClick= {handleCategoryPage(category.id)}>
+                    <Button key={i} variant="outlined" color="primary" onClick= {handleCategoryPage(category._id)}>
                         {category.categoryName}
                     </Button>
                 )))
@@ -46,3 +39,11 @@ export default function MostViewCategories() {
         </div>
     );
 }
+const useStyles = makeStyles((theme) => ({
+    root: {
+        '& > *': {
+            margin: theme.spacing(1),
+        },
+        minHeight: 550,
+    },
+}));
