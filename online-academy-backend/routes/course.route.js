@@ -129,6 +129,31 @@ router.get('/category', async (req, res) => {
     }
 })
 
+router.get('/cateName', async (req, res) => {
+    try {
+        const categoryName = req.query.categoryName;
+        const page = req.query.page;
+        const limit = req.query.limit;
+
+
+
+        if (categoryName === undefined) {
+            return res.status(500).json({
+                message: 'invalid input'
+            })
+        }
+
+        const list = await courseModel.getCoursesByCategoryName(categoryName, limit, page);
+        return res.json(list);
+    }
+    catch (e) {
+        console.log(e.stack);
+        res.status(500).json({
+            message: e.message
+        })
+    }
+})
+
 router.get('/sub-category', async (req, res) => {
     try {
         const subCategoryId = req.query.subCategoryId;
