@@ -28,6 +28,7 @@ export default function Login() {
             password: data.password
         }).then(res => {
             localStorage.setItem("auth", JSON.stringify(res.data))
+            localStorage.setItem("time",new Date())
             window.location.replace("/")
 
         })

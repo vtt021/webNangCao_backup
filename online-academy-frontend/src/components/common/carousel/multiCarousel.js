@@ -24,15 +24,7 @@ export default function MultiCarousel(props) {
     }
     const getCourseItems = () => {
         axios.get("http://localhost:3001/api/courses/hot").then(res => {
-            console.log(teachers)
             const listCourse = res.data;
-            listCourse.forEach((item) => {
-                teachers.forEach(element => {
-                    if (element.id === item.teacherId) {
-                        item.teacherId = element.username
-                    }
-                });
-            })
             setItems(listCourse);
         }).catch(error => console.log(error));
     }
@@ -64,13 +56,9 @@ export default function MultiCarousel(props) {
     }
     //TODO: LẤY DANH SÁCH KHÓA HỌC THEO categoryId rồi để vào items nha
     useEffect(() => {
-        getTeachers()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-    useEffect(() => {
         getCourseItems()
         // eslint-disable-next-line react-hooks/exhaustive-deps
-     }, [teachers]);
+     }, []);
 
 
     useEffect(() => {

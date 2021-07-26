@@ -1,7 +1,7 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState,useEffect } from 'react';
 import axios from 'axios';
 import { useHistory } from "react-router-dom";
+
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -17,10 +17,11 @@ import Grid from '@material-ui/core/Grid';
 export default function CourseCard(props) {
     const classes = useStyles();
     const history = useHistory();
-    const [subCategoryName,setSubName] = useState("")
+    const [subCategoryName,setSubName] = useState()
 
-    const [image, setImage] = useState('https://images.theconversation.com/files/350865/original/file-20200803-24-50u91u.jpg?ixlib=rb-1.1.0&q=45&auto=format&w=1200&h=1200.0&fit=crop')
+    const [image, setImage] = useState()
     useEffect(() => {
+        console.log(props.courseInfo._id)
         setImage("http://localhost:3001/api/files/send?fileName=" + props.courseInfo.imageThumbnail)
         axios.get("http://localhost:3001/api/sub-categories/id?id="+props.courseInfo.subCategoryId).then(res => {
             setSubName(res.data.subCategoryName)

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'
 import { makeStyles } from '@material-ui/core/styles';
@@ -31,7 +30,7 @@ export default function PagingCard(props) {
 
 
     //TODO: LẤY DANH SÁCH KHÓA HỌC TUỲ VÀO YÊU CẦU => TRUYỀN VÀO ITEMS ĐỂ HIỂN THỊ
-    const getCourseIItems = () => {
+    const getCourseItems = () => {
         let url = "http://localhost:3001/api/courses/"
         if (props.search) {
             url = url + "search"
@@ -44,7 +43,6 @@ export default function PagingCard(props) {
         }
         console.log(url)
         axios.get(url).then(res => {
-
             const listCourse = res.data;
 
             setItems(listCourse);
@@ -52,7 +50,7 @@ export default function PagingCard(props) {
     }
 
     useEffect(() => {
-        getCourseIItems()
+        getCourseItems()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [teachers]);
 
