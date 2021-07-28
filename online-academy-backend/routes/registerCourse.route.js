@@ -6,6 +6,8 @@ const adminAuthMdw = require('../middlewares/adminAuth.mdw');
 
 const router = express.Router();
 const registerCourseDetailModel = require('../models/registerCourseDetail.model');
+const courseModel = require('../models/course.model');
+const { Course } = require('../schema/mongodb.schema');
 
 
 router.get('/', adminAuthMdw, async (req, res) => {
@@ -136,6 +138,15 @@ router.post('/', userAuthMdw,  async (req, res) => {
                 userId: userId,
                 courseId: courseId
             });
+
+            let courses = await Course.find({ _id: courseId, isDeleted: false }).exec();
+            let course = courses[0];
+
+            
+            await Course.find({ _id: courseId, isDeleted: false }).updateMany({
+                hotPoint: course['viewCount'] + (course['studentCount'] + 1) * 5,
+                studentCount: course['studentCount'] + 1
+            })
         }
         else {
             return res.status(400).json({

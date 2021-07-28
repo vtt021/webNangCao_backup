@@ -182,7 +182,7 @@ module.exports = {
         console.log(subMap);
         console.log(teacherMap)
 
-        const courses = await Course.find({ 
+        const courses = await Course.find({
             isDeleted: false,
             subCategoryId: {
                 $in: subCategoriesId
@@ -197,7 +197,7 @@ module.exports = {
 
         let newCourses = [];
         for (let i = 0; i < courses.length; i++) {
-           
+
 
             let data = {};
 
@@ -249,7 +249,7 @@ module.exports = {
         console.log(subMap);
         console.log(teacherMap)
 
-        const courses = await Course.find({ 
+        const courses = await Course.find({
             isDeleted: false,
             subCategoryId: {
                 $in: subCategoriesId
@@ -264,7 +264,7 @@ module.exports = {
 
         let newCourses = [];
         for (let i = 0; i < courses.length; i++) {
-           
+
 
             let data = {};
 
@@ -318,13 +318,17 @@ module.exports = {
                 data['detailLong'] = courses[i]['detailLong']
                 data['isCompleted'] = courses[i]['isCompleted']
 
-                await Course.find({_id: id, isDeleted: false}).updateMany({viewCount: courses[i]['viewCount'] + 1})
+                await Course.find({ _id: id, isDeleted: false }).updateMany({
+                    viewCount: courses[i]['viewCount'] + 1,
+                    hotPoint: courses[i]['hotPoint'] + 1
+                })
+
 
                 newCourses.push(data)
             }
 
 
-           
+
 
 
             return newCourses[0];
