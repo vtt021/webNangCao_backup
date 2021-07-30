@@ -22,7 +22,6 @@ import { FormControl, MenuItem } from '@material-ui/core';
 import { getDate } from 'date-fns';
 import { formatDateTime } from '../../../utils/helpers';
 import Refreshtoken from '../../../refreshToken';
-import Lockaction from './LockAction'
 import Deleteaction from './DeleteAction';
 let stt = 0;
 const columns = [
@@ -31,11 +30,10 @@ const columns = [
     { id: 'email', label: 'email', minWidth: 70 },
     { id: 'usersRole', label: 'Phân hệ', minWidth: 80 },
     { id: 'last', label: 'Cập nhật lần cuối', minWidth: 150 },
-    { id: 'locked', label: '', minWidth: 20 },
     { id: 'deleted', label: '', minWidth: 50 },
 ];
 
-function createData(_id,name, email, role,isUnlocked, lastUpdated) {
+function createData(_id,name, email, role, lastUpdated) {
     stt += 1;
     let id = _id;
     let usersRole;
@@ -47,9 +45,8 @@ function createData(_id,name, email, role,isUnlocked, lastUpdated) {
         usersRole="Quản trị viên"
     }
     let last = formatDateTime(new Date(lastUpdated)).toLocaleString()
-    let locked = (<Lockaction isUnlocked = {isUnlocked}/>)
     let deleted = (<Deleteaction/>)
-    return { stt, name, email, usersRole, last ,locked,deleted};
+    return { stt, name, email, usersRole, last ,deleted};
 }
 
 const StyledTableCell = withStyles(theme => ({
@@ -154,9 +151,7 @@ export default function AdminUser({projects}) {
     const [page, setPage] = useState(0);
     const [rowsPerPage, _] = useState(5);
     const [rows, setRows] = useState(data)
-    const [lastRows, setLastRows] = useState(data)
-    const [role, setRole] = useState("Tất cả")
-    const [isSearch,setSearch] = useState(false)
+
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -186,72 +181,28 @@ export default function AdminUser({projects}) {
     useEffect(()=>{
         stt = 0;
         const temp = users.map((user=>{
-            return createData(user._id,user.username,user.email,user.role,user.isUnlocked,user.lastUpdated)
+            return createData(user._id,user.username,user.email,user.role,user.lastUpdated)
         }));
         setData(temp);
         setRows(temp.slice());
-        setLastRows(temp.slice());
     },[users])
 
     const filterData = (value) => {
         if (value) {
-            setSearch(true)
             const filtered = data.filter(d => {
                 if (d.name.search(new RegExp(value, "i")) >= 0
                     || d.email.search(new RegExp(value, "i")) >= 0){
                         setPage(0);
-                        if(role === "Tất cả")
-                        {
-                            return d;
-                        }
-                        else
-                        {
-                            if(d.usersRole===role)
-                            {
-                                return d;
-                            }
-                        }
+                        return d;
                 }
             });
             setRows(filtered)
         } else {
-            setSearch(false)
-            if (role != 'Tất cả') {
-                const filtered = data.filter(d => {
-                    if (d.usersRole.search(new RegExp(role, "i")) >= 0) {
-                        setPage(0)
-                        return d;
-                    }
-                });
-                setRows(filtered)
-            } else {
+            
                 setRows(data)
             }
         }
-        setLastRows(rows)
-        console.log(lastRows)
-    }
     
-    const handleRoleChange = (event) => {
-        setRole(event.target.value);
-        if (event.target.value != 'Tất cả') {
-            const filtered = lastRows.filter(d => {
-                if (d.usersRole.search(new RegExp(event.target.value, "i")) >= 0) {
-                    setPage(0)
-                    return d;
-                }
-            });
-            setRows(filtered)
-        } else {
-            if(isSearch){
-                setRows(lastRows)
-            }else{
-            setRows(data)
-            setLastRows(data)
-            }
-        }
-
-    };
     return (
         <Paper className={classes.root}>
             <TextField
@@ -263,22 +214,6 @@ export default function AdminUser({projects}) {
                 onChange={(e) => {
                     filterData(e.target.value)}}
             />
-            <FormControl  style={{ width: '20%', paddingLeft: '2%' }} className={classes.formControl}>
-            <InputLabel style={{ width: '50%', paddingLeft: '13%' }} id ="demo-simple-select-outlined-label">role</InputLabel>
-                <Select
-                    labelId="demo-simple-select-outlined-label"
-                    id="demo-simple-select-outlined"
-                    value={role}
-                    onChange={handleRoleChange}
-                    displayEmpty
-                    className={classes.selectEmpty}>
-
-                    <MenuItem value="Tất cả"> Tất cả</MenuItem>
-                    <MenuItem value="Học viên">Học viên</MenuItem>
-                    <MenuItem value="Quản trị viên">Quản trị viên</MenuItem>
-                    <MenuItem value="Giáo viên">Giáo viên</MenuItem>
-                </Select>
-            </FormControl>
 
             <TableContainer className={classes.container}>
                 <Table stickyHeader aria-label="sticky table">
