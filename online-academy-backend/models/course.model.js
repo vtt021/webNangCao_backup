@@ -5,6 +5,7 @@ const userModel = require('./user.model');
 const TABLE_NAME = 'course'
 
 const { Course } = require('../schema/mongodb.schema');
+const { getAllUsernameWithId } = require('./user.model');
 const contentData = 'courseName subCategoryId teacherId rating ratingCount imageThumbnail price salePrice'
 
 
@@ -26,6 +27,11 @@ module.exports = {
     async getAll() {
         // const courses = await db(TABLE_NAME).where({ isDeleted: false });
         const courses = await Course.find({}).exec();
+        return courses;
+    },
+
+    async getAllId() {
+        const courses = await Course.find({}, ['_id']).exec();
         return courses;
     },
 

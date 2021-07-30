@@ -21,6 +21,11 @@ router.get('/', adminAuthMdw, async (req, res) => {
     }
 })
 
+router.get('/ids', async (req, res) => {
+    const list = await courseModel.getAllId();
+    return res.json(list);
+})
+
 router.get('/new', async (req, res) => {
     try {
         const limit = req.query.limit;
