@@ -142,6 +142,10 @@ let CourseSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
+    totalRating: {
+        type: Number,
+        default: 0
+    },
     lastUpdated: {
         type: Date,
         default: Date.now

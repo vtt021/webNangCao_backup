@@ -5,12 +5,11 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { Container } from '@material-ui/core';
+import { Container, Link } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
-import VideoPlayer from './videoPlayer';
+import PlayerControl from './videoClass';
 
-
-export default function ControlledAccordions() {
+export default function ControlledAccordions(props) {
     const classes = useStyles();
     const [expanded, setExpanded] = React.useState(false);
 
@@ -33,15 +32,16 @@ export default function ControlledAccordions() {
                     <AccordionDetails>
                         <Grid container className={classes.root} >
                             <Grid item xs={12}>
-                                <Typography align='left'>
-                                    Mô tả dài
-                                </Typography>
+                                <Link align='left'
+                                    rel="noopener noreferrer" href={'/video/'+ props.courseId} target="_blank"
+                                >
+                                    Xem bài giảng
+                                </Link>
                             </Grid>
                             <Grid item xs={12} className={classes.videoContainer}>
-                                <VideoPlayer src='Thêm link video' poster='Ảnh xem trước của video' />
+                                <PlayerControl src='http://localhost:3001/api/files/send?fileName=1_1.mp4' />
                             </Grid>
                         </Grid>
-
                     </AccordionDetails>
                 </Accordion>
 
@@ -62,13 +62,14 @@ export default function ControlledAccordions() {
 
                     <AccordionDetails>
                         <Grid container className={classes.root} >
-                            <Grid item xs={12}>
-                                <Typography align='left'>
-                                    Mô tả dài
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={12} className={classes.videoContainer}>
-                                <VideoPlayer src='Thêm link video' poster='Ảnh xem trước của video' />
+                            <Grid container className={classes.root} >
+                                <Grid item xs={12}>
+                                    <Link align='left'
+                                        rel="noopener noreferrer" href="http://localhost:3001/api/files/send?fileName=1_1.mp4" target="_blank"
+                                    >
+                                        Xem bài giảng
+                                    </Link>
+                                </Grid>
                             </Grid>
                         </Grid>
                     </AccordionDetails>

@@ -182,7 +182,7 @@ module.exports = {
         console.log(subMap);
         console.log(teacherMap)
 
-        const courses = await Course.find({ 
+        const courses = await Course.find({
             isDeleted: false,
             subCategoryId: {
                 $in: subCategoriesId
@@ -197,7 +197,74 @@ module.exports = {
 
         let newCourses = [];
         for (let i = 0; i < courses.length; i++) {
-           
+
+
+            let data = {};
+
+            data["teacherName"] = teacherMap[courses[i].teacherId];
+            data['courseName'] = courses[i]['courseName']
+            data['subCategoryId'] = courses[i]['subCategoryId']
+            data['teacherId'] = courses[i]['teacherId']
+            data['rating'] = courses[i]['rating']
+            data['ratingCount'] = courses[i]['ratingCount']
+            data['imageThumbnail'] = courses[i]['imageThumbnail']
+            data['imageCourse'] = courses[i]['imageCourse']
+            data['price'] = courses[i]['price']
+            data['salePrice'] = courses[i]['salePrice']
+            newCourses.push(data)
+        }
+        return newCourses;
+    },
+
+    async getCoursesByCategoryName(categoryName, limit, page) {
+        if ((page === undefined && limit !== undefined) || (page !== undefined && limit === undefined)) {
+            throw new Error('page and limit must be both defined or undefined')
+        }
+        let offset = limit * (page - 1);
+        const subCategories = await subCategoryModel.getSubcategoryByCategoryName(categoryName);
+        if (subCategories == undefined) {
+            return res.status(400).json({
+                message: 'Invalid category name'
+            })
+        }
+        const teachers = await userModel.getAllTeachers();
+
+        let subCategoriesId = subCategories.map(cate => {
+            return cate.id;
+        })
+
+        console.log(subCategoriesId)
+
+        let subMap = {}
+        let teacherMap = {}
+
+        for (let i = 0; i < subCategories.length; i++) {
+            subMap[subCategories[i]['_id']] = subCategories[i].subCategoryName;
+        }
+
+        for (let i = 0; i < teachers.length; i++) {
+            teacherMap[teachers[i]['_id']] = teachers[i].username;
+        }
+
+        console.log(subMap);
+        console.log(teacherMap)
+
+        const courses = await Course.find({
+            isDeleted: false,
+            subCategoryId: {
+                $in: subCategoriesId
+            }
+        }, mainPageData, {
+            skip: offset,
+            limit: parseInt(limit),
+            sort: {
+                viewCount: -1
+            }
+        }).exec();
+
+        let newCourses = [];
+        for (let i = 0; i < courses.length; i++) {
+
 
             let data = {};
 
@@ -223,7 +290,7 @@ module.exports = {
         // });
         let users = await userModel.getAllUsernameWithId();
 
-        const courses = await Course.find({ _id: id, isDeleted: false }, mainPageData).exec();
+        const courses = await Course.find({ _id: id, isDeleted: false }).exec();
 
         if (courses[0] !== undefined) {
             let newCourses = [];
@@ -236,7 +303,7 @@ module.exports = {
 
                 let data = {};
 
-            data['_id'] = courses[i]['_id'];
+                data['_id'] = courses[i]['_id'];
                 data["teacherName"] = user.username;
                 data['courseName'] = courses[i]['courseName']
                 data['subCategoryId'] = courses[i]['subCategoryId']
@@ -247,13 +314,28 @@ module.exports = {
                 data['imageCourse'] = courses[i]['imageCourse']
                 data['price'] = courses[i]['price']
                 data['salePrice'] = courses[i]['salePrice']
+                data['detailShort'] = courses[i]['detailShort']
+                data['detailLong'] = courses[i]['detailLong']
+                data['isCompleted'] = courses[i]['isCompleted']
+
+                await Course.find({ _id: id, isDeleted: false }).updateMany({
+                    viewCount: courses[i]['viewCount'] + 1,
+                    hotPoint: courses[i]['hotPoint'] + 1
+                })
+
+
                 newCourses.push(data)
             }
-            return newCourses;
-        }
 
+
+
+
+
+            return newCourses[0];
+        }
         return courses[0];
     },
+
 
 
     async getCoursesBySubCategory(subCategoryId, limit, page) {

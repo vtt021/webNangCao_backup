@@ -27,24 +27,24 @@ export default function PagingCard(props) {
         }
     };
 
-    
+
 
     //TODO: LẤY DANH SÁCH KHÓA HỌC TUỲ VÀO YÊU CẦU => TRUYỀN VÀO ITEMS ĐỂ HIỂN THỊ
     const getCourseItems = () => {
         let url = "http://localhost:3001/api/courses/"
-        if(props.search){
-            url = url+"search"
-        }else{
-            if(props.subCategory != null){
-                url = url +"sub-category?subCategoryId="+ props.subCategory
-            }else{
-                url = url +"category?categoryId="+ props.categoryId
+        if (props.search) {
+            url = url + "search"
+        } else {
+            if (props.subCategory != null) {
+                url = url + "sub-category?subCategoryId=" + props.subCategory
+            } else {
+                url = url + "category?categoryId=" + props.categoryId
             }
-         }
-         console.log(url)
+        }
+        console.log(url)
         axios.get(url).then(res => {
             const listCourse = res.data;
-            
+
             setItems(listCourse);
         }).catch(error => console.log(error));
     }
@@ -63,7 +63,7 @@ export default function PagingCard(props) {
             justify="flex-start"
         >
             <Grid container justifyContent="center" justify="center" alignItems="flex-start" spacing={3}>
-                {items && items.length &&
+                {items && items.length > 0 &&
                     items.slice(minValue, maxValue).map((item, i) =>
                         i % 2 === 0 /*TODO: Kiểm tra là khoá học mới đăng 
                                     hoặc các khoá học có nhiều học viên đăng ký học (Best Seller) 
@@ -79,6 +79,11 @@ export default function PagingCard(props) {
                                 </Grid>
                             )
 
+                    )
+                }
+                {
+                  items && items.length === 0 && (
+                        <div> Không có khóa học thuộc lĩnh vực này</div>
                     )
                 }
             </Grid>

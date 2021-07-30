@@ -33,13 +33,13 @@ export default function SingleCarousel(props) {
             justifyContent="center"
             alignItems="flex-start"
             justify="center" >
-            <Carousel timeout='60'  animation = 'slide'>
+            <Carousel timeout='60' animation='slide'>
                 {items &&
                     items.map((item, i) =>
                         <CourseCard key={i} courseInfo={item}/>
                     )
                 }
-                </Carousel>
+            </Carousel>
         </Grid >
 
     )

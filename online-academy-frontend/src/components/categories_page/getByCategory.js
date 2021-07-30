@@ -9,7 +9,7 @@ import Footer from '../common/footer/footer.js';
 import LeftList from './child_component/leftList.js';
 export default function CategoryPage(props) {
     const categoryId = props.match.params.id
-    const [categoryName,setName] = useState("a")
+    const [categoryName,setName] = useState("")
     useEffect(() => {
         axios.get("http://localhost:3001/api/categories/id?id="+categoryId).then(res => {
             const listCategories = res.data;

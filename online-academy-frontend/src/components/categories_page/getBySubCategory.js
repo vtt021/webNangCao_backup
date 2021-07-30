@@ -10,8 +10,8 @@ import LeftList from './child_component/leftList.js';
 export default function SubCategoryPage(props) {
     const categoryId = props.match.params.id
     const subCategoryId = props.match.params.subId
-    const [categoryName,setCategoryName] = useState("Tên lĩnh vực( lấy từ db)")
-    const [subCategoryName,setSubName] = useState("Tên lĩnh vực phụ( cũng lấy từ db)")
+    const [categoryName,setCategoryName] = useState("")
+    const [subCategoryName,setSubName] = useState("")
     useEffect(() => {
         axios.get("http://localhost:3001/api/categories/id?id="+categoryId).then(res => {
             setCategoryName(res.data.categoryName)
