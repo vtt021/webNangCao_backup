@@ -8,7 +8,7 @@ import Grid from '@material-ui/core/Grid';
 import userImage from '../common/images/potato.jpg'
 import Header from '../common/header/header';
 import Footer from '../common/footer/footer';
-import PlayerControl from '../detail_page/component/videoClass';
+import PlayerControl from '../detail_page/component/videoPlayer';
 export default function WatchVideoPage(props) {
     const classes = useStyles();
 
@@ -16,7 +16,7 @@ export default function WatchVideoPage(props) {
     const [searchText, setSearchText] = useState(props.id ? '' : props.id);
 
     return (
-        <Container fluid>
+        <div fluid>
             <Header />
             <Grid container spacing={2} className={classes.container}>
                 <Grid item xs={12}>
@@ -34,14 +34,16 @@ export default function WatchVideoPage(props) {
             </Grid>
 
             <Footer />
-        </Container>
+        </div>
     )
 }
 const useStyles = makeStyles((theme) => ({
     container: {
         flexGrow: 1,
         marginTop: 50,
-        justifyContent: 'flex-start'
+        justifyContent: 'flex-start',
+        paddingLeft: '3%',
+        paddingRight: '3%'   
     },
 
 }));

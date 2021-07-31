@@ -17,67 +17,69 @@ export default function DetailPage(props) {
     const id = props.match.params.id
 
     return (
-        <Container fluid>
+        <div fluid>
 
             <Header />
-            <CourseInfo courseInfo={''} />
-            <Grid container spacing={2} className={classes.container}>
+            <Grid className={classes.root}>
+                <CourseInfo courseInfo={''} />
+                <Grid container spacing={2} className={classes.container}>
 
-                <Grid item xs={9} container className={classes.grid1} >
-                    <Paper className={classes.leftPaper} >
-                        <Typography variant="h6" gutterBottom align='left' >
-                            Giới thiệu khóa học: MÔ TẢ DÀI
+                    <Grid item xs={9} container className={classes.grid1} >
+                        <Paper className={classes.leftPaper} >
+                            <Typography variant="h6" gutterBottom align='left' >
+                                Giới thiệu khóa học: MÔ TẢ DÀI
+                            </Typography>
+                        </Paper>
+                        <Typography variant="h4" gutterBottom className={classes.underline}>
+                            Đề cương khóa học
                         </Typography>
-                    </Paper>
-                    <Typography variant="h4" gutterBottom className={classes.underline}>
-                        Đề cương khóa học
-                    </Typography>
-                    <Accordions courseId='truyền vô để lấy thông tin đề cương, các bài giảng' />
-                </Grid>
+                        <Accordions courseId='truyền vô để lấy thông tin đề cương, các bài giảng' />
+                    </Grid>
 
-                <Grid item xs={3} container className={classes.grid2}>
-                    <Paper className={classes.rightPaper}>
-                        <Typography variant="h6" gutterBottom align='left'>
-                            Thông tin giảng viên
-                        </Typography>
-                        <Typography gutterBottom align='left'>
-                            Giảng viên: tên giảng viên
-                        </Typography>
-                        <Typography gutterBottom align='left'>
-                            Địa chỉ liên hệ: abc@gmail.com
-                        </Typography>
-                    </Paper>
-                </Grid>
-               
-                <Grid item xs={9} container className={classes.grid3}>
-                    <Typography variant="h4" gutterBottom align='left' className={classes.underline}>
-                        Đánh giá từ học viên
-                    </Typography>
-                    <List className={classes.list}>
-                        <ListItem alignItems="flex-start" className={classes.listItem}>
-                            <FeedBack />
-                        </ListItem>
-                        <ListItem alignItems="flex-start" className={classes.listItem}>
-                            <FeedBack />
-                        </ListItem>
-                    </List>
-                </Grid>
-                
-                <Grid item xs={12} container  >
-                    <Typography variant="h4" gutterBottom align='left' className={classes.underline}>
-                        Khóa học cùng lĩnh vực được quan tâm
-                    </Typography>
-                    <MultiCarousel categoryId={''} />
-                </Grid>
+                    <Grid item xs={3} container className={classes.grid2}>
+                        <Paper className={classes.rightPaper}>
+                            <Typography variant="h6" gutterBottom align='left'>
+                                Thông tin giảng viên
+                            </Typography>
+                            <Typography gutterBottom align='left'>
+                                Giảng viên: tên giảng viên
+                            </Typography>
+                            <Typography gutterBottom align='left'>
+                                Địa chỉ liên hệ: abc@gmail.com
+                            </Typography>
+                        </Paper>
+                    </Grid>
 
+                    <Grid item xs={9} container className={classes.grid3}>
+                        <Typography variant="h4" gutterBottom align='left' className={classes.underline}>
+                            Đánh giá từ học viên
+                        </Typography>
+                        <List className={classes.list}>
+                            <ListItem alignItems="flex-start" className={classes.listItem}>
+                                <FeedBack />
+                            </ListItem>
+                            <ListItem alignItems="flex-start" className={classes.listItem}>
+                                <FeedBack />
+                            </ListItem>
+                        </List>
+                    </Grid>
+                    <Grid item xs={12} container  >
+                        <Typography variant="h4" gutterBottom align='left' className={classes.underline}>
+                            Khóa học cùng lĩnh vực được quan tâm
+                        </Typography>
+                        <MultiCarousel categoryId={''} />
+                    </Grid>
+                </Grid>
             </Grid>
-
-
             <Footer />
-        </Container>
+        </div>
     )
 }
 const useStyles = makeStyles((theme) => ({
+    root: {
+        paddingLeft: '3%',
+        paddingRight: '3%'   
+    },
     container: {
         flexGrow: 1,
         marginTop: 50,

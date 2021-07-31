@@ -49,7 +49,7 @@ export default function SignUp() {
                             <TextField
                                 autoComplete="fname"
                                 name="username"
-                                variant="outlined"
+                                variant="filled"
                                 required
                                 fullWidth
                                 id="username"
@@ -63,7 +63,7 @@ export default function SignUp() {
                         {/* Email */}
                         <Grid item xs={12}>
                             <TextField
-                                variant="outlined"
+                                variant="filled"
                                 required
                                 fullWidth
                                 id="email"
@@ -78,7 +78,7 @@ export default function SignUp() {
 
                         <Grid item xs={12}>
                             <TextField
-                                variant="outlined"
+                                variant="filled"
                                 required
                                 fullWidth
                                 name="password"
@@ -93,7 +93,7 @@ export default function SignUp() {
                         {errors.password && <span className='errors'>*Mật khẩu tối thiểu 6 ký tự</span>}
                         <Grid item xs={12}>
                             <TextField
-                                variant="outlined"
+                                variant="filled"
                                 required
                                 fullWidth
                                 name="verifyPassword"

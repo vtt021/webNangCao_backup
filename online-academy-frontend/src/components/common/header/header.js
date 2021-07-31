@@ -1,4 +1,4 @@
-import React, { useState, useEffect }  from 'react';
+import React, { useState, useEffect } from 'react';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -25,12 +25,12 @@ export default function Header() {
     const classes = useStyles();
     const history = useHistory();
 
-    const [user,setUser] = useState(JSON.parse(localStorage.getItem("auth")))
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem("auth")))
 
     const [auth, setAuth] = React.useState(user === null ? false : true);
     const [userAnchorEl, setUserAnchorEl] = React.useState(null); //Menu item
 
-    const [authAdmin, setAuthAdmin] = React.useState(user!=null&&user.role === 2 ? true : false);
+    const [authAdmin, setAuthAdmin] = React.useState(user != null && user.role === 2 ? true : false);
 
     const [searchText, setSearchText] = useState();
 
@@ -43,7 +43,7 @@ export default function Header() {
         history.push("/");
     };
 
-    
+
 
     const handleUserMenu = (event) => {
         setUserAnchorEl(event.currentTarget);
@@ -57,6 +57,7 @@ export default function Header() {
         setAuth(false)
         setAuthAdmin(false)
         setUser(null)
+        history.push('/login')
     };
 
     const onChangeSearchText = (event) => {
@@ -64,22 +65,24 @@ export default function Header() {
         setSearchText(event.target.value);
     };
     const handleSeachClick = (event) => {
-        if (searchText)
-        {
+        if (searchText) {
             //history.push('/search/' + searchText);
-            window.location.href = '/search/' +searchText;
+            window.location.href = '/search/' + searchText;
         }
-        else{
+        else {
             console.log('chưa nhập gì hết');
         }
     };
 
-    useEffect(()=>{console.log(user.accessToken)},[])
+    useEffect(() => {
+        if (user)
+            console.log(user.accessToken)
+    }, [])
 
     return (
-        
+
         <div className={classes.grow}>
-            
+
             <AppBar position="relative" className={classes.appBarStyte} >
                 <Toolbar>
                     {/* Logo nè */}

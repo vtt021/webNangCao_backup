@@ -6,11 +6,11 @@ import HorizonalTab from './child_component/tab/horizonalTab.js'
 import Footer from '../common/footer/footer.js';
 export default function Home(props) {
     return (
-        <Container fluid >
+        <div fluid >
             <Header />
             <HotCourses />
             <HorizonalTab />
             <Footer/>
-        </Container>
+        </div>
     )
 }

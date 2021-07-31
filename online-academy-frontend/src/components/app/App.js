@@ -13,6 +13,8 @@ import WatchVideoPage from '../watchVideo/watchVideo';
 import AdminCategory from '../admin/courses/AdminCategory';
 import AdminHome from '../admin/home/AdminHome';
 import AdminUser from '../admin/user/UserTable';
+
+import UploadCourse from '../teacher/uploadCourse';
 // import css
 
 function App() {
@@ -42,7 +44,7 @@ function App() {
                     render={(props) => <SearchPage {...props} />}
                 >
                 </Route>
-
+                <Route exact path="/uploadCourse" component={UploadCourse} />
                 <Route exact path="/upload" component={UploadTest} />
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/signup" component={SignUp} />

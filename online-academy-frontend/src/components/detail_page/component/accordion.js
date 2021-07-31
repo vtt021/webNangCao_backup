@@ -7,8 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Container, Link } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
-import PlayerControl from './videoClass';
-
+import PlayerControl from './videoPlayer';
 export default function ControlledAccordions(props) {
     const classes = useStyles();
     const [expanded, setExpanded] = React.useState(false);
@@ -39,7 +38,6 @@ export default function ControlledAccordions(props) {
                                 </Link>
                             </Grid>
                             <Grid item xs={12} className={classes.videoContainer}>
-                                <PlayerControl src='http://localhost:3001/api/files/send?fileName=1_1.mp4' />
                             </Grid>
                         </Grid>
                     </AccordionDetails>

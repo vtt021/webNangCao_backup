@@ -1,5 +1,7 @@
 import React, {useState,useEffect} from 'react';
 import axios from 'axios'
+import { makeStyles } from '@material-ui/core/styles';
+
 import { Container, } from 'react-bootstrap'
 import Header from '../common/header/header.js'
 import Grid from '@material-ui/core/Grid';
@@ -8,6 +10,8 @@ import PagingCard from './child_component/pagingCourse.js';
 import Footer from '../common/footer/footer.js';
 import LeftList from './child_component/leftList.js';
 export default function CategoryPage(props) {
+    const classes = useStyles();
+
     const categoryId = props.match.params.id
     const [categoryName,setName] = useState("")
     useEffect(() => {
@@ -19,9 +23,9 @@ export default function CategoryPage(props) {
             .catch(error => console.log(error));
     }, []);
     return (
-        <Container fluid >
+        <div fluid >
             <Header />
-            <div >
+            <div className={classes.root}>
                 <Grid container spacing={2}>
 
                     <Grid item xs='2' container direction="column" spacing={2} >
@@ -36,8 +40,15 @@ export default function CategoryPage(props) {
                 </Grid>
             </div>
             <Footer />
-        </Container>
+        </div>
 
 
     )
 }
+const useStyles = makeStyles((theme) => ({
+    root: {
+        paddingLeft: '2%',
+        paddingRight: '2%'   
+    },
+
+}));
