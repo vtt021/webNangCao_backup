@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
+import axios from 'axios';
 import { useHistory } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -15,60 +16,57 @@ export default function DetailPage(props) {
     const classes = useStyles();
 
     const id = props.match.params.id
+    const [courseDetail,setCoursesDetail] = useState({});
+    const [email,setEmail]=useState("");
+    const getTeacherEmail=()=>{
+        axios.get("http://localhost:3001/api/users/id?id="+courseDetail.teacherId).then(res => {
+            setEmail(res.data.email)
+            console.log(res.data.email)
+        }).catch(error => console.log(error));
+    }
+    useEffect(() => {
+        axios.get("http://localhost:3001/api/courses/id?id="+id).then(res => {
+            setCoursesDetail(res.data)
+        }).catch(error => console.log(error));
+        
+    }, []);
+
+    useEffect(() => {
+        getTeacherEmail()
+    }, [courseDetail]);
 
     return (
         <div fluid>
 
             <Header />
-            <Grid className={classes.root}>
-                <CourseInfo courseInfo={''} />
-                <Grid container spacing={2} className={classes.container}>
+            <CourseInfo courseInfo={courseDetail} />
+            <Grid container spacing={2} className={classes.container}>
 
-                    <Grid item xs={9} container className={classes.grid1} >
-                        <Paper className={classes.leftPaper} >
-                            <Typography variant="h6" gutterBottom align='left' >
-                                Giới thiệu khóa học: MÔ TẢ DÀI
-                            </Typography>
-                        </Paper>
-                        <Typography variant="h4" gutterBottom className={classes.underline}>
-                            Đề cương khóa học
+                <Grid item xs={9} container className={classes.grid1} >
+                    <Paper className={classes.leftPaper} >
+                        <Typography variant="h6" gutterBottom align='left' >
+                            Giới thiệu khóa học: {courseDetail.detailLong}
                         </Typography>
-                        <Accordions courseId='truyền vô để lấy thông tin đề cương, các bài giảng' />
-                    </Grid>
+                    </Paper>
+                    <Typography variant="h4" gutterBottom className={classes.underline}>
+                        Đề cương khóa học
+                    </Typography>
+                    <Accordions courseId={id}/>
+                </Grid>
 
-                    <Grid item xs={3} container className={classes.grid2}>
-                        <Paper className={classes.rightPaper}>
-                            <Typography variant="h6" gutterBottom align='left'>
-                                Thông tin giảng viên
-                            </Typography>
-                            <Typography gutterBottom align='left'>
-                                Giảng viên: tên giảng viên
-                            </Typography>
-                            <Typography gutterBottom align='left'>
-                                Địa chỉ liên hệ: abc@gmail.com
-                            </Typography>
-                        </Paper>
-                    </Grid>
-
-                    <Grid item xs={9} container className={classes.grid3}>
-                        <Typography variant="h4" gutterBottom align='left' className={classes.underline}>
-                            Đánh giá từ học viên
+                <Grid item xs={3} container className={classes.grid2}>
+                    <Paper className={classes.rightPaper}>
+                        <Typography variant="h6" gutterBottom align='left'>
+                            Thông tin giảng viên
                         </Typography>
-                        <List className={classes.list}>
-                            <ListItem alignItems="flex-start" className={classes.listItem}>
-                                <FeedBack />
-                            </ListItem>
-                            <ListItem alignItems="flex-start" className={classes.listItem}>
-                                <FeedBack />
-                            </ListItem>
-                        </List>
-                    </Grid>
-                    <Grid item xs={12} container  >
-                        <Typography variant="h4" gutterBottom align='left' className={classes.underline}>
-                            Khóa học cùng lĩnh vực được quan tâm
+                        <Typography gutterBottom align='left'>
+                            Giảng viên: {courseDetail.teacherName}
+                        </Typography>
+                        <Typography gutterBottom align='left'>
+                            Địa chỉ liên hệ: {email}
                         </Typography>
                         <MultiCarousel categoryId={''} />
-                    </Grid>
+                    </Paper>
                 </Grid>
             </Grid>
             <Footer />

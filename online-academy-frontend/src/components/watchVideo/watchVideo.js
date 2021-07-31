@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
+import axios from 'axios';
 import { useHistory } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -13,7 +14,17 @@ export default function WatchVideoPage(props) {
     const classes = useStyles();
 
     const id = props.match.params.id
-    const [searchText, setSearchText] = useState(props.id ? '' : props.id);
+    const [content, setContent] = useState({});
+    const getContent = async ()=>{
+        await axios.get("http://localhost:3001/api/course-contents/id?contentId="+id).then(res => { 
+            setContent(res.data)
+            console.log(res.data)
+            console.log(content)
+        }).catch(error => console.log(error));
+    }
+    useEffect(async() => {
+        await getContent()
+    }, []);
 
     return (
         <div fluid>
@@ -21,11 +32,12 @@ export default function WatchVideoPage(props) {
             <Grid container spacing={2} className={classes.container}>
                 <Grid item xs={12}>
                     <Typography align='left' variant='h4'>
-                        Tên bài giảng
+                        {content.content}
                     </Typography>
                 </Grid>
                 <Grid item xs={8} className={classes.videoContainer}>
-                    <PlayerControl src='http://localhost:3001/api/files/send?fileName=1_3.mp4' />
+                    <PlayerControl src={'http://localhost:3001/api/files/send?fileName='+content.video} />
+                    <h1>{content.video}</h1>
                 </Grid>
                 <Grid item xs={4}>
                     

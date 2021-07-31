@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState,useEffect } from 'react';
+import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
@@ -11,69 +12,52 @@ import PlayerControl from './videoPlayer';
 export default function ControlledAccordions(props) {
     const classes = useStyles();
     const [expanded, setExpanded] = React.useState(false);
+    const [courseContent,setCourseContent] = useState([]);
 
+    useEffect(() => {
+        axios.get("http://localhost:3001/api/course-contents/course?courseId="+props.courseId).then(res => {
+            setCourseContent(res.data)
+            console.log(props.courseId)
+        }).catch(error => console.log(error));
+        
+    }, []);
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);
     };
 
     return (
         <Grid container className={classes.root} >
-            <Grid item xs={12}>
-                <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+            {courseContent.map((content,index)=>{
+                return(
+                    <Grid item xs={12}>
+                <Accordion expanded={expanded === 'panel'+index} onChange={handleChange('panel'+index)}>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel1bh-content"
                         id="panel1bh-header"
                     >
-                        <Typography className={classes.heading}>Chương 1</Typography>
-                        <Typography className={classes.secondaryHeading}>Nội dung ( props.content)</Typography>
+                        <Typography className={classes.heading}>Chương {index}</Typography>
+                        <Typography className={classes.secondaryHeading}>{content.content}</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
                         <Grid container className={classes.root} >
                             <Grid item xs={12}>
                                 <Link align='left'
-                                    rel="noopener noreferrer" href={'/video/'+ props.courseId} target="_blank"
+                                    rel="noopener noreferrer" href={'/video/'+ content._id} target="_blank"
                                 >
                                     Xem bài giảng
                                 </Link>
                             </Grid>
                             <Grid item xs={12} className={classes.videoContainer}>
+                                <PlayerControl src={'http://localhost:3001/api/files/send?fileName='+content.video} />
                             </Grid>
                         </Grid>
                     </AccordionDetails>
                 </Accordion>
 
             </Grid>
-
-            <Grid item xs={12}>
-                <Accordion disabled expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
-                    <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel2bh-content"
-                        id="panel2bh-header"
-                    >
-                        <Typography className={classes.heading}>Chương 2</Typography>
-                        <Typography className={classes.secondaryHeading}>
-                            Nội dung chương 2
-                        </Typography>
-                    </AccordionSummary>
-
-                    <AccordionDetails>
-                        <Grid container className={classes.root} >
-                            <Grid container className={classes.root} >
-                                <Grid item xs={12}>
-                                    <Link align='left'
-                                        rel="noopener noreferrer" href="http://localhost:3001/api/files/send?fileName=1_1.mp4" target="_blank"
-                                    >
-                                        Xem bài giảng
-                                    </Link>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </AccordionDetails>
-                </Accordion>
-
-            </Grid>
+                )
+            })}
         </Grid>
     );
 }

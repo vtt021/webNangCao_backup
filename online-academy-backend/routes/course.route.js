@@ -185,8 +185,8 @@ router.get('/sub-category', async (req, res) => {
 
 router.get('/id', async (req, res) => {
     try {
-        const courseId = req.query.id;
-        const data = await courseModel.getCourseById(courseId);
+        const id = req.query.id;
+        const data = await courseModel.getCourseById(id);
 
         if (data === undefined) {
             return res.status(204).end();
