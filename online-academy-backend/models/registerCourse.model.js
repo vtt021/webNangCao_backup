@@ -175,10 +175,6 @@ module.exports = {
         //     lastUpdated: new Date()
         // })
 
-
-
-
-
         await RegisterCourse.find({ courseId: courseId, userId: userId }).updateMany({
             rating: rating,
             rateContent: rateContent

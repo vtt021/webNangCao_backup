@@ -39,7 +39,7 @@ router.get('/my-course', userAuthMdw, async (req, res) => {
 
 })
 
-router.get('/course', teacherAuthMdw, async (req, res) => {
+router.get('/course', async (req, res) => {
     try {
         let courseId = req.query.courseId;
         const list = await registerCourseModel.getRegisterUsersByCourseId(courseId);
