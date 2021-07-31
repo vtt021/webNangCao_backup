@@ -44,6 +44,7 @@ module.exports = {
         content.courseId = courseContent.courseId;
         content.content = courseContent.content;
         content.video = courseContent.video;
+        content.isPreview = courseContent.isPreview;
 
         // return db(TABLE_NAME).insert(courseContent);
         await content.save();

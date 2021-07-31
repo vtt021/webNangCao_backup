@@ -61,6 +61,37 @@ router.get('/course', async (req, res) => {
 
 // })
 
+router.post('/fake/add', async (req, res) => {
+    try {
+        const courses = req.body.courses;
+        const contents = req.body.contents;
+        const videos = req.body.videos;
+        const isPreview = req.body.isPreview;
+
+        for(let i = 0; i < courses.length; i++) {
+            for(let j = 0; j < contents.length; j++) {
+                let t = {
+                    courseId: courses[i],
+                    content: contents[j],
+                    video: videos[j],
+                    isPreview: isPreview[j]
+                }
+                await courseContentModel.add(t);
+            }
+        }
+
+        return res.status(200).send({
+            message: 'OK'
+        })
+    }
+    catch (e) {
+        console.log(e.stack);
+        res.status(500).json({
+            message: e.message
+        })
+    }
+})
+
 router.post('/', teacherAuthMdw, async (req, res) => {
     try {
         const courseId = req.body.courseId;
