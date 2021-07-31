@@ -39,7 +39,7 @@ router.get('/my-course', userAuthMdw, async (req, res) => {
 
 })
 
-router.get('/course', teacherAuthMdw, async (req, res) => {
+router.get('/course', async (req, res) => {
     try {
         let courseId = req.query.courseId;
         const list = await registerCourseModel.getRegisterUsersByCourseId(courseId);
@@ -181,13 +181,50 @@ router.post('/rate', userAuthMdw, async (req, res) => {
         }
         const registration = await registerCourseModel.getRegistration(userId, courseId);
 
-        if (registration.length === undefined) {
+        if (registration === undefined) {
             return res.status(400).json({
                 message: 'You have not registered the course yet'
             })
         }
         else {
             await registerCourseModel.addRate(courseId, userId, rate, rateContent)
+        }
+        
+        return res.status(200).json({
+            message: 'OK'
+        });
+    }
+    catch (e) {
+        console.log(e.stack);
+        res.status(500).json({
+            message: e.message
+        })
+    }
+})
+
+router.post('/progress', userAuthMdw, async (req, res) => {
+    try {
+        const userId = req.accessTokenPayload.id;
+        const courseId = req.body.courseId;
+        const contentId = req.body.contentId;
+        const currentTime = req.body.currentTime;
+
+        
+        if (courseId === undefined || !Number.isInteger(currentTime) || contentId === undefined ) {
+            return res.status(400).json({
+                message: 'Invalid data'
+            })
+        }
+        const registration = await registerCourseModel.getRegistration(userId, courseId);
+
+        if (registration === undefined) {
+            console.log("Here")
+            return res.status(400).json({
+                message: 'You have not registered the course yet'
+            })
+        }
+        else {
+            await registerCourseModel.updateProgress(courseId, userId, contentId, currentTime);
         }
         
         return res.status(200).json({
