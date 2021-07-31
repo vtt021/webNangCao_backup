@@ -10,7 +10,9 @@ const contentData = [
     'userId',
     'isFavorite',
     'rating',
-    'rateContent'
+    'rateContent',
+    '_id',
+    'progress'
 ];
 
 
@@ -86,6 +88,8 @@ module.exports = {
     },
 
     async getRegistration(userId, courseId) {
+        console.log(userId);
+        console.log(courseId);
         // const registration = await db(TABLE_NAME).select(contentData).from(TABLE_NAME).where({
         //     userId: userId,
         //     courseId: courseId,
@@ -93,7 +97,8 @@ module.exports = {
         // });
 
         const registration = await RegisterCourse.find({ courseId: courseId, userId: userId }).exec();
-
+        console.log(registration)
+        console.log(registration[0])
         return registration[0];
     },
 
@@ -111,15 +116,15 @@ module.exports = {
 
     async add(registration) {
         let newRegister = new RegisterCourse;
-        let contents = await courseContentModel.getContentsByCourseId(registration.courseId);
-        console.log(contents);
-        let contentIds = contents.map(c => ({ contentId: c['_id'] }));
+        // let contents = await courseContentModel.getContentsByCourseId(registration.courseId);
+        // console.log(contents);
+        // let contentIds = contents.map(c => ({ contentId: c['_id'] }));
 
-        newRegister.progress = contentIds;
+        // newRegister.progress = contentIds;
         newRegister.courseId = registration.courseId;
         newRegister.userId = registration.userId;
 
-        console.log(contentIds);
+        // console.log(contentIds);
 
         await newRegister.save();
     },
@@ -133,6 +138,30 @@ module.exports = {
     //         lastUpdated: new Date()
     //     });
     // },
+
+    async updateProgress(courseId, userId, contentId, time) {
+        const registration = await RegisterCourse.find({ courseId: courseId, userId: userId }).exec();
+        let progress = registration[0]['progress'];
+        let isFound = progress.findIndex(p => p.contentId.localeCompare(contentId) == 0);
+        console.log(isFound)
+        if (isFound != -1) {
+            console.log(progress)
+            console.log(progress[isFound]);
+            progress[isFound]['currentTime'] = time;
+        }
+        else {
+            let newData = {
+                contentId: contentId,
+                currentTime: time
+            }
+            progress.push(newData)
+        }
+
+
+        await RegisterCourse.find({ courseId: courseId, userId: userId }).updateMany({
+            progress: progress
+        });
+    },
 
 
     async addRate(courseId, userId, rating, rateContent) {

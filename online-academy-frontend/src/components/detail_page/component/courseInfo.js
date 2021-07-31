@@ -32,7 +32,7 @@ export default function CourseInfo(props) {
             <Paper className={classes.paper}>
                 <Grid container spacing={2}>
                     <Grid item xs={4} className={classes.image}>
-                        <img className={classes.img} alt="complex" src={props.imageCourse ? imageString + props.courseInfo.imageCourse : defaultImage} />
+                        <img className={classes.img} alt="complex" src={props.courseInfo.imageCourse ? imageString + props.courseInfo.imageCourse : defaultImage} />
                     </Grid>
 
                     <Grid item xs={8} container>
@@ -48,7 +48,7 @@ export default function CourseInfo(props) {
 
                             <Grid item xs container direction='column' spacing={2} alignItems='flex-start' justifyContent='flex-start'>
                                 {
-                                    !props.courseInfo.salePrice
+                                    !(props.courseInfo.salePrice===props.courseInfo.Price)
                                         ? ( //Không có giảm giá
                                             <container>
                                                 <Typography gutterBottom variant="h5" align='justify' className={classes.price}>
@@ -62,7 +62,6 @@ export default function CourseInfo(props) {
                                         :
                                         ( //Không có giảm giá
                                             <container>
-                                                aaa
                                                 <Typography gutterBottom variant="h5" align='justify' className={classes.price}>
                                                     {'Học phí: ' + (props.courseInfo.salePrice ? props.courseInfo.salePrice : '0')}
                                                 </Typography>

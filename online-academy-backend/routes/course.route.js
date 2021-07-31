@@ -21,6 +21,11 @@ router.get('/', adminAuthMdw, async (req, res) => {
     }
 })
 
+router.get('/ids', async (req, res) => {
+    const list = await courseModel.getAllId();
+    return res.json(list);
+})
+
 router.get('/new', async (req, res) => {
     try {
         const limit = req.query.limit;
@@ -180,8 +185,8 @@ router.get('/sub-category', async (req, res) => {
 
 router.get('/id', async (req, res) => {
     try {
-        const courseId = req.query.id;
-        const data = await courseModel.getCourseById(courseId);
+        const id = req.query.id;
+        const data = await courseModel.getCourseById(id);
 
         if (data === undefined) {
             return res.status(204).end();

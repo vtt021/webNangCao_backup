@@ -73,7 +73,7 @@ export default function MultiCarousel(props) {
         justifyContent="center"
         alignItems="flex-start"
         justify="center" >
-            <Carousel timeout='60' animation="slide" >
+            <Carousel animation="slide" >
                 {
                     carouselSlide
                 }

@@ -28,7 +28,7 @@ export default function Login() {
             password: data.password
         }).then(res => {
             localStorage.setItem("auth", JSON.stringify(res.data))
-            localStorage.setItem("time",new Date())
+            localStorage.setItem("time", new Date())
             window.location.replace("/")
 
         })
@@ -48,7 +48,7 @@ export default function Login() {
                 <form className={classes.form} noValidate onSubmit={handleSubmit(onSubmit)}>
                     <TextField
                         onClick={(e) => { setLoginStatus(true) }}
-                        variant="outlined"
+                        variant="filled"
                         margin="normal"
                         required
                         fullWidth
@@ -63,7 +63,7 @@ export default function Login() {
 
                     <TextField
                         onClick={(e) => setLoginStatus(true)}
-                        variant="outlined"
+                        variant="filled"
                         margin="normal"
                         required
                         fullWidth
@@ -74,7 +74,7 @@ export default function Login() {
                         autoComplete="current-password"
                         {...register("password", { required: true, minLength: 6 })}
                     />
-                    {errors.password && <span className='errors'>*Mật khẩu tối thiểu 6 ký tự</span>}
+                    {errors.password && <span className='errors'>*Mật khẩu tối thiểu 6 kí tự</span>}
 
                     <Button
                         type="submit"
@@ -87,8 +87,8 @@ export default function Login() {
                     </Button>
                     <Grid container>
                         <Grid className='left' item xs>
-                            <Link href="#" variant="body2">
-                                Quên mật khẩu?
+                            <Link href="/" variant="body2">
+                                {"Về trang chủ"}
                             </Link>
                         </Grid >
                         <Grid className='right' item >
@@ -141,6 +141,6 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(3, 0, 2),
     },
     loginFailed: {
-        margin: theme.spacing(3, 0, 3,0),
+        margin: theme.spacing(3, 0, 3, 0),
     },
 }));

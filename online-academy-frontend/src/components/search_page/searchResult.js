@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from "react-router-dom";
+import { makeStyles } from '@material-ui/core/styles';
 
 import { Container, } from 'react-bootstrap'
 import Header from '../common/header/header.js'
@@ -11,6 +12,7 @@ import Footer from '../common/footer/footer.js';
 
 export default function SearchPage(props) {
     const history = useHistory();
+    const classes = useStyles();
 
     const [searchText, setSearchText] = useState(props.match.params.keyword === undefined ? '' : props.match.params.keyword);
     const [categoryId, setCategoryId] = useState();
@@ -64,9 +66,9 @@ export default function SearchPage(props) {
         }
     };
     return (
-        <Container fluid >
+        <div fluid >
             <Header />
-            <Container fluid>
+            <div className={classes.root}>
                 <Grid container spacing={2}>
 
                     <Grid item xs='2' container direction="column" spacing={2} >
@@ -79,21 +81,24 @@ export default function SearchPage(props) {
                     </Grid>
 
                     <Grid item xs='10' container direction="column" spacing={2}  >
-                        {/*TODO: Truyền các tham số cần thiết vào Component tương ứng để hiển thị theo yêu cầu đề
-                            - Gọi data để lấy Tên lĩnh vực chính truyền vào Breadcrumb nha
-                            - Chú ý truyền keyword vào Paging, có 2 cái để sử dụng là searchText và finalKeyword
-                             sử dụng tham số tùy theo cách search muốn làm ( thay đổi dữ liệu theo onChange hay onClick)
-                        */}
                         <Breadcrumb keyword={finalKeyword} categoryId={categoryId} categoryName={categoryName} />
                         <PagingCard />
                     </Grid>
 
                 </Grid>
-            </Container>
+            </div>
             <Footer />
-        </Container>
+        </div>
 
 
     )
 }
 
+const useStyles = makeStyles((theme) => ({
+    root: {
+        paddingLeft: '2%',
+        paddingRight: '2%',
+        paddingTop: '2%'
+    },
+
+}));
