@@ -29,6 +29,9 @@ let UserSchema = mongoose.Schema({
         type: Boolean, 
         default: false
     },
+    favorite: [
+        String,
+    ],
     lastUpdated: {
         type: Date,
         default: Date.now

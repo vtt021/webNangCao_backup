@@ -7,7 +7,8 @@ const adminAuthMdw = require('../middlewares/adminAuth.mdw');
 const userAuthMdw = require('../middlewares/userAuth.mdw');
 const { sendMail } = require('../utils/mailer');
 const saltRounds = 10;
-const otpGenerator = require('../utils/otp-generator')
+const otpGenerator = require('../utils/otp-generator');
+const courseModel = require('../models/course.model');
 
 router.get('/', /*adminAuthMdw,*/ async (req, res) => {
     try {
@@ -153,6 +154,55 @@ router.post('/', async (req, res) => {
         })
     }
 });
+
+router.get('/favorite', userAuthMdw, async (req, res) => {
+    let userId = req.accessTokenPayload.id;
+    const favorites = await userModel.getFavoriteCourses(userId);
+
+    return res.status(200).send({
+        favorite: favorites
+    })
+})
+
+router.get('/favorite-course', userAuthMdw, async (req, res) => {
+    let userId = req.accessTokenPayload.id;
+    let courseId = req.query.courseId;
+
+    const favorites = await userModel.getFavoriteCourses(userId);
+    if (favorites.findIndex(e => e.localeCompare(courseId) == 0) == -1) {
+        return res.status(200).send({
+            isFavorite: false
+        })
+    }
+    else {
+        return res.status(200).send({
+            isFavorite: true
+        })
+    }
+})
+
+router.post('/favorite', userAuthMdw, async (req, res) => {
+    let courseId = req.body.courseId;
+    let userId = req.accessTokenPayload.id;
+    
+    const favorites = await userModel.getFavoriteCourses(userId);
+
+    let find = favorites.findIndex(e => e.localeCompare(courseId) == 0);
+    if (find == -1) {
+        favorites.push(courseId);
+    }
+    else {
+        favorites.splice(find, 1);
+    }
+
+    await userModel.updateFavorite(userId, favorites);
+    return res.status(200).send({
+        message: 'OK',
+        isFavorite: (find == -1)
+    })
+})
+
+
 
 router.put('/password', userAuthMdw, async(req, res) => {
     try {
