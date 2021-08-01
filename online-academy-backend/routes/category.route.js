@@ -83,6 +83,11 @@ router.put('/', adminAuthMdw, async (req, res, next) => {
 router.delete('/', adminAuthMdw , async (req, res, next) => {
     try {
         const id = req.body.id;
+        if (id === undefined) {
+            return res.status(400).json({
+                message: 'id not found'
+            });
+        }
         const subCategories = await subCategoryModel.getSubcategoryInCategory(id);
         if (subCategories.length !== 0) {
             return res.status(400).json({
