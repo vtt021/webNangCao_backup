@@ -207,7 +207,8 @@ module.exports = {
 
             let data = {};
 
-            data["teacherName"] = teacherMap[courses[i].teacherId];
+            data['_id'] = courses[i]['_id'];
+            data["teacherName"] = user.username;
             data['courseName'] = courses[i]['courseName']
             data['subCategoryId'] = courses[i]['subCategoryId']
             data['teacherId'] = courses[i]['teacherId']
@@ -217,6 +218,11 @@ module.exports = {
             data['imageCourse'] = courses[i]['imageCourse']
             data['price'] = courses[i]['price']
             data['salePrice'] = courses[i]['salePrice']
+            data['detailShort'] = courses[i]['detailShort']
+            data['detailLong'] = courses[i]['detailLong']
+            data['isCompleted'] = courses[i]['isCompleted']
+            data['totalRating'] = courses[i]['totalRating']
+            data['studentCount'] = courses[i]['studentCount']
             newCourses.push(data)
         }
         return newCourses;
@@ -323,6 +329,8 @@ module.exports = {
                 data['detailShort'] = courses[i]['detailShort']
                 data['detailLong'] = courses[i]['detailLong']
                 data['isCompleted'] = courses[i]['isCompleted']
+                data['totalRating'] = courses[i]['totalRating']
+                data['studentCount'] = courses[i]['studentCount']
 
                 await Course.find({ _id: id, isDeleted: false }).updateMany({
                     viewCount: courses[i]['viewCount'] + 1,
@@ -454,6 +462,8 @@ module.exports = {
             }
         }).exec();
 
+        console.log(courses);
+
         let newCourses = [];
         for (let i = 0; i < courses.length; i++) {
             let user = users.find(u => {
@@ -478,10 +488,20 @@ module.exports = {
         }
         // return newCourses;
 
-        return {
-            total: newCourses.length,
-            courses: newCourses.slice(offset, offset + limit)
-        };
+        if (limit != undefined) {
+            return {
+                total: newCourses.length,
+                courses: newCourses.slice(offset, offset + limit)
+            };
+        }
+        else {
+            return {
+                total: newCourses.length,
+                courses: newCourses
+            }
+        }
+
+        
     },
 
     async add(course) {

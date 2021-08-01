@@ -24,6 +24,11 @@ module.exports = {
         return registration;
     },
 
+    async getIdOnly() {
+        const registration = await RegisterCourse.find({}, '_id').exec();
+        return registration;
+    },
+
 
     async getRegisterCourseByUserId(userId) {
         const registration = await RegisterCourse.find({ userId: userId }, contentData).exec();
@@ -102,6 +107,19 @@ module.exports = {
         return registration[0];
     },
 
+    async getRegistrationById(id) {
+        // console.log(userId);
+        // console.log(courseId);
+        // const registration = await db(TABLE_NAME).select(contentData).from(TABLE_NAME).where({
+        //     userId: userId,
+        //     courseId: courseId,
+        //     isDeleted: false
+        // });
+
+        const registration = await RegisterCourse.find({ _id: id}).exec();
+        return registration[0];
+    },
+
     async changeFavoriteStatus(userId, courseId, isFavorite) {
         // return db(TABLE_NAME).where({
         //     courseId: courseId,
@@ -176,6 +194,13 @@ module.exports = {
         // })
 
         await RegisterCourse.find({ courseId: courseId, userId: userId }).updateMany({
+            rating: rating,
+            rateContent: rateContent
+        })
+    },
+
+    async addFakeRate(id, rating, rateContent) {
+        await RegisterCourse.find({ _id: id}).updateMany({
             rating: rating,
             rateContent: rateContent
         })
