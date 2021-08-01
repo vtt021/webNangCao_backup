@@ -39,6 +39,15 @@ module.exports = {
         }
     },
 
+    async getFavoriteCourses(id) {
+        const favorites = await User.find({_id: id, isDeleted: false}, ['favorite']).exec();
+        return favorites[0].favorite;
+    },
+
+    async updateFavorite(userId, favorites) {
+        await User.find({_id: userId}).updateMany({favorite: favorites}).exec();
+    },
+
     async getAllTeachers() {
         // const teachers = await db.select(['id', 'username']).from(TABLE_NAME)
         // .where({
@@ -121,6 +130,7 @@ module.exports = {
         newUser.username = user.username;
         newUser.password = user.password;
         newUser.email = user.email;
+        newUser.favorite = [];
         await newUser.save();
     },
 
