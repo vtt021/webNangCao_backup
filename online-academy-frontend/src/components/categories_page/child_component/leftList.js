@@ -51,8 +51,8 @@ export default function LeftList(props) {
 
     };
     const handleClickSubCategory = (categoryId, id) => {
-        history.push("/categories/" + categoryId + "/" + id);
-        window.location.reload();
+        window.location.href = "/categories/" + categoryId + "/" + id
+        //window.location.reload();
 
     };
 

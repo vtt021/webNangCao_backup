@@ -51,7 +51,6 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     margin: 'auto',
     background: '#77a4df'
-
     //height: 320
   },
   leftContainer: {

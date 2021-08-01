@@ -40,7 +40,7 @@ export default function Header() {
     const handleRefresh = () => {
         // về lại trang chủ
         //window.location.href = '/';
-        history.push("/");
+        window.location.href = "/"
     };
 
 
@@ -57,7 +57,7 @@ export default function Header() {
         setAuth(false)
         setAuthAdmin(false)
         setUser(null)
-        history.push('/login')
+        window.location.href = '/login'
     };
 
     const onChangeSearchText = (event) => {
@@ -66,7 +66,6 @@ export default function Header() {
     };
     const handleSeachClick = (event) => {
         if (searchText) {
-            //history.push('/search/' + searchText);
             window.location.href = '/search/' + searchText;
         }
         else {

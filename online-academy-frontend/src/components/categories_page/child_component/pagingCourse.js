@@ -41,18 +41,32 @@ export default function PagingCard(props) {
                 url = url + "category?categoryId=" + props.categoryId
             }
         }
-        console.log(url)
-        axios.get(url).then(res => {
-            const listCourse = res.data;
+        if (props.search) {
+            console.log('Search ne')
+            console.log(url)
+            
+            axios.get(url, {
+                    keyword: props.search
+            }).then(res => {
+                const listCourse = res.data;
 
-            setItems(listCourse);
-        }).catch(error => console.log(error));
+                setItems(listCourse);
+            }).catch(error => console.log(error));
+        } else {
+            console.log(url)
+            axios.get(url).then(res => {
+                const listCourse = res.data;
+
+                setItems(listCourse);
+            }).catch(error => console.log(error));
+        }
+
     }
 
     useEffect(() => {
         getCourseItems()
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [teachers]);
+    });
 
     return (
         <Grid
@@ -82,7 +96,7 @@ export default function PagingCard(props) {
                     )
                 }
                 {
-                  items && items.length === 0 && (
+                    items && items.length === 0 && (
                         <div> Không có khóa học thuộc lĩnh vực này</div>
                     )
                 }

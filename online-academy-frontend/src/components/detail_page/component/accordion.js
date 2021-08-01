@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import Accordion from '@material-ui/core/Accordion';
@@ -12,14 +12,14 @@ import PlayerControl from './videoPlayer';
 export default function ControlledAccordions(props) {
     const classes = useStyles();
     const [expanded, setExpanded] = React.useState(false);
-    const [courseContent,setCourseContent] = useState([]);
+    const [courseContent, setCourseContent] = useState([]);
 
     useEffect(() => {
-        axios.get("http://localhost:3001/api/course-contents/course?courseId="+props.courseId).then(res => {
+        axios.get("http://localhost:3001/api/course-contents/course?courseId=" + props.courseId).then(res => {
             setCourseContent(res.data)
             console.log(props.courseId)
         }).catch(error => console.log(error));
-        
+
     }, []);
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);
@@ -27,36 +27,58 @@ export default function ControlledAccordions(props) {
 
     return (
         <Grid container className={classes.root} >
-            {courseContent.map((content,index)=>{
-                return(
-                    <Grid item xs={12}>
-                <Accordion expanded={expanded === 'panel'+index} onChange={handleChange('panel'+index)}>
-                    <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1bh-content"
-                        id="panel1bh-header"
-                    >
-                        <Typography className={classes.heading}>Chương {index}</Typography>
-                        <Typography className={classes.secondaryHeading}>{content.content}</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        <Grid container className={classes.root} >
-                            <Grid item xs={12}>
-                                <Link align='left'
-                                    rel="noopener noreferrer" href={'/video/'+ content._id} target="_blank"
+            {courseContent.map((content, index) => {
+                if (content.isPreview === 'true') {
+                    return (
+                        <Grid item xs={12}>
+                            <Accordion expanded={expanded === 'panel' + index} onChange={handleChange('panel' + index)}>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1bh-content"
+                                    id="panel1bh-header"
                                 >
-                                    Xem bài giảng
-                                </Link>
-                            </Grid>
-                            <Grid item xs={12} className={classes.videoContainer}>
-                                <PlayerControl src={'http://localhost:3001/api/files/send?fileName='+content.video} />
-                            </Grid>
+                                    <Typography className={classes.heading}>Chương {index}</Typography>
+                                    <Typography className={classes.secondaryHeading}>{content.content}</Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <Grid container className={classes.root} >
+                                        <Grid item xs={12}>
+                                            <Link align='left'
+                                                rel="noopener noreferrer" href={'/video/' + content._id} target="_blank"
+                                            >
+                                                Xem bài giảng
+                                            </Link>
+                                        </Grid>
+                                        {/* <Grid item xs={12} className={classes.videoContainer}>
+                                            <PlayerControl src={'http://localhost:3001/api/files/send?fileName=' + content.video} />
+                                        </Grid> */}
+                                    </Grid>
+                                </AccordionDetails>
+                            </Accordion>
                         </Grid>
-                    </AccordionDetails>
-                </Accordion>
+                    )
+                }
+                else 
+                {
+                    return (
+                        <Grid item xs={12}>
+                            <Accordion disabled={true} expanded={expanded === 'panel' + index} onChange={handleChange('panel' + index)}>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1bh-content"
+                                    id="panel1bh-header"
+                                >
+                                    <Typography className={classes.heading}>Chương {index}</Typography>
+                                    <Typography className={classes.secondaryHeading}>{content.content}</Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    {/*Không có gì để xem */}
+                                </AccordionDetails>
+                            </Accordion>
+                        </Grid>
+                    )
+                }
 
-            </Grid>
-                )
             })}
         </Grid>
     );
