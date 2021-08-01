@@ -33,15 +33,13 @@ export default function Category() {
     const [listSubCategory,setListSub]=useState([{}])
     //DONE: CHUYỂN ĐẾN TRANG CHỨA DANH SÁCH KHÓA HỌC THEO LĨNH VỰC TƯƠNG ỨNG
     const handleCategoryPage = id => () => {
-        history.push("/categories/" + id);
-        window.location.reload();
+        window.location.href ="/categories/" + id
         
     };
     //DONE: CHUYỂN ĐẾN TRANG CHỨ DANH SÁCH KHÓA HỌC THEO LĨNH VỰC PHỤ TƯƠNG ỨNG
 
     const handleSubCategoryClick = categoryId => (event) => {
-        history.push("/categories/" + categoryId + '/'+ event.target.id);
-        window.location.reload();
+        window.location.href ="/categories/" + categoryId + '/'+ event.target.id
     };
 
     //TODO: GỌI API ĐỂ TẠO ITEMS SUBCATEGORY TƯƠNG ỨNG

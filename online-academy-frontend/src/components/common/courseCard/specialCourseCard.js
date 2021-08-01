@@ -29,7 +29,7 @@ export default function CourseCard(props) {
 
     const handleDetailPage = id => () => {
         console.log(id);
-        history.push("/detail/" + id);
+        window.location.href ="/detail/" + id
     };
     return (
         <div className={classes.container}>

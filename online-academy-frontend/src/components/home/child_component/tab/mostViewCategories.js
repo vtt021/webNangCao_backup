@@ -24,14 +24,14 @@ export default function MostViewCategories() {
 
     const handleCategoryPage = id => () => {
         console.log(id);
-        history.push("/categories/" + id);
+        window.location.href ="/categories/" + id
     };
     return (
         
         <div className={classes.root}>
             {   //Chuyển trang theo từng Category
                 listCategories && (listCategories.map((category, i) => (
-                    <Button key={i} variant="outlined" color="primary" onClick= {handleCategoryPage(category._id)}>
+                    <Button key={i} variant="outlined" color="primary" onClick= {handleCategoryPage(category._id)} size='large'>
                         {category.categoryName}
                     </Button>
                 )))
@@ -44,6 +44,6 @@ const useStyles = makeStyles((theme) => ({
         '& > *': {
             margin: theme.spacing(1),
         },
-        minHeight: 550,
+        minHeight: 200,
     },
 }));

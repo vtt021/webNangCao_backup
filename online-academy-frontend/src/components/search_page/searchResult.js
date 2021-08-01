@@ -29,7 +29,7 @@ export default function SearchPage(props) {
     const handleSeachClick = (event) => {
 
         if (searchText) {
-            window.location.href = '/search/' +searchText;
+            window.location.href = '/search/' + searchText;
         }
         else {
             console.log('chưa nhập gì hết');
@@ -82,7 +82,7 @@ export default function SearchPage(props) {
 
                     <Grid item xs='10' container direction="column" spacing={2}  >
                         <Breadcrumb keyword={finalKeyword} categoryId={categoryId} categoryName={categoryName} />
-                        <PagingCard />
+                        <PagingCard search={finalKeyword}  />
                     </Grid>
 
                 </Grid>

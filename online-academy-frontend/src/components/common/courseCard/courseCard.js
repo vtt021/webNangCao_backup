@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useHistory } from "react-router-dom";
 
@@ -17,88 +17,88 @@ import Grid from '@material-ui/core/Grid';
 export default function CourseCard(props) {
     const classes = useStyles();
     const history = useHistory();
-    const [subCategoryName,setSubName] = useState()
+    const [subCategoryName, setSubName] = useState()
 
     const [image, setImage] = useState()
     useEffect(() => {
         console.log(props.courseInfo._id)
         setImage("http://localhost:3001/api/files/send?fileName=" + props.courseInfo.imageThumbnail)
-        axios.get("http://localhost:3001/api/sub-categories/id?id="+props.courseInfo.subCategoryId).then(res => {
+        axios.get("http://localhost:3001/api/sub-categories/id?id=" + props.courseInfo.subCategoryId).then(res => {
             setSubName(res.data.subCategoryName)
         })
             .catch(error => console.log(error));
     }, []);
-
+ 
     const handleDetailPage = id => () => {
         console.log(id);
-        history.push("/detail/" + id);
+        window.location.href = "/detail/" + id
     };
     return (
         <div className={classes.container}>
             <Card className={classes.card}>
                 <CardActionArea onClick={handleDetailPage(props.courseInfo._id)}>
-                <CardHeader
+                    <CardHeader
 
-                    title={props.courseInfo.courseName}
-                    subheader={props.courseInfo.teacherName}
+                        title={props.courseInfo.courseName}
+                        subheader={props.courseInfo.teacherName}
 
-                    title={
-                        <Typography noWrap gutterBottom variant="h6" component="h4" align='left'>
-                            {props.courseInfo.subCategoryId !== undefined
-                                ? subCategoryName + ': ' + props.courseInfo.courseName
-                                : props.courseInfo.courseName
+                        title={
+                            <Typography noWrap gutterBottom variant="h6" component="h4" align='left'>
+                                {props.courseInfo.subCategoryId !== undefined
+                                    ? subCategoryName + ': ' + props.courseInfo.courseName
+                                    : props.courseInfo.courseName
 
-                            }
-                        </Typography>
-                    }
-                    //subheader={props.courseInfo.teacherId}
+                                }
+                            </Typography>
+                        }
+                        //subheader={props.courseInfo.teacherId}
 
-                    subheader={
-                        <Typography noWrap align='left'>
-                            {props.courseInfo.teacherName}
-                        </Typography>
-                    }
+                        subheader={
+                            <Typography noWrap align='left'>
+                                {props.courseInfo.teacherName}
+                            </Typography>
+                        }
 
-                    className={classes.cardHeader}
-                />
+                        className={classes.cardHeader}
+                    />
                 </CardActionArea>
 
-            <CardMedia
-                className={classes.media}
-                image={image}
-                title={props.courseInfo.courseName}
-            />
+                <CardMedia
+                    className={classes.media}
+                    image={image}
+                    title={props.courseInfo.courseName}
+                />
 
-            <CardContent>
+                <CardContent>
 
-                {!props.courseInfo.salePrice && ( //Không có giảm giá
-                    <container>
-                        <Typography gutterBottom variant="h6" align='justify' className={classes.price}>
-                            {'Học phí: ' + props.courseInfo.price}
-                        </Typography>
-                        <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
-                            {'\u00A0'}
-                        </Typography>
-                    </container>
-                )}
+                    {!props.courseInfo.salePrice && ( //Không có giảm giá
+                        <container>
+                            <Typography gutterBottom variant="h6" align='justify' className={classes.price}>
+                                {'Học phí: ' + props.courseInfo.price}
+                            </Typography>
+                            <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
+                                {'\u00A0'}
+                            </Typography>
+                        </container>
+                    )}
 
-                {props.courseInfo.salePrice != 0 && props.courseInfo.salePrice && ( // Có giảm giá
-                    <container>
-                        <Typography gutterBottom variant="h6" align='justify' className={classes.price}>
-                            {'Học phí: ' + props.courseInfo.salePrice}
+                    {props.courseInfo.salePrice != 0 && props.courseInfo.salePrice && ( // Có giảm giá
+                        <container>
+                            <Typography gutterBottom variant="h6" align='justify' className={classes.price}>
+                                {'Học phí: ' + props.courseInfo.salePrice}
+                            </Typography>
+                            <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
+                                {'( Học phí gốc: ' + props.courseInfo.price + ' )'}
+                            </Typography>
+                        </container>
+                    )}
+                    <Grid container justify="flex-start" className={classes.containerRating}>
+                        <Rating name="half-rating-read" defaultValue={props.courseInfo.rating} precision={0.1} readOnly />
+                        <Typography variant="body2" color="textSecondary" className={classes.numberRating}>
+                            {'(' + props.courseInfo.ratingCount + ' đánh giá)'}
                         </Typography>
-                        <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
-                            {'( Học phí gốc: ' + props.courseInfo.price + ' )'}
-                        </Typography>
-                    </container>
-                )}
-                <Grid container justify="flex-start" className={classes.containerRating}>
-                    <Rating name="half-rating-read" defaultValue={props.courseInfo.rating} precision={0.1} readOnly />
-                    <Typography variant="body2" color="textSecondary" className={classes.numberRating}>
-                        {'(' + props.courseInfo.ratingCount + ' đánh giá)'}
-                    </Typography>
-                </Grid>
-            </CardContent>
+                    </Grid>
+                </CardContent>
 
             </Card>
         </div >

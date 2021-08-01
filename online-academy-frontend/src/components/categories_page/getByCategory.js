@@ -34,7 +34,7 @@ export default function CategoryPage(props) {
 
                     <Grid item xs='10' container direction="column" spacing={2} >
                         <Breadcrumb categoryId={categoryId} categoryName={categoryName} />
-                        <PagingCard categoryId={categoryId} />
+                        <PagingCard search={false} categoryId={categoryId} />
                     </Grid>
 
                 </Grid>

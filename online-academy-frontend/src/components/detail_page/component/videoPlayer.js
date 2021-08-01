@@ -11,6 +11,7 @@ export default function PlayerControl(props) {
         return () => {
             const { player } = componentRef.current.getState();
             console.log(player.currentTime);
+            //console.log(props.src)
         };
     }
 
@@ -18,9 +19,10 @@ export default function PlayerControl(props) {
         <div>
             <Player
                 ref={node => componentRef.current = node}
+                src={props.src}
                 startTime={'0'} //setup thời điểm cũ của video nếu có
             >
-                <source src={props.src} />
+
                 <BigPlayButton position="center" />
                 <ControlBar autoHide={false}>
                     <ReplayControl seconds={10} order={2.1} />

@@ -19,13 +19,13 @@ export default function Breadcrumb(props) {
     function handleClickHome(event) {
         event.preventDefault();
         console.info('Quay về trang chủ');
-        history.push("/");
+        window.location.href = "/"
 
     }
     function handleClickCategory(event) {
         event.preventDefault();
         console.info('Về trang Category');
-        history.push("/categories/" + props.categoryId);
+        window.location.href = "/categories/" + props.categoryId
 
     }
     function handleClickSubCategory(event) {

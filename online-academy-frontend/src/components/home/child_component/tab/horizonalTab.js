@@ -1,57 +1,98 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useHistory } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Tab from '@material-ui/core/Tab';
-import TabContext from '@material-ui/lab/TabContext';
-import TabList from '@material-ui/lab/TabList';
-import TabPanel from '@material-ui/lab/TabPanel';
-import VerticalTab from './verticalTab.js'
-import MostViewCategories from './mostViewCategories.js'
-const useStyles = makeStyles((theme) => ({
-    container: {
-        flexGrow: 1,
-        backgroundColor: theme.palette.background.paper,
-        marginTop: 50
-    },
-}));
 
-export default function LabTabs() {
+import { Paper, Typography, List, ListItem, ListItemAvatar, ListItemText } from '@material-ui/core';
+import { Container, } from 'react-bootstrap'
+import Grid from '@material-ui/core/Grid';
+import MultiCarousel from '../../../common/carousel/multiCarousel';
+import MostViewCategories from './mostViewCategories';
+export default function DetailPage(props) {
     const classes = useStyles();
-    const [value, setValue] = React.useState('1');
 
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
+    //const [email, setEmail] = useState("");
+
+    useEffect(() => {
+
+    }, []);
+
 
     return (
-        <div className={classes.container}>
-            <TabContext value={value}>
-                <AppBar position="static">
-                    <TabList onChange={handleChange} aria-label="simple tabs example" variant="fullWidth">
-                        <Tab label="Khóa học mới nhất" value="1" />
-                        <Tab label="Khóa học được xem nhiều nhất" value="2" />
-                        <Tab label="Lĩnh vực được đăng ký nhiều nhất" value="3" />
-                    </TabList>
-                </AppBar>
-                {   //TODO: TRUYỀN THAM SỐ VÀO VerticalTab hoặc MostViewCategories ĐỂ LẤY DỮ LIỆU PHÙ HỢP THEO LOẠI HIỂN THỊ NẾU CẦN
-                    //1. Mới nhất
-                    //2. Xem nhiều nhất
-                    //3. Đăng ký nhiều nhất
-                }
-                <TabPanel value="1">
-                    <VerticalTab /> 
-                </TabPanel>
 
-                <TabPanel value="2">
-                    <VerticalTab />
-                </TabPanel>
+        <div className={classes.root}>
+            <Grid container spacing={5} className={classes.container}>
 
-                <TabPanel value="3">
-                    <MostViewCategories />
-                </TabPanel>
+                <Grid item xs={12} container className={classes.grid1} >
+                    <Typography variant="h4" gutterBottom className={classes.underline}>
+                        Khóa học mới:
+                    </Typography>
+                    <Paper className={classes.paper} >
+                        <MultiCarousel categoryId={'courses/hot'} />
+                    </Paper>
+                </Grid>
+                <Grid item xs={12} container className={classes.grid1} >
+                    <Typography variant="h4" gutterBottom className={classes.underline}>
+                        Được xem nhiều nhất:
+                    </Typography>
+                    <Paper className={classes.paper} >
+                        <MultiCarousel categoryId={'courses/hot'} />
+                    </Paper>
+                </Grid>
+                <Grid item xs={12} container className={classes.grid2} >
+                    <Typography variant="h4" gutterBottom className={classes.underline} align='left'>
+                        Lĩnh vực đăng ký nhiều nhất:
+                    </Typography>
+                    <Grid item xs={12}>
+                        <MostViewCategories />
+                    </Grid>
 
+                </Grid>
 
-            </TabContext>
+            </Grid>
         </div>
-    );
+    )
 }
+const useStyles = makeStyles((theme) => ({
+    root: {
+        paddingLeft: '3%',
+        paddingRight: '3%'
+    },
+    container: {
+        flexGrow: 1,
+        marginTop: '5%',
+        display: 'flex',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        justify: 'flex-start',
+
+    },
+    paper: {
+        padding: theme.spacing(2),
+        margin: 'auto',
+        background: '#77a4df',
+        width: '100%'
+        //height: 320
+    },
+    underline: {
+        borderBottom: '2px solid',
+        paddingTop: '5%',
+
+
+    },
+    grid1: {
+    },
+    grid2: {
+
+    },
+    grid3: {
+        marginTop: '20%'
+    },
+    list: {
+        width: '100%'
+    },
+    listItem: {
+        background: '#E6DDC6'
+    }
+
+}));
