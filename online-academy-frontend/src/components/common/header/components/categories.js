@@ -28,16 +28,15 @@ export default function Category() {
         }).catch(error => console.log(error))
     }
     
-    //DONE: GỌI API GET ALL KHÓA HỌC RỒI BỎ VÔ listCategories NÀY NHA, NHỚ THÊM NAVIGATION CHO TỪNG MENUITEMS
     const [listCategories, setListCategories] = useState([{ id: 1, categoryName: 'Không có khóa học' }])
     const [listSubCategory,setListSub]=useState([{}])
+
     //DONE: CHUYỂN ĐẾN TRANG CHỨA DANH SÁCH KHÓA HỌC THEO LĨNH VỰC TƯƠNG ỨNG
     const handleCategoryPage = id => () => {
         window.location.href ="/categories/" + id
         
     };
     //DONE: CHUYỂN ĐẾN TRANG CHỨ DANH SÁCH KHÓA HỌC THEO LĨNH VỰC PHỤ TƯƠNG ỨNG
-
     const handleSubCategoryClick = categoryId => (event) => {
         window.location.href ="/categories/" + categoryId + '/'+ event.target.id
     };
