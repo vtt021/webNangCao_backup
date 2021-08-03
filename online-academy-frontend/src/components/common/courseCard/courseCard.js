@@ -28,7 +28,7 @@ export default function CourseCard(props) {
         })
             .catch(error => console.log(error));
     }, []);
- 
+
     const handleDetailPage = id => () => {
         console.log(id);
         window.location.href = "/detail/" + id
@@ -43,15 +43,12 @@ export default function CourseCard(props) {
                         subheader={props.courseInfo.teacherName}
 
                         title={
-                            <Typography noWrap gutterBottom variant="h6" component="h4" align='left'>
-                                {props.courseInfo.subCategoryId !== undefined
-                                    ? subCategoryName + ': ' + props.courseInfo.courseName
-                                    : props.courseInfo.courseName
-
-                                }
-                            </Typography>
+                            <div>
+                                <Typography noWrap gutterBottom variant="h6" component="h4" align='left'>
+                                    {props.courseInfo.courseName}
+                                </Typography>
+                            </div>
                         }
-                        //subheader={props.courseInfo.teacherId}
 
                         subheader={
                             <Typography noWrap align='left'>
@@ -74,7 +71,10 @@ export default function CourseCard(props) {
                     {!props.courseInfo.salePrice && ( //Không có giảm giá
                         <container>
                             <Typography gutterBottom variant="h6" align='justify' className={classes.price}>
-                                {'Học phí: ' + props.courseInfo.price}
+                                {props.courseInfo.price === '0'
+                                    ? 'Học phí: ' + props.courseInfo.price
+                                    : 'Miễn phí'
+                                }
                             </Typography>
                             <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
                                 {'\u00A0'}
@@ -85,11 +85,23 @@ export default function CourseCard(props) {
                     {props.courseInfo.salePrice != 0 && props.courseInfo.salePrice && ( // Có giảm giá
                         <container>
                             <Typography gutterBottom variant="h6" align='justify' className={classes.price}>
-                                {'Học phí: ' + props.courseInfo.salePrice}
+                                {props.courseInfo.salePrice === '0'
+                                    ? 'Học phí: ' + props.courseInfo.salePrice
+                                    : 'Miễn phí'
+                                }
                             </Typography>
-                            <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
-                                {'( Học phí gốc: ' + props.courseInfo.price + ' )'}
-                            </Typography>
+                            {
+                                props.courseInfo.salePrice === props.courseInfo.price
+                                    ? <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
+                                        {
+                                            '( Học phí gốc: ' + props.courseInfo.price + ' )'
+                                        }
+                                    </Typography>
+                                    : <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
+                                        {'\u00A0'}
+                                    </Typography>
+                            }
+
                         </container>
                     )}
                     <Grid container justify="flex-start" className={classes.containerRating}>
@@ -98,6 +110,14 @@ export default function CourseCard(props) {
                             {'(' + props.courseInfo.ratingCount + ' đánh giá)'}
                         </Typography>
                     </Grid>
+                    <Grid container justify="flex-end" alignItems='flex-end'>
+                        {props.courseInfo.subCategoryId &&
+                            (<Typography noWrap align='left' variant="overline">
+                                {subCategoryName}
+                            </Typography>)
+                        }
+                    </Grid>
+
                 </CardContent>
 
             </Card>
@@ -113,6 +133,7 @@ const useStyles = makeStyles(() => ({
     },
     card: {
         width: 370,
+        minHeight: 475,
         background: '#F9F9F9',
 
     },

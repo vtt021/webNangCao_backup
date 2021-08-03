@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 //Card
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
@@ -8,124 +9,87 @@ import Grid from "@material-ui/core/Grid";
 import red from "@material-ui/core/colors/red";
 import blue from "@material-ui/core/colors/blue";
 
-import Icon from "@material-ui/core/Icon";
 import AddPhotoAlternateIcon from "@material-ui/icons/AddPhotoAlternate";
-import CollectionsIcon from "@material-ui/icons/Collections";
 
-import Typography from "@material-ui/core/Typography";
+export default function ImageUploadCard(props) {
+    const classes = useStyles();
 
+    const [mainState, setMainState] = useState("initial");
+    const [imageUploaded, setImageUploaded] = useState(0);
 
-//Tabs
-import { withStyles } from "@material-ui/core/styles";
-
-
-
-
-class ImageUploadCard extends React.Component {
-    state = {
-        mainState: "initial", // initial, search, gallery, uploaded
-        imageUploaded: 0,
-        selectedFile: null
-    };
-
-    handleUploadClick = event => {
+    const handleUploadClick = event => {
         console.log();
         var file = event.target.files[0];
         const reader = new FileReader();
         var url = reader.readAsDataURL(file);
 
         reader.onloadend = function (e) {
-            this.setState({
-                selectedFile: [reader.result]
-            });
-        }.bind(this);
+            props.setSelectedFile([reader.result])
+        };
         console.log(url); // Would see a path?
-
-        this.setState({
-            mainState: "uploaded",
-            selectedFile: event.target.files[0],
-            imageUploaded: 1
-        });
+        setMainState("uploaded");
+        props.setSelectedFile(event.target.files[0]);
+        setImageUploaded(1);
     };
 
 
-    renderInitialState() {
-        const { classes, theme } = this.props;
-        const { value } = this.state;
-
+    const renderInitialState = () => {
         return (
-                <Grid container justify="center" alignItems="center">
-                    <input
-                        accept="image/*"
-                        className={classes.input}
-                        id="contained-button-file"
-                        multiple
-                        type="file"
-                        onChange={this.handleUploadClick}
-                    />
-                    <label htmlFor="contained-button-file">
-                        <Fab component="span" className={classes.button}>
-                            <AddPhotoAlternateIcon />
-                        </Fab>
-                    </label>
-                </Grid>
+            <Grid container justify="center" alignItems="center">
+                <input
+                    accept="image/*"
+                    className={classes.input}
+                    id="contained-button-file"
+                    multiple
+                    type="file"
+                    onChange={handleUploadClick}
+                />
+                <label htmlFor="contained-button-file">
+                    <Fab component="span" className={classes.button}>
+                        <AddPhotoAlternateIcon />
+                    </Fab>
+                </label>
+            </Grid>
         );
     }
 
 
-    handleAvatarClick(value) {
-        var filename = value.url.substring(value.url.lastIndexOf("/") + 1);
-        console.log(filename);
-        this.setState({
-            mainState: "uploaded",
-            imageUploaded: true,
-            selectedFile: value.url,
-            fileReader: undefined,
-            filename: filename
-        });
-    }
-
-    renderUploadedState() {
-        const { classes, theme } = this.props;
-
+    const renderUploadedState = () => {
         return (
             <React.Fragment>
-                <CardActionArea onClick={this.imageResetHandler}>
+                <CardActionArea onClick={imageResetHandler}>
                     <img
                         width="100%"
                         className={classes.media}
-                        src={this.state.selectedFile}
+                        src={props.selectedFile}
                     />
                 </CardActionArea>
             </React.Fragment>
         );
     }
 
-    imageResetHandler = event => {
-        console.log("Click!");
-        this.setState({
-            mainState: "initial",
-            selectedFile: null,
-            imageUploaded: 0
-        });
+    const imageResetHandler = event => {
+        console.log("Click! Reset");
+        setMainState("initial");
+        props.setSelectedFile(null);
+        setImageUploaded(0);
+
     };
 
-    render() {
-        const { classes, theme } = this.props;
-        return (
-            <React.Fragment>
-                <div className={classes.root}>
-                    <Card className={this.props.cardName}>
-                        {(this.state.mainState == "initial" && this.renderInitialState())
-                            || (this.state.mainState == "gallery" && this.renderGalleryState())
-                            || (this.state.mainState == "uploaded" && this.renderUploadedState())}
-                    </Card>
-                </div>
-            </React.Fragment>
-        );
-    }
+
+    return (
+        <React.Fragment>
+            <div className={classes.root}>
+                <Card className={classes.cardName}>
+                    {(mainState == "initial" && renderInitialState())
+                        || (mainState == "uploaded" && renderUploadedState())}
+                </Card>
+            </div>
+        </React.Fragment>
+    );
+
 }
-const styles = theme => ({
+const useStyles = makeStyles((theme) => ({
     root: {
         backgroundColor: theme.palette.background.paper,
         maxWidth: '100%',
@@ -187,5 +151,4 @@ const styles = theme => ({
         height: 28,
         margin: 4
     }
-});
-export default withStyles(styles, { withTheme: true })(ImageUploadCard);
+}));

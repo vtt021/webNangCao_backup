@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import axios from 'axios';
 import { useForm } from "react-hook-form";
@@ -12,35 +12,77 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import DescribeDialog from "./uploadDescribe";
 import draftToHtml from 'draftjs-to-html';
+import UploadVideo from './uploadVideo';
 
 export default function UploadContent(props) {
     const classes = useStyles();
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm();
 
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
+    const [detailLong, setDetailLong] = useState();
 
-    const onEditorStateChange = (editorState) => {
-        console.log(convertToRaw(editorState.getCurrentContent()))
-        setEditorState(editorState)
+    const [listCategories, setListCategories] = useState([{ id: 1, categoryName: 'Không có lĩnh vực' }])
+    const [listSubCategory, setListSub] = useState([{ id: 1, categoryName: 'Không có lĩnh vực' }])
+
+    const [listActiveSub, setListActiveSub] = useState([{ id: 1, categoryName: 'Chọn lĩnh vực chính trước' }])
+
+    const [currenctCategory, setCurrenctCategory] = useState(listCategories[0]._id);
+    const [currentSubCategory, setCurrentSubCategory] = useState(listActiveSub[0]._id);
+    const handleChangeCategory = (event) => {
+        setCurrenctCategory(event.target.value);
+    };
+    const handleChangeSubCategory = (event) => {
+        setCurrentSubCategory(event.target.value);
     };
 
-    const onSubmit = data => {
-        axios.post("http://localhost:3001/api/users", {
-            email: data.email,
-            password: data.password,
-            username: data.username
-        }).then(res => {
-            window.location.replace("/verify-otp/" + data.email)
+    const onEditorStateChange = (editorState) => {
+        //console.log(convertToRaw(editorState.getCurrentContent()))
+        setEditorState(editorState)
+        setDetailLong(draftToHtml(convertToRaw(editorState.getCurrentContent())))
+    };
+
+    // const onSubmit = data => {
+    //     console.log(data)
+    // }
+
+
+
+    const getSubCategory = () => {
+        axios.get("http://localhost:3001/api/sub-categories/").then(res => {
+            setListSub(res.data)
+        }).catch(error => console.log(error))
+    }
+
+    useEffect(() => {
+        axios.get("http://localhost:3001/api/categories").then(res => {
+            const listCategories = res.data;
+            setListCategories(listCategories);
 
         })
             .catch(error => console.log(error));
-    }
+    }, []);
+
+    useEffect(() => {
+        getSubCategory()
+    }, [listCategories]);
+
+
+
+    useEffect(() => {
+        setListActiveSub([])
+        {listSubCategory.map((sub)=>{
+            if((new String(sub.categoryId)).localeCompare(new String(currenctCategory))===0){
+                setListActiveSub(prevArray => [...prevArray,{
+                    _id: sub._id,
+                    categoryName: sub.subCategoryName,
+                }, ]);
+        }})}
+    }, [currenctCategory]);
 
     return (
         <div className={classes.paper}>
-            <form className={classes.form} noValidate onSubmit={handleSubmit(onSubmit)}>
+            <form className={classes.form} noValidate onSubmit={handleSubmit(props.onSubmit)}>
                 <Grid container spacing={2}>
-
                     {/* Tên khóa học    */}
                     <Grid item xs={12}>
                         <TextField
@@ -55,6 +97,64 @@ export default function UploadContent(props) {
                         />
                     </Grid>
                     {errors.courseName && <span className='errors'>*Chưa nhập tên khóa học</span>}
+                    {/* Chọn lĩnh vực */}
+                    <Grid item xs={12}>
+                        <TextField
+                            id="categoryId"
+                            select
+                            label="Lĩnh vực"
+                            fullWidth
+                            value={currenctCategory}
+                            onChange={handleChangeCategory}
+                            SelectProps={{
+                                native: true,
+                            }}
+                            variant="filled"
+                        >
+                            {listCategories.map((option) => (
+                                <option key={option._id} value={option._id}>
+                                    {option.categoryName}
+                                </option>
+                            ))}
+                        </TextField>
+                        <input
+                            name="categoryid"
+                            type='hidden'
+                            id="categoryid"
+                            value={currenctCategory}
+                            onChange={setValue('categoryid', currenctCategory)}
+                            {...register("categoryid", { required: true })}
+                        />
+                    </Grid>
+                    {/* Chọn lĩnh vực phụ */}
+                    <Grid item xs={12}>
+                        <TextField
+                            id="subCategoryId"
+                            select
+                            label="Lĩnh vực phụ"
+                            fullWidth
+                            value={currentSubCategory}
+                            onChange={handleChangeSubCategory}
+                            SelectProps={{
+                                native: true,
+                            }}
+                            variant="filled"
+                        >
+                            {listActiveSub.map((option) => (
+                                <option key={option._id} value={option._id}>
+                                    {option.categoryName}
+                                </option>
+                            ))}
+                        </TextField>
+                        <input
+                            name="subCategoryId"
+                            type='hidden'
+                            id="subCategoryId"
+                            value={currentSubCategory}
+                            onChange={setValue('subCategoryId', currentSubCategory)}
+                            {...register("subCategoryId", { required: true })}
+                        />
+                    </Grid>
 
                     {/* Mô tả ngắn */}
                     <Grid item xs={12}>
@@ -77,11 +177,12 @@ export default function UploadContent(props) {
                         <TextField
                             name="price"
                             variant="filled"
+                            type='number'
                             required
                             fullWidth
                             id="price"
                             label="Học phí"
-                            {...register("price", { required: true })}
+                            {...register("price", { required: true, min: 0 })}
                         />
                     </Grid>
                     {errors.price && <span className='errors'>*Chưa có học phí</span>}
@@ -98,14 +199,13 @@ export default function UploadContent(props) {
                                 Mô tả chi tiết:
                             </Typography>
                         </Grid>
-
                         <Grid item>
                             <DescribeDialog editorState={editorState} onEditorStateChange={onEditorStateChange} />
                         </Grid>
                     </Grid>
 
                     <Grid item xs={12}
-                        justify="flex-start" // Add it here :)
+                        justify="flex-start"
                         container
                         className={classes.editorContent}
                     >
@@ -113,21 +213,31 @@ export default function UploadContent(props) {
                             __html: draftToHtml(convertToRaw(editorState.getCurrentContent()))
                         }}>
                         </div>
+                        <input
+                            name="detailLong"
+                            type='hidden'
+                            id="detailLong"
+                            value={detailLong}
+                            onChange={setValue('detailLong', detailLong)}
+                            {...register("detailLong", { required: true })}
+                        />
                     </Grid>
-                    {errors.price && <span className='errors'>*Chưa có mô tả</span>}
+                    {errors.detailLong && <span className='errors'>*Chưa có mô tả</span>}
+
 
                 </Grid>
-                <Button
-                    type="submit"
-                    width='50%'
-                    variant="contained"
-                    color="primary"
-                    className={classes.submit}
-                >
-                    Đăng khóa học
-                </Button>
-                <Grid container justify="flex-end">
+
+                <Grid container justify="center">
                     <Grid item>
+                        <Button
+                            type="submit"
+                            width='50%'
+                            variant="contained"
+                            color="primary"
+                            className={classes.submit}
+                        >
+                            Đăng khóa học
+                        </Button>
                     </Grid>
                 </Grid>
             </form>
