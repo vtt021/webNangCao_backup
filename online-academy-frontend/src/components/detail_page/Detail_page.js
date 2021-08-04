@@ -12,6 +12,9 @@ import Footer from '../common/footer/footer';
 import Accordions from './component/accordion';
 import MultiCarousel from '../common/carousel/multiCarousel';
 import FeedBack from './component/feedBack';
+import draftToHtml from 'draftjs-to-html';
+import { convertToRaw} from 'draft-js';
+
 export default function DetailPage(props) {
     const classes = useStyles();
 
@@ -45,9 +48,10 @@ export default function DetailPage(props) {
 
                     <Grid item xs={9} container className={classes.grid1} >
                         <Paper className={classes.leftPaper} >
-                            <Typography variant="h6" gutterBottom align='left' >
-                                {courseDetail.detailLong}
-                            </Typography>
+                            <div dangerouslySetInnerHTML={{
+                                __html: courseDetail.detailLong
+                            }} variant="h6" align='left'>
+                            </div>
                         </Paper>
                         <Typography variant="h4" gutterBottom className={classes.underline}>
                             Đề cương khóa học

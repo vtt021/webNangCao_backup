@@ -29,7 +29,22 @@ export default function Login() {
         }).then(res => {
             localStorage.setItem("auth", JSON.stringify(res.data))
             localStorage.setItem("time", new Date())
-            window.location.replace("/")
+            if (res.data.role === 0)
+            {
+                console.log('hoc sinh')
+                 window.location.replace("/")
+            }
+            else if (res.data.role === 1)
+            {
+                console.log('giao vien')
+                window.location.replace("/uploadCourse")
+            }
+            else if (res.data.role === 2)
+            {
+                console.log('admin')
+                 window.location.replace("/admin")
+            }
+            //window.location.replace("/")
 
         })
             .catch(error => setLoginStatus(false));
@@ -72,9 +87,9 @@ export default function Login() {
                         type="password"
                         id="password"
                         autoComplete="current-password"
-                        {...register("password", { required: true, minLength: 6 })}
+                        {...register("password", { required: true, minLength: 1 })}
                     />
-                    {errors.password && <span className='errors'>*Mật khẩu tối thiểu 6 kí tự</span>}
+                    {errors.password && <span className='errors'>*Chưa nhập mật khẩu</span>}
 
                     <Button
                         type="submit"

@@ -8,33 +8,36 @@ import { Container, } from 'react-bootstrap'
 import Grid from '@material-ui/core/Grid';
 import Header from '../common/header/header';
 import Footer from '../common/footer/footer';
-import EditorConvertToHTML from './child_component/wysiwyg.js'
 import { useForm } from "react-hook-form";
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
 import Link from '@material-ui/core/Link';
-import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import ImageUploadCard from './child_component/uploadImage';
 import UploadContent from './child_component/uploadContent';
+import UploadVideo from './child_component/uploadVideo';
 export default function UploadCourse(props) {
     const classes = useStyles();
 
     const id = props.match.params.id
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const [selectedFile, setSelectedFile] = useState(null);
+
 
     const onSubmit = data => {
-        axios.post("http://localhost:3001/api/users", {
-            email: data.email,
-            password: data.password,
-            username: data.username
-        }).then(res => {
-            window.location.replace("/verify-otp/" + data.email)
+        console.log(data)
+        console.log('Hình nè: ' + selectedFile)
+        //Hiển thị hình 
+        //------------
+            // < img  
+            // src = { selectedFile }
+            //     />
+        //------------
+        // axios.post("http://localhost:3001/api/users", {
+        //     email: data.email,
+        //     password: data.password,
+        //     username: data.username
+        // }).then(res => {
+        //     window.location.replace("/verify-otp/" + data.email)
 
-        })
-            .catch(error => console.log(error));
+        // })
+        //     .catch(error => console.log(error));
     }
 
     return (
@@ -52,20 +55,20 @@ export default function UploadCourse(props) {
                 </Grid>
 
                 <Grid item xs={3}>
-                    <ImageUploadCard cardName="Input Image" />
+                    <ImageUploadCard selectedFile={selectedFile} setSelectedFile={setSelectedFile} />
                 </Grid>
                 <Grid item xs={7}>
-                    <UploadContent />
+                    <UploadContent onSubmit={onSubmit} />
                 </Grid>
                 <Grid item xs={1}>
+                </Grid>
+                <Grid item xs={12}>
+                    {/* <UploadVideo /> */}
                 </Grid>
 
             </Grid>
             <Container component="main" maxWidth="xs">
             </Container>
-            {/* <Paper className={classes.leftPaper}>
-                <EditorConvertToHTML />
-            </Paper> */}
 
 
             <Footer />
