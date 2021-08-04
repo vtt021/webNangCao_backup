@@ -13,7 +13,8 @@ export default function PagingCard(props) {
     const [maxValue, setmaxValue] = useState(numEachPage);
     const [page, setPage] = useState(1);
 
-    const [items, setItems] = useState()
+    const [items, setItems] = useState({})
+    const [lastItems, setLastItems] = useState({})
     const [teachers, setTeachers] = useState()
 
     const handleChange = (event, value) => {
@@ -27,7 +28,20 @@ export default function PagingCard(props) {
         }
     };
 
-
+    const filterItem = ()=>{
+        if(props.category){
+            const filtered = lastItems.filter(d => {
+                if (new String(d.categoryId).search(new RegExp(props.category, "i")) >= 0){
+                        return d;
+                }
+                console.log(d.categoryId)
+            });
+            console.log(props.category)
+            setItems(filtered)
+        }else{
+            setItems(lastItems)
+        }
+    }
 
     //TODO: LẤY DANH SÁCH KHÓA HỌC TUỲ VÀO YÊU CẦU => TRUYỀN VÀO ITEMS ĐỂ HIỂN THỊ
     const getCourseItems = () => {
@@ -47,9 +61,9 @@ export default function PagingCard(props) {
                     keyword: props.search
                 }
             }).then(res => {
-                const listCourse = res.data.course;
-
+                const listCourse = res.data.courses;
                 setItems(listCourse);
+                setLastItems(listCourse);
             }).catch(error => console.log(error));
         } else {
             console.log(url)
@@ -64,9 +78,11 @@ export default function PagingCard(props) {
 
     useEffect(() => {
         getCourseItems()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        console.log(items)
     },[]);
-
+    useEffect(() => {
+        filterItem()
+    },[props.category]);
     return (
         <Grid
             className={classes.container}
@@ -76,7 +92,7 @@ export default function PagingCard(props) {
             justify="flex-start"
         >
             <Grid container justifyContent="center" justify="center" alignItems="flex-start" spacing={3}>
-                {items && items.length > 0 &&
+                { items && items.length > 0 &&
                     items.slice(minValue, maxValue).map((item, i) =>
                         i % 2 === 0 /*TODO: Kiểm tra là khoá học mới đăng 
                                     hoặc các khoá học có nhiều học viên đăng ký học (Best Seller) 

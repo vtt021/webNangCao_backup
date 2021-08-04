@@ -71,7 +71,7 @@ export default function CourseCard(props) {
 
                 <CardContent>
 
-                    {!props.courseInfo.salePrice && ( //Không có giảm giá
+                    {!(props.courseInfo.salePrice===props.courseInfo.Price) && ( //Không có giảm giá
                         <container>
                             <Typography gutterBottom variant="h6" align='justify' className={classes.price}>
                                 {'Học phí: ' + props.courseInfo.price}
@@ -82,7 +82,7 @@ export default function CourseCard(props) {
                         </container>
                     )}
 
-                    {props.courseInfo.salePrice != 0 && props.courseInfo.salePrice && ( // Có giảm giá
+                    {props.courseInfo.salePrice ===props.courseInfo.Price && ( // Có giảm giá
                         <container>
                             <Typography gutterBottom variant="h6" align='justify' className={classes.price}>
                                 {'Học phí: ' + props.courseInfo.salePrice}
