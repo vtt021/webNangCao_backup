@@ -208,7 +208,8 @@ module.exports = {
             let data = {};
 
             data['_id'] = courses[i]['_id'];
-            data["teacherName"] = user.username;
+            data["teacherName"] = teacherMap[courses[i].teacherId];
+            // data["teacherName"] = user.username;
             data['courseName'] = courses[i]['courseName']
             data['subCategoryId'] = courses[i]['subCategoryId']
             data['teacherId'] = courses[i]['teacherId']

@@ -35,6 +35,43 @@ router.get('/', async (req, res) => {
     }
 })
 
+router.get('/all', async (req, res) => {
+    try {
+
+        const list = await subCategoryModel.getAll();
+
+        let ret = {};
+
+        for(let i = 0; i < list.length; i++) {
+            ret[list[i]['_id']] = list[i]['categoryId'] 
+        }
+       
+
+        // if (id === undefined) {
+        //     const list = await subCategoryModel.getAll();
+        //     list.forEach(element => {
+        //         delete element["isDeleted"];
+        //         delete element["lastUpdated"];
+        //     });
+        //     res.json(list);
+        // }
+        // else {
+        //     const list = await subCategoryModel.getSubcategoryInCategory(id);
+        //     list.forEach(element => {
+        //         delete element["isDeleted"];
+        //         delete element["lastUpdated"];
+        //     });
+        //     res.json(list);
+        // }
+        return res.status(200).json(ret);
+    }
+    catch (e) {
+        console.log(e.stack);
+        res.status(500).json({
+            message: e.message
+        })
+    }
+})
 router.get('/id', async (req, res, next) => {
     try {
         let id = req.query.id;
