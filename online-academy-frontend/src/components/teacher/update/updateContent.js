@@ -35,9 +35,9 @@ export default function UpdateContent(props) {
 
     const [listActiveSub, setListActiveSub] = useState([{ id: 1, categoryName: 'Chọn lĩnh vực chính trước' }])
     // Set defaut Category từ data  
-    const [currenctCategory, setCurrenctCategory] = useState(listCategories[0]._id);
+    const [currenctCategory, setCurrenctCategory] = useState();
     // Set defaut SubCategory từ database (id của sub: props.courseInfo.subCategoryId)
-    const [currentSubCategory, setCurrentSubCategory] = useState(listActiveSub[0]._id);
+    const [currentSubCategory, setCurrentSubCategory] = useState();
 
     const handleChangeCategory = (event) => {
         setCurrenctCategory(event.target.value);
@@ -48,9 +48,11 @@ export default function UpdateContent(props) {
 
     const onEditorStateChange = (editorState) => {
         setEditorState(editorState)
-        setDetailLong(draftToHtml(convertToRaw(editorState.getCurrentContent())))
+        //setDetailLong(draftToHtml(convertToRaw(editorState.getCurrentContent())))
     };
-
+    useEffect(() => {
+        setDetailLong(draftToHtml(convertToRaw(editorState.getCurrentContent())))
+    }, [editorState]);
 
 
 
@@ -70,6 +72,7 @@ export default function UpdateContent(props) {
 
     useEffect(() => {
         getSubCategory()
+        setCurrenctCategory(listCategories[0]._id)
     }, [listCategories]);
 
 
@@ -88,6 +91,9 @@ export default function UpdateContent(props) {
         }
     }, [currenctCategory]);
 
+    useEffect(() => {
+        setCurrentSubCategory(listActiveSub[0]._id)
+    }, [listActiveSub]);
     return (
         <div className={classes.paper}>
             <form className={classes.form} noValidate onSubmit={handleSubmit(props.onSubmit)}>
@@ -109,6 +115,7 @@ export default function UpdateContent(props) {
                         />
                     </Grid>
                     {errors.courseName && <span className='errors'>*Chưa nhập tên khóa học</span>}
+
                     {/* Chọn lĩnh vực */}
                     <Grid item xs={12}>
                         <TextField
@@ -138,6 +145,8 @@ export default function UpdateContent(props) {
                             {...register("categoryid", { required: true })}
                         />
                     </Grid>
+                    {errors.categoryid && <span className='errors'>*Chưa chọn lĩnh vực</span>}
+
                     {/* Chọn lĩnh vực phụ */}
                     <Grid item xs={12}>
                         <TextField
@@ -167,6 +176,7 @@ export default function UpdateContent(props) {
                             {...register("subCategoryId", { required: true })}
                         />
                     </Grid>
+                    {errors.subCategoryId && <span className='errors'>*Chưa chọn lĩnh vực phụ</span>}
 
                     {/* Mô tả ngắn */}
                     <Grid item xs={12}>
@@ -176,13 +186,13 @@ export default function UpdateContent(props) {
                             required
                             fullWidth
                             multiline
-                            rows={4}
+                            rows={5}
                             id="detailShort"
+                            label='Mô tả ngắn'
                             defaultValue={
-                                //props.courseInfo.detailShort ||
-                                'Chưa gọi API'
-                            }
-                            label="Mô tả ngắn về khóa học"
+                                //props.courseInfo.detailShort || 
+                                'Chưa có API'}
+                            autoFocus
                             {...register("detailShort", { required: true })}
                         />
                     </Grid>
