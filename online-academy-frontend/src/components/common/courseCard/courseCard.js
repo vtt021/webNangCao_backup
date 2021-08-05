@@ -18,7 +18,7 @@ export default function CourseCard(props) {
     const classes = useStyles();
     const history = useHistory();
     const [subCategoryName, setSubName] = useState()
-
+    const [price,setPrice] = useState(<></>)
     const [image, setImage] = useState()
     useEffect(() => {
         console.log(props.courseInfo._id)
@@ -27,12 +27,69 @@ export default function CourseCard(props) {
             setSubName(res.data.subCategoryName)
         })
             .catch(error => console.log(error));
-    }, []);
+    }, [props.courseInfo]);
+
+
+    useEffect(()=>{
+        renderPrice()
+    },[props.courseInfo])
 
     const handleDetailPage = id => () => {
         console.log(id);
         window.location.href = "/detail/" + id
     };
+
+    const renderPrice=()=>{
+        setPrice(handlePrice())
+    }
+    const handlePrice = () => {
+        if (props.courseInfo.salePrice != props.courseInfo.price) {
+            if (props.courseInfo.salePrice !== 0) {
+                return (
+                    <container>
+                        <Typography gutterBottom variant="h6" align='justify' className={classes.price}>
+                            {props.courseInfo.salePrice + ' VND'}
+                        </Typography>
+                        <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
+                            {'Học phí gốc: ' + props.courseInfo.price + ' VND'}
+                        </Typography>
+
+                    </container>
+                )
+            }
+            else {
+                return (
+                    <container>
+                        <Typography gutterBottom variant="h6" align='justify' className={classes.price}>
+                            {'Miễn phí'}
+                        </Typography>
+                        <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
+                            {'Học phí gốc: ' + props.courseInfo.price + ' VND'}
+                        </Typography>
+
+                    </container>
+                )
+            }
+        }
+        else {
+            if (props.courseInfo.salePrice !== 0) {
+                return (
+                    <Typography gutterBottom variant="h6" align='justify' className={classes.price}>
+                        {props.courseInfo.salePrice + ' VND'}
+                    </Typography>
+                )
+            }
+            else {
+                return (
+                    <Typography gutterBottom variant="h6" align='justify' className={classes.price}>
+                        {'Miễn phí'}
+                    </Typography>
+                )
+            }
+        }
+
+
+    }
     return (
         <div className={classes.container}>
             <Card className={classes.card}>
@@ -67,43 +124,7 @@ export default function CourseCard(props) {
                 />
 
                 <CardContent>
-
-                    {!(props.courseInfo.salePrice===props.courseInfo.Price) && ( //Không có giảm giá
-                        <container>
-                            <Typography gutterBottom variant="h6" align='justify' className={classes.price}>
-                                {props.courseInfo.price === '0'
-                                    ? 'Học phí: ' + props.courseInfo.price
-                                    : 'Miễn phí'
-                                }
-                            </Typography>
-                            <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
-                                {'\u00A0'}
-                            </Typography>
-                        </container>
-                    )}
-
-                    {props.courseInfo.salePrice ===props.courseInfo.Price && ( // Có giảm giá
-                        <container>
-                            <Typography gutterBottom variant="h6" align='justify' className={classes.price}>
-                                {props.courseInfo.salePrice === '0'
-                                    ? 'Học phí: ' + props.courseInfo.salePrice
-                                    : 'Miễn phí'
-                                }
-                            </Typography>
-                            {
-                                props.courseInfo.salePrice === props.courseInfo.price
-                                    ? <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
-                                        {
-                                            '( Học phí gốc: ' + props.courseInfo.price + ' )'
-                                        }
-                                    </Typography>
-                                    : <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
-                                        {'\u00A0'}
-                                    </Typography>
-                            }
-
-                        </container>
-                    )}
+                    {price}
                     <Grid container justify="flex-start" className={classes.containerRating}>
                         <Rating name="half-rating-read" defaultValue={props.courseInfo.rating} precision={0.1} readOnly />
                         <Typography variant="body2" color="textSecondary" className={classes.numberRating}>

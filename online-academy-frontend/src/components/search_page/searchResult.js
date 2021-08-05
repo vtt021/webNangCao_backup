@@ -77,7 +77,7 @@ export default function SearchPage(props) {
 
                     <Grid item xs='10' container direction="column" spacing={2}  >
                         <Breadcrumb keyword={finalKeyword} categoryId={categoryId} categoryName={categoryName} />
-                        <PagingCard handleCategoryChange={handleCategoryChange} category={categoryId} search={finalKeyword}  />
+                        <PagingCard ratingSort={ratingSort} priceSort={priceSort} category={categoryId} search={finalKeyword}  />
                     </Grid>
 
                 </Grid>

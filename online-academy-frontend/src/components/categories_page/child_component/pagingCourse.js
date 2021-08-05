@@ -12,7 +12,14 @@ export default function PagingCard(props) {
     const [minValue, setMinValue] = useState(0);
     const [maxValue, setmaxValue] = useState(numEachPage);
     const [page, setPage] = useState(1);
-
+    const [priceSort,setPriceSort] = useState(0)
+    const [allCategory,setAllCategory]= useState()
+    useEffect(() => {
+        axios.get("http://localhost:3001/api/sub-categories/all").then(res => {
+            setAllCategory(res.data)
+        })
+            .catch(error => console.log(error));
+    }, []);
     const [items, setItems] = useState({})
     const [lastItems, setLastItems] = useState({})
     const [teachers, setTeachers] = useState()
@@ -28,10 +35,10 @@ export default function PagingCard(props) {
         }
     };
 
-    const filterItem = ()=>{
+    const filterItem = async ()=>{
         if(props.category){
             const filtered = lastItems.filter(d => {
-                if (new String(d.categoryId).search(new RegExp(props.category, "i")) >= 0){
+                if (new String(allCategory[d.subCategoryId]).search(new RegExp(props.category, "i")) >= 0){
                         return d;
                 }
                 console.log(d.categoryId)
@@ -40,6 +47,20 @@ export default function PagingCard(props) {
             setItems(filtered)
         }else{
             setItems(lastItems)
+        }
+
+        if(priceSort==0&&props.ratingSort==0){
+            setItems(lastItems)
+        }
+
+        if(priceSort==3){
+            const filterItem = await items.sort((a,b)=>{return a.salePrice-b.salePrice})
+            setItems(filterItem)
+        }
+
+        if(priceSort==4){
+            const filterItem = await items.sort((a,b)=>{return a.salePrice-b.salePrice}).reverse()
+            setItems(filterItem)
         }
     }
 
@@ -69,11 +90,9 @@ export default function PagingCard(props) {
             console.log(url)
             axios.get(url).then(res => {
                 const listCourse = res.data;
-
                 setItems(listCourse);
             }).catch(error => console.log(error));
         }
-
     }
 
     useEffect(() => {
@@ -81,8 +100,9 @@ export default function PagingCard(props) {
         console.log(items)
     },[]);
     useEffect(() => {
+        setPriceSort(props.priceSort)
         filterItem()
-    },[props.category]);
+    },[props.category,props.ratingSort,props.priceSort]);
     return (
         <Grid
             className={classes.container}
