@@ -13,8 +13,9 @@ import WatchVideoPage from '../watchVideo/watchVideo';
 import AdminCategory from '../admin/courses/AdminCategory';
 import AdminHome from '../admin/home/AdminHome';
 import AdminUser from '../admin/user/UserTable';
-
+import HomeTeacher from '../teacher/homeTeacher';
 import UploadCourse from '../teacher/uploadCourse';
+import UpdateContent from '../teacher/update/updateCourse';
 // import css
 
 function App() {
@@ -25,6 +26,9 @@ function App() {
                 <Route exact path="/admin" component={AdminHome}/>
                 <Route exact path="/admin/categories" component={AdminCategory}/>
                 <Route exact path="/admin/users" component={AdminUser}/>
+                <Route exact path="/teacher" component={HomeTeacher}/>
+                <Route exact path="/teacher/updateCourse/:id?" component={UpdateContent}/>
+
                 <Route exact path="/detail/:id"
                     render={(props) => <DetailPage {...props} />} />
                 <Route exact path="/video/:id"

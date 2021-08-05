@@ -35,6 +35,11 @@ module.exports = {
         return courses;
     },
 
+    async getTeacherCourses(teacherId) {
+        const courses = await Course.find({'teacherId': teacherId}).exec();
+        return courses;
+    },
+
     async getTopHotCourses(limit) {
         // const courses = await db.select(mainPageData)
         //     .from(TABLE_NAME)
@@ -208,7 +213,8 @@ module.exports = {
             let data = {};
 
             data['_id'] = courses[i]['_id'];
-            data["teacherName"] = user.username;
+            data["teacherName"] = teacherMap[courses[i].teacherId];
+            // data["teacherName"] = user.username;
             data['courseName'] = courses[i]['courseName']
             data['subCategoryId'] = courses[i]['subCategoryId']
             data['teacherId'] = courses[i]['teacherId']

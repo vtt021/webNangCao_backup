@@ -42,13 +42,12 @@ export default function PagingCard(props) {
             }
         }
         if (props.search) {
-            console.log('Search ne')
-            console.log(url)
-            
             axios.get(url, {
+                params:{
                     keyword: props.search
+                }
             }).then(res => {
-                const listCourse = res.data;
+                const listCourse = res.data.course;
 
                 setItems(listCourse);
             }).catch(error => console.log(error));
@@ -66,7 +65,7 @@ export default function PagingCard(props) {
     useEffect(() => {
         getCourseItems()
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    });
+    },[]);
 
     return (
         <Grid
