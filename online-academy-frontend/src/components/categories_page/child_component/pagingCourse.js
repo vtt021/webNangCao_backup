@@ -12,16 +12,8 @@ export default function PagingCard(props) {
     const [minValue, setMinValue] = useState(0);
     const [maxValue, setmaxValue] = useState(numEachPage);
     const [page, setPage] = useState(1);
-    const [priceSort,setPriceSort] = useState(0)
-    const [allCategory,setAllCategory]= useState()
-    useEffect(() => {
-        axios.get("http://localhost:3001/api/sub-categories/all").then(res => {
-            setAllCategory(res.data)
-        })
-            .catch(error => console.log(error));
-    }, []);
-    const [items, setItems] = useState({})
-    const [lastItems, setLastItems] = useState({})
+
+    const [items, setItems] = useState()
     const [teachers, setTeachers] = useState()
 
     const handleChange = (event, value) => {
@@ -35,34 +27,7 @@ export default function PagingCard(props) {
         }
     };
 
-    const filterItem = async ()=>{
-        if(props.category){
-            const filtered = lastItems.filter(d => {
-                if (new String(allCategory[d.subCategoryId]).search(new RegExp(props.category, "i")) >= 0){
-                        return d;
-                }
-                console.log(d.categoryId)
-            });
-            console.log(props.category)
-            setItems(filtered)
-        }else{
-            setItems(lastItems)
-        }
 
-        if(priceSort==0&&props.ratingSort==0){
-            setItems(lastItems)
-        }
-
-        if(priceSort==3){
-            const filterItem = await items.sort((a,b)=>{return a.salePrice-b.salePrice})
-            setItems(filterItem)
-        }
-
-        if(priceSort==4){
-            const filterItem = await items.sort((a,b)=>{return a.salePrice-b.salePrice}).reverse()
-            setItems(filterItem)
-        }
-    }
 
     //TODO: LẤY DANH SÁCH KHÓA HỌC TUỲ VÀO YÊU CẦU => TRUYỀN VÀO ITEMS ĐỂ HIỂN THỊ
     const getCourseItems = () => {
@@ -82,27 +47,26 @@ export default function PagingCard(props) {
                     keyword: props.search
                 }
             }).then(res => {
-                const listCourse = res.data.courses;
+                const listCourse = res.data.course;
+
                 setItems(listCourse);
-                setLastItems(listCourse);
             }).catch(error => console.log(error));
         } else {
             console.log(url)
             axios.get(url).then(res => {
                 const listCourse = res.data;
+
                 setItems(listCourse);
             }).catch(error => console.log(error));
         }
+
     }
 
     useEffect(() => {
         getCourseItems()
-        console.log(items)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
-    useEffect(() => {
-        setPriceSort(props.priceSort)
-        filterItem()
-    },[props.category,props.ratingSort,props.priceSort]);
+
     return (
         <Grid
             className={classes.container}
@@ -112,7 +76,7 @@ export default function PagingCard(props) {
             justify="flex-start"
         >
             <Grid container justifyContent="center" justify="center" alignItems="flex-start" spacing={3}>
-                { items && items.length > 0 &&
+                {items && items.length > 0 &&
                     items.slice(minValue, maxValue).map((item, i) =>
                         i % 2 === 0 /*TODO: Kiểm tra là khoá học mới đăng 
                                     hoặc các khoá học có nhiều học viên đăng ký học (Best Seller) 

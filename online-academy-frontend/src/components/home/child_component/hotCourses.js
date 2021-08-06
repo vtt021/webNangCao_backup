@@ -32,7 +32,7 @@ export default function HotCourses() {
 
           {/* TODO: truyền lệnh gọi API vào path để lấy data*/}
           <Grid item>
-            <SingleCarousel coursesPath='hot?limit=5' /> 
+            <SingleCarousel coursesPath='hot' /> 
           </Grid>
 
         </Grid>

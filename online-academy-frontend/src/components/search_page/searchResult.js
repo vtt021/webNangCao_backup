@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import { useHistory } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -27,9 +27,14 @@ export default function SearchPage(props) {
     };
 
     const handleSeachClick = (event) => {
+
         if (searchText) {
             window.location.href = '/search/' + searchText;
         }
+        else {
+            console.log('chưa nhập gì hết');
+        }
+
     };
 
     const handleCategoryChange = (event) => {
@@ -77,7 +82,7 @@ export default function SearchPage(props) {
 
                     <Grid item xs='10' container direction="column" spacing={2}  >
                         <Breadcrumb keyword={finalKeyword} categoryId={categoryId} categoryName={categoryName} />
-                        <PagingCard ratingSort={ratingSort} priceSort={priceSort} category={categoryId} search={finalKeyword}  />
+                        <PagingCard search={finalKeyword}  />
                     </Grid>
 
                 </Grid>

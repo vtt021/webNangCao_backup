@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, {  } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import { IconButton, InputAdornment, InputBase, Grid } from '@material-ui/core';
@@ -11,14 +10,6 @@ import FormLabel from '@material-ui/core/FormLabel';
 
 export default function LeftOption(props) {
     const classes = useStyles();
-    const [listCategories, setListCategories] = useState([{ id: 1, categoryName: 'Không có khóa học' }])
-    useEffect(() => {
-        axios.get("http://localhost:3001/api/categories").then(res => {
-            const listCategories = res.data;
-            setListCategories(listCategories);
-        })
-            .catch(error => console.log(error));
-    }, []);
     return (
         <Grid container direction="column" justifyContent='flex-start'>
             <div className={classes.container}>
@@ -44,19 +35,25 @@ export default function LeftOption(props) {
             <FormControl component="fieldset" className={classes.checkedContainer}>
                 <FormLabel component="legend" className={classes.checkedTilte} >Lọc theo</FormLabel>
                 <FormGroup column>
-                    {
-                        listCategories.map((items)=>{
-                            return (<FormControlLabel
-                                control={<Checkbox
-                                checked={props.categoryId === items._id}
-                                onChange={props.handleCategoryChange}
-                                inputProps={{ 'aria-label': 'primary checkbox' }}
-                                id={items._id}
-                            />}
-                        label={items.categoryName}
-                    />)
-                        })
-                    }
+                    <FormControlLabel
+                        control={<Checkbox
+                            checked={props.categoryId === '1'}
+                            onChange={props.handleCategoryChange}
+                            inputProps={{ 'aria-label': 'primary checkbox' }}
+                            id='1'
+                        />}
+                        label="Lĩnh vực 1"
+                    />
+                    <FormControlLabel
+                        control={<Checkbox
+                            checked={props.categoryId === '2'}
+                            onChange={props.handleCategoryChange}
+                            inputProps={{ 'aria-label': 'primary checkbox' }}
+                            id='2'
+                        />}
+                        label="Lĩnh vực 2"
+                    />
+
 
                 </FormGroup>
             </FormControl>
