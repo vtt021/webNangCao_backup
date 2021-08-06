@@ -21,16 +21,15 @@ export default function UploadContent(props) {
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
     const [detailLong, setDetailLong] = useState();
 
-    const [listCategories, setListCategories] = useState([{ id: 1, categoryName: 'Chọn lĩnh vực' }])
-    const [listSubCategory, setListSub] = useState([{ id: 1, categoryName: 'Chọn lĩnh vực' }])
+    const [listCategories, setListCategories] = useState([{ id: 1, categoryName: 'Không có lĩnh vực' }])
+    const [listSubCategory, setListSub] = useState([{ id: 1, categoryName: 'Không có lĩnh vực' }])
 
     const [listActiveSub, setListActiveSub] = useState([{ id: 1, categoryName: 'Chọn lĩnh vực chính trước' }])
 
-    const [currenctCategory, setCurrenctCategory] = useState();
-    const [currentSubCategory, setCurrentSubCategory] = useState();
+    const [currenctCategory, setCurrenctCategory] = useState(listCategories[0]._id);
+    const [currentSubCategory, setCurrentSubCategory] = useState(listActiveSub[0]._id);
     const handleChangeCategory = (event) => {
         setCurrenctCategory(event.target.value);
-        setValue('categoryid', event.target.value)
     };
     const handleChangeSubCategory = (event) => {
         setCurrentSubCategory(event.target.value);
@@ -42,6 +41,9 @@ export default function UploadContent(props) {
         setDetailLong(draftToHtml(convertToRaw(editorState.getCurrentContent())))
     };
 
+    // const onSubmit = data => {
+    //     console.log(data)
+    // }
 
 
 
@@ -53,8 +55,8 @@ export default function UploadContent(props) {
 
     useEffect(() => {
         axios.get("http://localhost:3001/api/categories").then(res => {
-            setListCategories(res.data);
-
+            const listCategories = res.data;
+            setListCategories(listCategories);
 
         })
             .catch(error => console.log(error));
@@ -62,27 +64,21 @@ export default function UploadContent(props) {
 
     useEffect(() => {
         getSubCategory()
-        setCurrenctCategory(listCategories[0]._id)
     }, [listCategories]);
 
 
 
     useEffect(() => {
         setListActiveSub([])
-        {
-            listSubCategory.map((sub) => {
-                if ((new String(sub.categoryId)).localeCompare(new String(currenctCategory)) === 0) {
-                    setListActiveSub(prevArray => [...prevArray, {
-                        _id: sub._id,
-                        categoryName: sub.subCategoryName,
-                    },]);
-                }
-            })
-        }
+        {listSubCategory.map((sub)=>{
+            if((new String(sub.categoryId)).localeCompare(new String(currenctCategory))===0){
+                setListActiveSub(prevArray => [...prevArray,{
+                    _id: sub._id,
+                    categoryName: sub.subCategoryName,
+                }, ]);
+        }})}
     }, [currenctCategory]);
-    useEffect(() => {
-        setCurrentSubCategory(listActiveSub[0]._id)
-    }, [listActiveSub]);
+
     return (
         <div className={classes.paper}>
             <form className={classes.form} noValidate onSubmit={handleSubmit(props.onSubmit)}>
@@ -130,8 +126,6 @@ export default function UploadContent(props) {
                             {...register("categoryid", { required: true })}
                         />
                     </Grid>
-                    {errors.categoryid && <span className='errors'>*Chưa chọn lĩnh vực</span>}
-
                     {/* Chọn lĩnh vực phụ */}
                     <Grid item xs={12}>
                         <TextField
@@ -161,7 +155,7 @@ export default function UploadContent(props) {
                             {...register("subCategoryId", { required: true })}
                         />
                     </Grid>
-                    {errors.subCategoryId && <span className='errors'>*Chưa chọn lĩnh vực phụ</span>}
+
                     {/* Mô tả ngắn */}
                     <Grid item xs={12}>
                         <TextField
