@@ -1,47 +1,58 @@
 
 import React, { useState, useEffect } from 'react';
-import { EditorState, convertToRaw, ContentState } from 'draft-js';
+import { EditorState, convertToRaw, ContentState, convertFromHTML } from 'draft-js';
 import axios from 'axios';
 import { useForm } from "react-hook-form";
-import { Box } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import DescribeDialog from "./uploadDescribe";
+import DescribeDialog from '../child_component/uploadDescribe';
 import draftToHtml from 'draftjs-to-html';
-import UploadVideo from './uploadVideo';
 
-export default function UploadContent(props) {
+export default function UpdateContent(props) {
     const classes = useStyles();
     const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm();
 
-    const [editorState, setEditorState] = useState(EditorState.createEmpty());
-    const [detailLong, setDetailLong] = useState();
+    const sampleMarkup = //props.courseInfo.detailLong
+        '<b>Bold text</b>, <i>Italic text</i><br/ ><br />' +
+        '<a href="http://www.facebook.com">Example link</a>';
 
-    const [listCategories, setListCategories] = useState([{ id: 1, categoryName: 'Chọn lĩnh vực' }])
-    const [listSubCategory, setListSub] = useState([{ id: 1, categoryName: 'Chọn lĩnh vực' }])
+    const blocksFromHTML = convertFromHTML(sampleMarkup);
+    const state = ContentState.createFromBlockArray(
+        blocksFromHTML.contentBlocks,
+        blocksFromHTML.entityMap,
+    );
+    const [editorState, setEditorState] = useState(EditorState.createWithContent(state));
+
+    const [detailLong, setDetailLong] = useState(
+        //props.courseInfo.detailLong
+    );
+
+    const [listCategories, setListCategories] = useState([{ id: 1, categoryName: 'Tất cả lĩnh vực' }])
+    const [listSubCategory, setListSub] = useState([{ id: 1, categoryName: 'Tất cả lĩnh vực phụ' }])
 
     const [listActiveSub, setListActiveSub] = useState([{ id: 1, categoryName: 'Chọn lĩnh vực chính trước' }])
-
+    // Set defaut Category từ data  
     const [currenctCategory, setCurrenctCategory] = useState();
+    // Set defaut SubCategory từ database (id của sub: props.courseInfo.subCategoryId)
     const [currentSubCategory, setCurrentSubCategory] = useState();
+
     const handleChangeCategory = (event) => {
         setCurrenctCategory(event.target.value);
-        setValue('categoryid', event.target.value)
     };
     const handleChangeSubCategory = (event) => {
         setCurrentSubCategory(event.target.value);
     };
 
     const onEditorStateChange = (editorState) => {
-        //console.log(convertToRaw(editorState.getCurrentContent()))
         setEditorState(editorState)
-        setDetailLong(draftToHtml(convertToRaw(editorState.getCurrentContent())))
+        //setDetailLong(draftToHtml(convertToRaw(editorState.getCurrentContent())))
     };
-
+    useEffect(() => {
+        setDetailLong(draftToHtml(convertToRaw(editorState.getCurrentContent())))
+    }, [editorState]);
 
 
 
@@ -53,9 +64,8 @@ export default function UploadContent(props) {
 
     useEffect(() => {
         axios.get("http://localhost:3001/api/categories").then(res => {
-            setListCategories(res.data);
-
-
+            const listCategories = res.data;
+            setListCategories(listCategories);
         })
             .catch(error => console.log(error));
     }, []);
@@ -80,6 +90,7 @@ export default function UploadContent(props) {
             })
         }
     }, [currenctCategory]);
+
     useEffect(() => {
         setCurrentSubCategory(listActiveSub[0]._id)
     }, [listActiveSub]);
@@ -96,11 +107,15 @@ export default function UploadContent(props) {
                             fullWidth
                             id="courseName"
                             label="Tên khóa học"
+                            defaultValue={
+                                //props.courseInfo.courseName || 
+                                'Chưa có API'}
                             autoFocus
                             {...register("courseName", { required: true })}
                         />
                     </Grid>
                     {errors.courseName && <span className='errors'>*Chưa nhập tên khóa học</span>}
+
                     {/* Chọn lĩnh vực */}
                     <Grid item xs={12}>
                         <TextField
@@ -162,6 +177,7 @@ export default function UploadContent(props) {
                         />
                     </Grid>
                     {errors.subCategoryId && <span className='errors'>*Chưa chọn lĩnh vực phụ</span>}
+
                     {/* Mô tả ngắn */}
                     <Grid item xs={12}>
                         <TextField
@@ -170,9 +186,13 @@ export default function UploadContent(props) {
                             required
                             fullWidth
                             multiline
-                            rows={4}
+                            rows={5}
                             id="detailShort"
-                            label="Mô tả ngắn về khóa học"
+                            label='Mô tả ngắn'
+                            defaultValue={
+                                //props.courseInfo.detailShort || 
+                                'Chưa có API'}
+                            autoFocus
                             {...register("detailShort", { required: true })}
                         />
                     </Grid>
@@ -188,10 +208,30 @@ export default function UploadContent(props) {
                             fullWidth
                             id="price"
                             label="Học phí"
+                            defaultValue={
+                                //props.courseInfo.price ||
+                                'Chưa gọi API'
+                            }
                             {...register("price", { required: true, min: 0 })}
                         />
                     </Grid>
                     {errors.price && <span className='errors'>*Chưa có học phí</span>}
+
+                    {/* Giảm giá */}
+                    <Grid item xs={12}>
+                        <TextField
+                            name="salePrice"
+                            variant="filled"
+                            type='number'
+                            fullWidth
+                            id="salePrice"
+                            label="Học phí giảm giá"
+                            defaultValue={
+                                //props.courseInfo.salePrice ? props.courseInfo.salePrice : 
+                                '0'}
+                            {...register("salePrice", { min: 0 })}
+                        />
+                    </Grid>
 
                     {/* Mô tả chi tiết (wysiwyg)*/}
                     <Grid
@@ -217,6 +257,7 @@ export default function UploadContent(props) {
                     >
                         <div dangerouslySetInnerHTML={{
                             __html: draftToHtml(convertToRaw(editorState.getCurrentContent()))
+                            // props.courseInfo.detailLong
                         }}>
                         </div>
                         <input
@@ -224,6 +265,10 @@ export default function UploadContent(props) {
                             type='hidden'
                             id="detailLong"
                             value={detailLong}
+                            defaultValue={
+                                //props.courseInfo.detailLong
+                                'Chưa có APi'
+                            }
                             onChange={setValue('detailLong', detailLong)}
                             {...register("detailLong", { required: true })}
                         />

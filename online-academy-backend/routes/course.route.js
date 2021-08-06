@@ -53,7 +53,22 @@ router.get('/top-watch', async (req, res) => {
             message: e.message
         })
     }
+})
 
+router.get('/teacher', async (req, res) => {
+    try {
+        const teacherId = req.query.teacherId;
+        
+
+        const list = await courseModel.getTeacherCourses(teacherId);
+        return res.json(list);
+    }
+    catch (e) {
+        console.log(e.stack);
+        res.status(500).json({
+            message: e.message
+        })
+    }
 })
 
 router.get('/hot', async (req, res) => {

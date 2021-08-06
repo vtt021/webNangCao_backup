@@ -35,6 +35,11 @@ module.exports = {
         return courses;
     },
 
+    async getTeacherCourses(teacherId) {
+        const courses = await Course.find({'teacherId': teacherId}).exec();
+        return courses;
+    },
+
     async getTopHotCourses(limit) {
         // const courses = await db.select(mainPageData)
         //     .from(TABLE_NAME)

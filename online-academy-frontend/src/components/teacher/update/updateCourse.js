@@ -6,22 +6,23 @@ import axios from 'axios';
 import { Paper, Typography, List, ListItem, ListItemAvatar, ListItemText } from '@material-ui/core';
 import { Container, } from 'react-bootstrap'
 import Grid from '@material-ui/core/Grid';
-import Header from '../common/header/header';
-import Footer from '../common/footer/footer';
 import { useForm } from "react-hook-form";
 import Link from '@material-ui/core/Link';
-import ImageUploadCard from './child_component/uploadImage';
-import UploadContent from './child_component/uploadContent';
-import UploadVideo from './child_component/uploadVideo';
-export default function UploadCourse(props) {
+import ImageUploadCard from '../child_component/uploadImage';
+import UpdateContent from './updateContent';
+import Footer from '../../common/footer/footer';
+import HeaderTeacher from '../child_component/headerTeacher';
+
+export default function UpdateCourse(props) {
     const classes = useStyles();
 
     const id = props.match.params.id
-    const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedFile, setSelectedFile] = useState(null); //Nhớ set cái hình cũ ở đây luôn nha
+    const [courseInfo, setCourseInfo] = useState(null); //gọi API để lấy thông tin cũ của khóa học
 
 
     const onSubmit = data => {
-        console.log(data)
+        console.log(data) //Dữ liệu khóa học người dùng nhập vào
         console.log('Hình nè: ' + selectedFile)
         //Hiển thị hình 
         //------------
@@ -29,25 +30,16 @@ export default function UploadCourse(props) {
             // src = { selectedFile }
             //     />
         //------------
-        // axios.post("http://localhost:3001/api/users", {
-        //     email: data.email,
-        //     password: data.password,
-        //     username: data.username
-        // }).then(res => {
-        //     window.location.replace("/verify-otp/" + data.email)
-
-        // })
-        //     .catch(error => console.log(error));
     }
 
     return (
         <div fluid>
 
-            <Header />
+            <HeaderTeacher />
             <Grid container spacing={3} className={classes.container}>
                 <Grid item xs={12}>
                     <h2>
-                        Đăng khóa học mới
+                        Cập nhật thông tin khóa học
                     </h2>
                 </Grid>
                 <Grid item xs={1}>
@@ -56,16 +48,11 @@ export default function UploadCourse(props) {
                     <ImageUploadCard selectedFile={selectedFile} setSelectedFile={setSelectedFile} />
                 </Grid>
                 <Grid item xs={7}>
-                    <UploadContent onSubmit={onSubmit} />
+                    <UpdateContent onSubmit={onSubmit} courseInfo={courseInfo} />
                 </Grid>
                 <Grid item xs={1}>
                 </Grid>
-                <Grid item xs={12}>
-                    {/* <UploadVideo /> */}
-                </Grid>
             </Grid>
-            <Container component="main" maxWidth="xs">
-            </Container>
             <Footer />
         </div>
     )
