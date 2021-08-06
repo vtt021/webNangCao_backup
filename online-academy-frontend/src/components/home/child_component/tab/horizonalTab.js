@@ -28,7 +28,7 @@ export default function DetailPage(props) {
                         Khóa học mới:
                     </Typography>
                     <Paper className={classes.paper} >
-                        <MultiCarousel categoryId={'courses/hot'} />
+                        <MultiCarousel categoryId={'courses/hot?limit=10'} />
                     </Paper>
                 </Grid>
                 <Grid item xs={12} container className={classes.grid1} >
@@ -36,7 +36,7 @@ export default function DetailPage(props) {
                         Được xem nhiều nhất:
                     </Typography>
                     <Paper className={classes.paper} >
-                        <MultiCarousel categoryId={'courses/hot'} />
+                        <MultiCarousel categoryId={'courses/top-watch?limit=10'} />
                     </Paper>
                 </Grid>
                 <Grid item xs={12} container className={classes.grid2} >
