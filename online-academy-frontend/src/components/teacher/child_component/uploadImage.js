@@ -22,13 +22,17 @@ export default function ImageUploadCard(props) {
         var file = event.target.files[0];
         const reader = new FileReader();
         var url = reader.readAsDataURL(file);
-
+        
         reader.onloadend = function (e) {
             props.setSelectedFile([reader.result])
         };
+        let a = file.name;
         console.log(url); // Would see a path?
+        console.log(file); // Would see a path?
+
         setMainState("uploaded");
         props.setSelectedFile(event.target.files[0]);
+        props.setFileName(a)
         setImageUploaded(1);
     };
 

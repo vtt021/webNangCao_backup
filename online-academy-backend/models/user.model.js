@@ -64,7 +64,7 @@ module.exports = {
     },
 
     async getAllUsernameWithId() {
-        const users = await User.find({}, ['_id', 'username']).exec();
+        const users = await User.find({}).exec();
 
         return users;
     },

@@ -6,6 +6,7 @@ const userModel = require('../models/user.model');
 
 
 const router = express.Router();
+var timeExpired = 1500;
 
 router.post('/', async (req, res, next) => {
     try {
@@ -35,7 +36,7 @@ router.post('/', async (req, res, next) => {
         }
 
         const options = {
-            expiresIn: 900
+            expiresIn: timeExpired
         }
 
         const accessToken = jwt.sign(payload, 'ONLINE_ACADEMY', options);
@@ -77,7 +78,7 @@ router.post('/refresh', async (req, res, next) => {
         const ret = await userModel.isValidRefreshToken(userId, refreshToken);
 
         if (ret == true) {
-            const newAccessToken = jwt.sign({ id: userId }, 'ONLINE_ACADEMY', { expiresIn: 600 })
+            const newAccessToken = jwt.sign({ id: userId }, 'ONLINE_ACADEMY', { expiresIn: timeExpired })
             return res.json({
                 accessToken: newAccessToken
             })

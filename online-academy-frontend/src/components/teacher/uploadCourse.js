@@ -15,14 +15,29 @@ import UploadContent from './child_component/uploadContent';
 import UploadVideo from './child_component/uploadVideo';
 export default function UploadCourse(props) {
     const classes = useStyles();
+    const [user,setUser] = useState(JSON.parse(localStorage.getItem("auth")))
 
     const id = props.match.params.id
     const [selectedFile, setSelectedFile] = useState(null);
+    const [fileName, setFileName] = useState(null);
+
+    const dataURLtoFile = (dataurl, filename) => {
+        const arr = dataurl.split(',')
+        const mime = arr[0].match(/:(.*?);/)[1]
+        const bstr = atob(arr[1])
+        let n = bstr.length
+        const u8arr = new Uint8Array(n)
+        while (n) {
+          u8arr[n - 1] = bstr.charCodeAt(n - 1)
+          n -= 1 // to make eslint happy
+        }
+        return new File([u8arr], filename, { type: mime })
+    }
 
 
-    const onSubmit = data => {
+    const onSubmit = async data => {
         console.log(data)
-        console.log('Hình nè: ' + selectedFile)
+        // console.log('Hình nè: ' + selectedFile)
         //Hiển thị hình 
         //------------
             // < img  
@@ -38,6 +53,51 @@ export default function UploadCourse(props) {
 
         // })
         //     .catch(error => console.log(error));
+
+        let ret = await axios.post('http://localhost:3001/api/courses', data, {
+            headers: {
+                'x-access-token': user.accessToken
+            }
+        }).then(res => {
+            console.log("Course success!")
+            return res.data.courseId;
+        }).catch(e => {
+            console.log(e)
+            return null;
+        })
+
+        console.log(ret) 
+
+        if (ret !== null) {
+            if (selectedFile === null) {
+                return;
+            }
+            let formData = new FormData();
+            console.log(selectedFile.fileName)
+            let a = dataURLtoFile(selectedFile[0], fileName);
+            
+            // console.log(selectedFile[0]);
+            console.log(fileName);
+            formData.append("file", a, fileName)
+            formData.append("courseId", ret);
+     
+
+            // console.log(selectedFile)
+
+            ret = axios.post('http://localhost:3001/api/courses/thumbnail-image', formData, {
+                headers: {
+                    'x-access-token': user.accessToken,
+                    'Content-Type': `multipart/form-data; boundary=${formData._boundary}`
+                }
+            }).then(res => {
+                console.log("Upload success!")
+                return true;
+            }).catch(e => {
+                console.log(e)
+                return false;
+            }) 
+        }
+
     }
 
     return (
@@ -53,7 +113,7 @@ export default function UploadCourse(props) {
                 <Grid item xs={1}>
                 </Grid>
                 <Grid item xs={3}>
-                    <ImageUploadCard selectedFile={selectedFile} setSelectedFile={setSelectedFile} />
+                    <ImageUploadCard selectedFile={selectedFile} setSelectedFile={setSelectedFile} setFileName={setFileName} />
                 </Grid>
                 <Grid item xs={7}>
                     <UploadContent onSubmit={onSubmit} />
