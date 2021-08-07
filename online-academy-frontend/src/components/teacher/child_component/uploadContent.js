@@ -13,7 +13,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import DescribeDialog from "./uploadDescribe";
 import draftToHtml from 'draftjs-to-html';
 import UploadVideo from './uploadVideo';
-
+import { Input } from '@material-ui/core';
 export default function UploadContent(props) {
     const classes = useStyles();
     const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm();
@@ -49,7 +49,7 @@ export default function UploadContent(props) {
 
 
     const getSubCategory = async () => {
-        await  axios.get("http://localhost:3001/api/sub-categories/").then(res => {
+        await axios.get("http://localhost:3001/api/sub-categories/").then(res => {
             setListSub(res.data)
         }).catch(error => console.log(error))
     }
@@ -63,8 +63,8 @@ export default function UploadContent(props) {
     }, []);
 
     useEffect(async () => {
-         await getSubCategory()
-         setCurrenctCategory(listCategories[0]._id)
+        await getSubCategory()
+        setCurrenctCategory(listCategories[0]._id)
     }, [listCategories]);
 
 
@@ -72,7 +72,7 @@ export default function UploadContent(props) {
     useEffect(async () => {
         setListActiveSub([])
         {
-             listSubCategory.map((sub) => {
+            listSubCategory.map((sub) => {
                 if ((new String(sub.categoryId)).localeCompare(new String(currenctCategory)) === 0) {
                     setListActiveSub(prevArray => [...prevArray, {
                         _id: sub._id,
@@ -86,7 +86,7 @@ export default function UploadContent(props) {
 
     useEffect(async () => {
         setCurrentSubCategory(listActiveSub[0]._id)
-   }, [listActiveSub]);
+    }, [listActiveSub]);
 
     return (
         <div className={classes.paper}>
@@ -105,7 +105,6 @@ export default function UploadContent(props) {
                             {...register("courseName", { required: true })}
                         />
                     </Grid>
-                    {errors.courseName && <span className='errors'>*Chưa nhập tên khóa học</span>}
                     {/* Chọn lĩnh vực */}
                     <Grid item xs={12}>
                         <TextField
