@@ -19,6 +19,7 @@ export default function UpdateCourse(props) {
     const id = props.match.params.id
     const [selectedFile, setSelectedFile] = useState(null); //Nhớ set cái hình cũ ở đây luôn nha
     const [courseInfo, setCourseInfo] = useState(null); //gọi API để lấy thông tin cũ của khóa học
+    const [saveImage, setSaveImage] = useState();
 
 
     const onSubmit = data => {
@@ -45,7 +46,9 @@ export default function UpdateCourse(props) {
                 <Grid item xs={1}>
                 </Grid>
                 <Grid item xs={3}>
-                    <ImageUploadCard selectedFile={selectedFile} setSelectedFile={setSelectedFile} />
+                    <ImageUploadCard selectedFile={selectedFile} setSelectedFile={setSelectedFile} 
+                        setSaveImage={setSaveImage}
+                    />
                 </Grid>
                 <Grid item xs={7}>
                     <UpdateContent onSubmit={onSubmit} courseInfo={courseInfo} />

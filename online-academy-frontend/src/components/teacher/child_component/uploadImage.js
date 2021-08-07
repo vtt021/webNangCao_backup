@@ -25,8 +25,11 @@ export default function ImageUploadCard(props) {
 
         reader.onloadend = function (e) {
             props.setSelectedFile([reader.result])
+            props.setSaveImage(file)
         };
-        console.log(url); // Would see a path?
+        console.log(URL.createObjectURL(event.target.files[0]))
+        //console.log(event.target.value); // Would see a path?
+        console.log(file)
         setMainState("uploaded");
         props.setSelectedFile(event.target.files[0]);
         setImageUploaded(1);

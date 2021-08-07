@@ -28,6 +28,7 @@ export default function UploadContent(props) {
 
     const [currenctCategory, setCurrenctCategory] = useState(listCategories[0]._id);
     const [currentSubCategory, setCurrentSubCategory] = useState(listActiveSub[0]._id);
+
     const handleChangeCategory = (event) => {
         setCurrenctCategory(event.target.value);
     };
@@ -47,37 +48,45 @@ export default function UploadContent(props) {
 
 
 
-    const getSubCategory = () => {
-        axios.get("http://localhost:3001/api/sub-categories/").then(res => {
+    const getSubCategory = async () => {
+        await  axios.get("http://localhost:3001/api/sub-categories/").then(res => {
             setListSub(res.data)
         }).catch(error => console.log(error))
     }
 
-    useEffect(() => {
-        axios.get("http://localhost:3001/api/categories").then(res => {
+    useEffect(async () => {
+        await axios.get("http://localhost:3001/api/categories").then(res => {
             const listCategories = res.data;
             setListCategories(listCategories);
-
         })
             .catch(error => console.log(error));
     }, []);
 
-    useEffect(() => {
-        getSubCategory()
+    useEffect(async () => {
+         await getSubCategory()
+         setCurrenctCategory(listCategories[0]._id)
     }, [listCategories]);
 
 
 
-    useEffect(() => {
+    useEffect(async () => {
         setListActiveSub([])
-        {listSubCategory.map((sub)=>{
-            if((new String(sub.categoryId)).localeCompare(new String(currenctCategory))===0){
-                setListActiveSub(prevArray => [...prevArray,{
-                    _id: sub._id,
-                    categoryName: sub.subCategoryName,
-                }, ]);
-        }})}
+        {
+             listSubCategory.map((sub) => {
+                if ((new String(sub.categoryId)).localeCompare(new String(currenctCategory)) === 0) {
+                    setListActiveSub(prevArray => [...prevArray, {
+                        _id: sub._id,
+                        categoryName: sub.subCategoryName,
+                    },]);
+                }
+            })
+        }
+
     }, [currenctCategory]);
+
+    useEffect(async () => {
+        setCurrentSubCategory(listActiveSub[0]._id)
+   }, [listActiveSub]);
 
     return (
         <div className={classes.paper}>
@@ -120,7 +129,7 @@ export default function UploadContent(props) {
                         <input
                             name="categoryid"
                             type='hidden'
-                            id="categoryid"
+                            id="categoryidHidden"
                             value={currenctCategory}
                             onChange={setValue('categoryid', currenctCategory)}
                             {...register("categoryid", { required: true })}
@@ -149,7 +158,7 @@ export default function UploadContent(props) {
                         <input
                             name="subCategoryId"
                             type='hidden'
-                            id="subCategoryId"
+                            id="subCategoryIdHidden"
                             value={currentSubCategory}
                             onChange={setValue('subCategoryId', currentSubCategory)}
                             {...register("subCategoryId", { required: true })}
@@ -216,7 +225,7 @@ export default function UploadContent(props) {
                         <input
                             name="detailLong"
                             type='hidden'
-                            id="detailLong"
+                            id="detailLongHidden"
                             value={detailLong}
                             onChange={setValue('detailLong', detailLong)}
                             {...register("detailLong", { required: true })}

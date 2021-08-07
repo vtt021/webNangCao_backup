@@ -17,6 +17,8 @@ export default function UploadCourse(props) {
     const classes = useStyles();
 
     const id = props.match.params.id
+    const [saveImage, setSaveImage] = useState();
+
     const [selectedFile, setSelectedFile] = useState(null);
 
 
@@ -53,7 +55,9 @@ export default function UploadCourse(props) {
                 <Grid item xs={1}>
                 </Grid>
                 <Grid item xs={3}>
-                    <ImageUploadCard selectedFile={selectedFile} setSelectedFile={setSelectedFile} />
+                    <ImageUploadCard selectedFile={selectedFile} setSelectedFile={setSelectedFile} 
+                        saveImage={saveImage} setSaveImage={setSaveImage}
+                    />
                 </Grid>
                 <Grid item xs={7}>
                     <UploadContent onSubmit={onSubmit} />
