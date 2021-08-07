@@ -221,10 +221,10 @@ router.post('/', teacherAuthMdw, async (req, res) => {
     try {
         let data = req.body;
         data.teacherId = req.accessTokenPayload.id;
-        const course = await courseModel.add(data);
+        const courseId = await courseModel.add(data);
         return res.status(201).json({
             message: 'OK',
-            courseId: course[0]
+            courseId: courseId
         });
     }
     catch (e) {
@@ -240,7 +240,7 @@ router.post('/admin', adminAuthMdw, async (req, res) => {
         const course = await courseModel.add(req.body);
         return res.status(201).json({
             message: 'OK',
-            courseId: course[0]
+            courseId: course
         });
     }
     catch (e) {
@@ -251,11 +251,16 @@ router.post('/admin', adminAuthMdw, async (req, res) => {
     }
 })
 
-router.post('/thumbnail-image', teacherAuthMdw, upload.uploadImageMdw, async (req, res) => {
+router.post('/thumbnail-image', teacherAuthMdw, async (req, res) => {
     try {
+        await upload.uploadImageMdw(req, res)
         const file = req.file;
+        console.log(file)
         const teacherId = req.accessTokenPayload.id;
         const courseId = req.body.courseId;
+
+        console.log("courseId", courseId)
+        console.log("teacherId", teacherId)
 
         if (courseId === undefined) {
             return res.status(400).json({
@@ -270,8 +275,6 @@ router.post('/thumbnail-image', teacherAuthMdw, upload.uploadImageMdw, async (re
         }
 
         const course = await courseModel.getCourseById(courseId);
-        console.log(course);
-        console.log(teacherId);
 
         if (course === undefined || course.teacherId !== teacherId) {
             res.status(400).json({
@@ -280,7 +283,7 @@ router.post('/thumbnail-image', teacherAuthMdw, upload.uploadImageMdw, async (re
         }
 
         await courseModel.uploadThumbnailImage(courseId, file.filename);
-        res.status(200).json({
+        return res.status(200).json({
             message: 'OK',
             filename: file.filename
         })

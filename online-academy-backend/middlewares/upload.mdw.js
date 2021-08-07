@@ -6,7 +6,7 @@ const fs = require("fs");
 
 
 const maxSize = 50 * 1024 * 1024;
-const targetPath = './resources/assets/'
+const targetPath = './resources/'
 
 let storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -28,6 +28,7 @@ let uploadImage = multer({
         fileSize: maxSize
     },
     fileFilter: (req, file, cb) => { 
+        console.log("Here")
         let ext = path.extname(file.originalname);
         if (ext === '.png' || ext === '.jpg' || ext === '.jpeg') {
             cb(null, true);

@@ -520,7 +520,10 @@ module.exports = {
         newCourse.detailShort = course.detailShort
         newCourse.detailLong = course.detailLong
 
-        await newCourse.save();
+        let a = await newCourse.save();
+        return a['_id']
+
+        
     },
 
     async uploadThumbnailImage(id, filename) {
