@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { EditorState, convertToRaw, ContentState, convertFromHTML } from 'draft-js';
 import axios from 'axios';
@@ -56,28 +55,28 @@ export default function UpdateContent(props) {
 
 
 
-    const getSubCategory = () => {
-        axios.get("http://localhost:3001/api/sub-categories/").then(res => {
+    const getSubCategory = async () => {
+        await axios.get("http://localhost:3001/api/sub-categories/").then(res => {
             setListSub(res.data)
         }).catch(error => console.log(error))
     }
 
-    useEffect(() => {
-        axios.get("http://localhost:3001/api/categories").then(res => {
+    useEffect(async () => {
+        await axios.get("http://localhost:3001/api/categories").then(res => {
             const listCategories = res.data;
             setListCategories(listCategories);
         })
             .catch(error => console.log(error));
     }, []);
 
-    useEffect(() => {
-        getSubCategory()
+    useEffect(async () => {
+        await getSubCategory()
         setCurrenctCategory(listCategories[0]._id)
     }, [listCategories]);
 
 
 
-    useEffect(() => {
+    useEffect(async () => {
         setListActiveSub([])
         {
             listSubCategory.map((sub) => {
@@ -91,7 +90,7 @@ export default function UpdateContent(props) {
         }
     }, [currenctCategory]);
 
-    useEffect(() => {
+    useEffect(async () => {
         setCurrentSubCategory(listActiveSub[0]._id)
     }, [listActiveSub]);
     return (
@@ -275,6 +274,19 @@ export default function UpdateContent(props) {
                     </Grid>
                     {errors.detailLong && <span className='errors'>*Chưa có mô tả</span>}
 
+                    <Grid container item xs={12} alignItems='center'>
+                        <Typography variant='h5' align='left' className={classes.textAlign}>
+                            Đã hoàn thiện:
+                        </Typography>
+                        <input
+                            name="isCompleted"
+                            type='checkbox'
+                            id={"isCompleted" + props.id}
+                            className={classes.Checkbox}
+                            {...register("isCompleted", {})}
+                        />
+
+                    </Grid>
 
                 </Grid>
 
@@ -313,4 +325,11 @@ const useStyles = makeStyles((theme) => ({
     submit: {
         margin: theme.spacing(3, 0, 2),
     },
+    textAlign: {
+        marginRight: '3%'
+    },
+    Checkbox: {
+        width: '20px',
+        height: '20px'
+    }
 }));

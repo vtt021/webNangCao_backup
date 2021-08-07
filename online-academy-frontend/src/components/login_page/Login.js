@@ -37,7 +37,7 @@ export default function Login() {
             else if (res.data.role === 1)
             {
                 console.log('giao vien')
-                window.location.replace("/uploadCourse")
+                window.location.replace("/teacher")
             }
             else if (res.data.role === 2)
             {

@@ -77,7 +77,7 @@ export default function CourseCard(props) {
                                 }
                             </Typography>
                             <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
-                                {'\u00A0'}
+                                <br />
                             </Typography>
                         </container>
                     )}
@@ -98,7 +98,7 @@ export default function CourseCard(props) {
                                         }
                                     </Typography>
                                     : <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
-                                        {'\u00A0'}
+                                        <br />
                                     </Typography>
                             }
 

@@ -47,7 +47,6 @@ export default function CourseCard(props) {
                                 <Typography noWrap gutterBottom variant="h6" component="h4" align='left'>
                                     {props.courseInfo.courseName}
                                 </Typography>
-
                             </div>
                         }
 
@@ -78,7 +77,7 @@ export default function CourseCard(props) {
                                 }
                             </Typography>
                             <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
-                                {'\u00A0'}
+                            <br/>
                             </Typography>
                         </container>
                     )}
@@ -99,7 +98,7 @@ export default function CourseCard(props) {
                                         }
                                     </Typography>
                                     : <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
-                                        {'\u00A0'}
+                                        <br/>
                                     </Typography>
                             }
 
@@ -118,6 +117,7 @@ export default function CourseCard(props) {
                             </Typography>)
                         }
                     </Grid>
+
                 </CardContent>
 
             </Card>

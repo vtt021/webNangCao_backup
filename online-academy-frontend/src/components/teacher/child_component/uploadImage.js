@@ -3,12 +3,12 @@ import { makeStyles } from '@material-ui/core/styles';
 //Card
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
-import Fab from "@material-ui/core/Fab";
 import Grid from "@material-ui/core/Grid";
 
 import red from "@material-ui/core/colors/red";
 import blue from "@material-ui/core/colors/blue";
 
+import Fab from "@material-ui/core/Fab";
 import AddPhotoAlternateIcon from "@material-ui/icons/AddPhotoAlternate";
 
 export default function ImageUploadCard(props) {
@@ -27,11 +27,11 @@ export default function ImageUploadCard(props) {
             props.setSelectedFile([reader.result])
         };
         let a = file.name;
-        console.log(url); // Would see a path?
         console.log(file); // Would see a path?
-
+        
         setMainState("uploaded");
-        props.setSelectedFile(event.target.files[0]);
+        //props.setSelectedFile(event.target.files[0]);
+        console.log(event.target.files[0])
         props.setFileName(a)
         setImageUploaded(1);
     };
@@ -43,12 +43,11 @@ export default function ImageUploadCard(props) {
                 <input
                     accept="image/*"
                     className={classes.input}
-                    id="contained-button-file"
-                    multiple
+                    id={'contained-button-file' + props.id}
                     type="file"
                     onChange={handleUploadClick}
                 />
-                <label htmlFor="contained-button-file">
+                <label htmlFor={'contained-button-file' + props.id}>
                     <Fab component="span" className={classes.button}>
                         <AddPhotoAlternateIcon />
                     </Fab>
@@ -100,6 +99,10 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         justifyContent: "center",
         alignItems: "center"
+    },
+    media: {
+        height: 400,
+        objectFit: 'scale-down'
     },
     icon: {
         margin: theme.spacing.unit * 2
