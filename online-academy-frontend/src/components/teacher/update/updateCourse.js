@@ -29,6 +29,7 @@ export default function UpdateCourse(props) {
 
     const onSubmit = data => {
         console.log(data) //Dữ liệu khóa học người dùng nhập vào
+        console.log(courseImage)
         //Hiển thị hình 
         //------------
         // < img  

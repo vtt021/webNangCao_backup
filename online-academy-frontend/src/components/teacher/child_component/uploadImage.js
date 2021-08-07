@@ -3,12 +3,12 @@ import { makeStyles } from '@material-ui/core/styles';
 //Card
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
-import Fab from "@material-ui/core/Fab";
 import Grid from "@material-ui/core/Grid";
 
 import red from "@material-ui/core/colors/red";
 import blue from "@material-ui/core/colors/blue";
 
+import Fab from "@material-ui/core/Fab";
 import AddPhotoAlternateIcon from "@material-ui/icons/AddPhotoAlternate";
 
 export default function ImageUploadCard(props) {
@@ -30,7 +30,8 @@ export default function ImageUploadCard(props) {
         console.log(file); // Would see a path?
         
         setMainState("uploaded");
-        props.setSelectedFile(event.target.files[0]);
+        //props.setSelectedFile(event.target.files[0]);
+        console.log(event.target.files[0])
         props.setFileName(a)
         setImageUploaded(1);
     };

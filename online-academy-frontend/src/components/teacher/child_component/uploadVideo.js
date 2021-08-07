@@ -7,36 +7,30 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import AlertDialog from '../common/alert';
-const abc = [
-    <Button>
-        abac
-    </Button>,
-    <Button>
-        123
-    </Button>
-];
+import VideoContent from './videoContent';
+
 export default function UploadVideo() {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
     const [activeStep, setActiveStep] = useState(0);
     const [steps, setsteps] = useState(['Chương 1', 'Chương 2']);
     const [completed, setCompleted] = React.useState([0, 0]);
-    const [list, setList] = useState([abc, 'Chương 2']);
 
-    function getStepContent(stepIndex) {
-        return list[stepIndex];
-    }
-    const completedSteps = () => {
-        return Object.keys(completed).length;
+    const [videoFile, setVideoFile] = useState();
+    const [content, setContent] = useState();
+    const [isPreview, setIsPreview] = useState(false);
+
+    const handleSave = () => {
+        if (activeStep > 0) {
+            setCompleted(array => [...array.slice(0, activeStep + 1),
+                1,
+            ...array.slice(activeStep + 2)])
+        }
+        else {
+            setCompleted(array => [1, ...array])
+        }
+
     };
 
     const handleNext = () => {
@@ -48,6 +42,22 @@ export default function UploadVideo() {
         else {
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
         }
+    };
+    const onSubmit = async data => {
+        handleSave();
+        console.log(activeStep)
+        console.log(data)
+        console.log(videoFile)
+        //console.log(videoFile[activeStep])
+    }
+
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
     };
 
     const handleBack = () => {
@@ -77,28 +87,33 @@ export default function UploadVideo() {
                             onClick={handleBack}
                             className={classes.backButton}
                         >
-                            Quay lại
+                            Trước
                         </Button>
                     </Grid>
                     <Grid item >
-                        <Button variant="contained" color="primary" onClick={handleNext}>
-                            {activeStep === steps.length - 1 ? 'Thêm' : 'Chương kế'}
+                        <Button variant="contained" color="primary" onClick={handleNext} size='large'>
+                            {activeStep === steps.length - 1 ? 'Thêm' : 'Sau'}
                         </Button>
                     </Grid>
                 </Grid>
                 <Grid container item xs={12} justify='center' spacing={2}>
-                    <Grid item>
-                        <Button variant="contained" color="primary" onClick={()=>{}}>
-                            Lưu
-                        </Button>
-                    </Grid>
                     <Grid item>
                         <Button disabled={activeStep === 0} variant="contained" color="primary" onClick={handleRemove}>
                             Xóa
                         </Button>
                     </Grid>
                 </Grid>
-
+                <Grid container item xs={12} justify='center' spacing={2}>
+                    <Grid item>
+                        {
+                            completed[activeStep] === 1 && (
+                                <Typography variant='h5'>
+                                    Đã lưu
+                                </Typography>
+                            )
+                        }
+                    </Grid>
+                </Grid>
 
             </Grid>
 
@@ -111,7 +126,11 @@ export default function UploadVideo() {
             </Stepper>
             <div>
                 <div>
-                    {getStepContent(activeStep)}
+                    {/* {getStepContent(activeStep)} */}
+                    <VideoContent id={activeStep} completed={completed[activeStep]}
+                        onSubmit={onSubmit} setSelectedFile={setVideoFile}
+                        content={content} isPreview={isPreview}
+                    />
                 </div>
             </div>
         </div>

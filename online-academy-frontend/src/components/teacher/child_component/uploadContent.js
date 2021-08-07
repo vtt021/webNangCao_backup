@@ -232,6 +232,19 @@ export default function UploadContent(props) {
                     </Grid>
                     {errors.detailLong && <span className='errors'>*Chưa có mô tả</span>}
 
+                    {/* <Grid container item xs={12} alignItems='center'>
+                        <Typography variant='h5' align='left' className={classes.textAlign}>
+                            Đã hoàn thiện:
+                        </Typography>
+                        <input
+                            name="isCompleted"
+                            type='checkbox'
+                            id={"isCompleted" + props.id}
+                            className={classes.Checkbox}
+                            {...register("isCompleted", {})}
+                        />
+
+                    </Grid> */}
 
                 </Grid>
 
@@ -270,4 +283,11 @@ const useStyles = makeStyles((theme) => ({
     submit: {
         margin: theme.spacing(3, 0, 2),
     },
+    textAlign: {
+        marginRight: '3%'
+    },
+    Checkbox: {
+        width: '20px',
+        height: '20px'
+    }
 }));
