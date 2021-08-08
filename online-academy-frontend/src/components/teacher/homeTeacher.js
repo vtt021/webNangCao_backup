@@ -12,16 +12,16 @@ export default function HomeTeacher() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem("auth")))
 
     useEffect(() => {
-        axios.get("http://localhost:3001/api/courses/teacher?teacherId=" + 
-        //user._id ||
-        '60ed31a444b83939d4197e57').then(res => {
-            res.data.map((course, i) => {
-                course.id = course._id;
-            }
-            ).then(
-                setCourseList(res.data)
-            )
-        }).catch(error => console.log(error));
+        axios.get("http://localhost:3001/api/courses/teacher?teacherId=" +
+            //user._id ||
+            '60ed31a444b83939d4197e57').then(res => {
+                res.data.map((course, i) => {
+                    course.id = course._id;
+                }
+                ).then(
+                    setCourseList(res.data)
+                )
+            }).catch(error => console.log(error));
 
 
     }, []);
@@ -29,6 +29,9 @@ export default function HomeTeacher() {
 
     function renderRating(params) {
         return <Rating readOnly value={params.value} />;
+    }
+    function handleUpCourse() {
+        window.location.href = "/teacher/uploadCourse"
     }
     function handleUpdateInfo(cellValues) {
         window.location.href = "/teacher/updateCourse/" + cellValues.row.id
@@ -80,7 +83,7 @@ export default function HomeTeacher() {
             flex: 1,
             editable: false,
             renderCell: (cellValues) => {
-                return ( 
+                return (
                     <Button
                         variant="contained"
                         color="primary"
@@ -103,9 +106,9 @@ export default function HomeTeacher() {
                     <Button
                         variant="contained"
                         color="primary"
-                        disabled= {cellValues.row.isCompleted}
+                        disabled={cellValues.row.isCompleted}
                         onClick={(event) => {
-                            
+
                             handleUpdateVideo(cellValues)
                         }}
                     >
@@ -119,7 +122,7 @@ export default function HomeTeacher() {
         <div>
             <HeaderTeacher />
             {console.log(courseList)}
-            <Grid item xs={12} align="center" style={{ height: 400 }} justify='center' justifyContent='center'>
+            <Grid item xs={12} style={{ height: 400 }} >
                 <DataGrid
                     rows={courseList}
                     columns={columns}
@@ -129,6 +132,16 @@ export default function HomeTeacher() {
                         classes.row
                     }
                 />
+                <Grid item xs={12} justify='flex-start' justifyContent='flex-start'>
+
+                </Grid>
+                <div style={{ display: "flex" }}>
+                    <Button onClick={handleUpCourse} variant="contained" color="primary"
+                        style={{ marginLeft: "auto", marginTop:'2%' }}
+                    >
+                        Đăng khóa học mới
+                    </Button>
+                </div>
             </Grid>
         </div>
     );
