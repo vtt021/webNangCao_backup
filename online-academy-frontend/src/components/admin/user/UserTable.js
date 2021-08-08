@@ -176,23 +176,23 @@ export default function AdminUser({projects}) {
         setPage(newPage);
     };
     const [users, setUser] = useState([]);
+    const getUsers = async() => {
+        await axios.get('http://localhost:3001/api/users',{
+            headers:{
+                "x-access-token":auth.accessToken
+            }
+        })
+        .then(res => {
+            setUser(res.data);
+        })
+    }
+
     useEffect(() => {
         Refreshtoken()
         setAuth(JSON.parse(localStorage.getItem("auth")))
-        const getUsers = async() => {
-            await axios.get('http://localhost:3001/api/users',{
-                headers:{
-                    "x-access-token":auth.accessToken
-                }
-            })
-            .then(res => {
-                console.log(res.data)
-                setUser(res.data);
-            })
-        }
-
+        
         const init = async() => {
-            getUsers();
+            await getUsers();
         }
 
         init();

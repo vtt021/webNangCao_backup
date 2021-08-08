@@ -14,13 +14,19 @@ export default function CategoryPage(props) {
 
     const categoryId = props.match.params.id
     const [categoryName,setName] = useState("")
-    useEffect(() => {
-        axios.get("http://localhost:3001/api/categories/id?id="+categoryId).then(res => {
+    const getName = async () =>{
+        await axios.get("http://localhost:3001/api/categories/id?id="+categoryId).then(res => {
             const listCategories = res.data;
             setName(res.data.categoryName)
             console.log(res.data)
         })
             .catch(error => console.log(error));
+    }
+    useEffect(() => {
+        const init = async()=>{
+            await getName()
+        }
+        init()
     }, []);
     return (
         <div fluid >

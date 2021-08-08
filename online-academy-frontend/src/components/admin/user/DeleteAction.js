@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
-const handleDellteUser=async (admin,id)=>{
+const handleDellteUser= async (admin,id)=>{
     Refreshtoken()
     const data = {
         id: id

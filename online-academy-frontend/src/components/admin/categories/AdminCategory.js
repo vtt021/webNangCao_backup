@@ -157,24 +157,22 @@ export default function AdminCategory() {
         setPage(newPage);
     };
     const [categories, setCategories] = useState([]);
-
+    const getCategory = async() => {
+        await axios.get('http://localhost:3001/api/categories/admin',{
+            headers:{
+                "x-access-token":user.accessToken
+            }
+        })
+        .then(res => {
+            console.log(res.data)
+            setCategories(res.data);
+        })
+    }
     useEffect(() => {
         Refreshtoken()
         setUser(JSON.parse(localStorage.getItem("auth")))
-        const getCategory = async() => {
-            await axios.get('http://localhost:3001/api/categories/admin',{
-                headers:{
-                    "x-access-token":user.accessToken
-                }
-            })
-            .then(res => {
-                console.log(res.data)
-                setCategories(res.data);
-            })
-        }
-
         const init = async() => {
-            getCategory();
+            await getCategory();
         }
 
         init();
