@@ -23,17 +23,19 @@ import { getDate } from 'date-fns';
 import { formatDateTime } from '../../../utils/helpers';
 import Refreshtoken from '../../../refreshToken';
 import Deleteaction from './DeleteAction';
+import Tag from './UserStatus';
 let stt = 0;
 const columns = [
     { id: 'stt', label: '#', minWidth: 10 },
     { id: 'name', label: 'Tên', minWidth: 150 },
     { id: 'email', label: 'email', minWidth: 70 },
-    { id: 'usersRole', label: 'Phân hệ', minWidth: 80 },
+    { id: 'usersRole', label: 'Phân hệ', minWidth: 100 },
     { id: 'last', label: 'Cập nhật lần cuối', minWidth: 150 },
-    { id: 'deleted', label: '', minWidth: 50 },
+    { id: 'tag', label: 'Trạng thái', minWidth: 150,align: 'center' },
+    { id: 'deleted', label: '', minWidth: 50 ,align: 'center'},
 ];
 
-function createData(_id,name, email, role, lastUpdated) {
+function createData(_id,name, email, role,isUnLock,isDelete, lastUpdated) {
     stt += 1;
     let id = _id;
     let usersRole;
@@ -44,9 +46,18 @@ function createData(_id,name, email, role, lastUpdated) {
     }else{
         usersRole="Quản trị viên"
     }
+    let tag;
+    if (isDelete) {
+        tag = <Tag content="Đã xóa" backGroundColor="#999999" textColor="white" />
+    }else if(isUnLock){
+        tag = <Tag content="Đang hoạt động" backGroundColor="#2980b9" textColor="white" />;
+    }else{
+        tag = <Tag content="Đang chờ xác thực" backGroundColor="red" textColor="white" />;
+    }
+
     let last = formatDateTime(new Date(lastUpdated)).toLocaleString()
-    let deleted = (<Deleteaction id = {_id}/>)
-    return { stt, name, email, usersRole, last ,deleted};
+    let deleted = (<Deleteaction isDeleted={isDelete} id = {_id}/>)
+    return { stt, name, email, usersRole, last,tag ,deleted};
 }
 
 const StyledTableCell = withStyles(theme => ({
@@ -190,7 +201,7 @@ export default function AdminUser({projects}) {
     useEffect(()=>{
         stt = 0;
         const temp = users.map((user=>{
-            return createData(user._id,user.username,user.email,user.role,user.lastUpdated)
+            return createData(user._id,user.username,user.email,user.role,user.isUnlocked,user.isDeleted,user.lastUpdated)
         }));
         setData(temp);
         setRows(temp.slice());

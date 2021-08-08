@@ -10,7 +10,7 @@ import CategoryPage from '../categories_page/getByCategory';
 import SubCategoryPage from '../categories_page/getBySubCategory';
 import SearchPage from '../search_page/searchResult';
 import WatchVideoPage from '../watchVideo/watchVideo';
-import AdminCategory from '../admin/courses/AdminCategory';
+import AdminCategory from '../admin/categories/AdminCategory';
 import AdminHome from '../admin/home/AdminHome';
 import AdminUser from '../admin/user/UserTable';
 import HomeTeacher from '../teacher/homeTeacher';

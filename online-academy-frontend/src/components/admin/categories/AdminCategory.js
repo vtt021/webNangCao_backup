@@ -25,7 +25,6 @@ import CategoryAction from './CategoryAction';
 import { formatDateTime } from '../../../utils/helpers';
 
 let stt = 0;
-const actions = (<CategoryAction/>)
 const columns = [
     { id: 'stt', label: '#', minWidth: 10 },
     { id: 'name', label: 'Tên', minWidth: 100 },
@@ -37,6 +36,7 @@ const columns = [
 function createData(id,name, lastUpdated) {
     stt += 1;
     var last = formatDateTime(new Date(lastUpdated)).toLocaleString()
+    let actions = (<CategoryAction id ={id}/>)
     return { stt,id, name, last,actions };
 }
 

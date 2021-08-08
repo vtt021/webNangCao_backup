@@ -12,27 +12,44 @@ const useStyles = makeStyles((theme) => ({
       marginRight: theme.spacing(1),
     },
   }));
+
 const handleDellteUser=async (admin,id)=>{
     Refreshtoken()
-    const data = JSON.stringify({id:id})
+    const data = {
+        id: id
+    }
     await axios.delete('http://localhost:3001/api/users/',{
-        body:{
-            "id":id
-        },headers:{
-            "x-access-token":admin
+        headers: {
+            'x-access-token': admin
         },
+        data: data
     })
     .then(res => {
-        alert("Delete user success")
+        alert("Xóa tài khoản thành công")
         window.location.reload()
+    }).catch(e => {
+        console.log(e);
     })
 }
 export default function Deleteaction(props) {
     const classes = useStyles();
     const [auth,setAuth] = useState(JSON.parse(localStorage.getItem("auth")))
+    const [isDisabled,setIsDisabled] = useState(false);
     useEffect(()=>{
         setAuth(JSON.parse(localStorage.getItem("auth")))
     },[localStorage.getItem("auth")])
+
+    useEffect(()=>{
+        console.log(auth.id === props.id)
+        if(props.isDeleted){
+            setIsDisabled(true)
+        }else if(auth.id === props.id){
+            setIsDisabled(true)
+        }else{
+            setIsDisabled(false)
+        }
+        
+    },[auth,props])
 
     useEffect(() => {
         if (auth===null||auth.role != 2) 
@@ -41,7 +58,7 @@ export default function Deleteaction(props) {
         }
     }, [auth])
     return (
-        <IconButton aria-label="delete" className={classes.margin} onClick={() => { handleDellteUser(auth.accessToken,props.id) }}>
+        <IconButton disabled={isDisabled} aria-label="delete" className={classes.margin} onClick={() => { handleDellteUser(auth.accessToken,props.id) }}>
           <DeleteIcon fontSize="large"/>
         </IconButton>
     )
