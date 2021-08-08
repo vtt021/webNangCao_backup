@@ -333,8 +333,10 @@ router.post('/thumbnail-image/admin', adminAuthMdw, upload.uploadImageMdw, async
     }
 })
 
-router.post('/course-image', teacherAuthMdw, upload.uploadImageMdw, async (req, res) => {
+router.post('/course-image', teacherAuthMdw, async (req, res) => {
     try {
+        await upload.uploadImageMdw(req, res)
+
         const file = req.file;
         const teacherId = req.accessTokenPayload.id;
         const courseId = req.body.courseId;

@@ -58,35 +58,60 @@ export default function UploadCourse(props) {
         console.log(ret)
 
         if (ret !== null) {
-            if (courseImage === null) {
-                return;
+            if (courseImage !== null) {
+                let formData = new FormData();
+                console.log(courseImage.fileName)
+                let a = dataURLtoFile(courseImage[0], courseImageName);
+
+                // console.log(selectedFile[0]);
+                console.log(courseImageName);
+                formData.append("file", a, courseImageName)
+                formData.append("courseId", ret);
+
+
+                // console.log(selectedFile)
+
+                let result1 = axios.post('http://localhost:3001/api/courses/course-image', formData, {
+                    headers: {
+                        'x-access-token': user.accessToken,
+                        'Content-Type': `multipart/form-data; boundary=${formData._boundary}`
+                    }
+                }).then(res => {
+                    console.log("Upload success!")
+                    return true;
+                }).catch(e => {
+                    console.log(e)
+                    return false;
+                })
             }
-            let formData = new FormData();
-            console.log(courseImage.fileName)
-            let a = dataURLtoFile(courseImage[0], fileName);
 
-            // console.log(selectedFile[0]);
-            console.log(fileName);
-            formData.append("file", a, fileName)
-            formData.append("courseId", ret);
+            if (thumbnailImage != null) {
+                let thumbnailFormData = new FormData();
+                console.log(thumbnailImage.fileName)
+                let a = dataURLtoFile(thumbnailImage[0], thumbnailImageName);
+
+                // console.log(selectedFile[0]);
+                console.log(thumbnailImageName);
+                thumbnailFormData.append("file", a, thumbnailImageName)
+                thumbnailFormData.append("courseId", ret);
 
 
-            // console.log(selectedFile)
+                // console.log(selectedFile)
 
-            ret = axios.post('http://localhost:3001/api/courses/thumbnail-image', formData, {
-                headers: {
-                    'x-access-token': user.accessToken,
-                    'Content-Type': `multipart/form-data; boundary=${formData._boundary}`
-                }
-            }).then(res => {
-                console.log("Upload success!")
-                return true;
-            }).catch(e => {
-                console.log(e)
-                return false;
-            })
+                let result2 = axios.post('http://localhost:3001/api/courses/thumbnail-image', thumbnailFormData, {
+                    headers: {
+                        'x-access-token': user.accessToken,
+                        'Content-Type': `multipart/form-data; boundary=${thumbnailFormData._boundary}`
+                    }
+                }).then(res => {
+                    console.log("Upload success!")
+                    return true;
+                }).catch(e => {
+                    console.log(e)
+                    return false;
+                })
+            }
         }
-
     }
 
     return (
@@ -106,7 +131,7 @@ export default function UploadCourse(props) {
                     <Typography variant='h5' align='left'>
                         Ảnh bìa:
                     </Typography>
-                    <ImageUploadCard id='1' selectedFile={courseImage} setSelectedFile={setCourseImage} setFileName={setFileName} />
+                    <ImageUploadCard id='1' selectedFile={courseImage} setSelectedFile={setCourseImage} setFileName={setCourseImageName} />
                 </Grid>
                 <Grid item xs={4}>
                     <Typography variant='h5' align='left'>
