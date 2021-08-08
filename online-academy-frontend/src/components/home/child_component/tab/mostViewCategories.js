@@ -12,14 +12,19 @@ export default function MostViewCategories() {
 
     const [listCategories, setListCategories] = useState([{ id: 1, categoryName: 'KHÁC' }])
 
-    //TODO: Gọi API lấy những category được đăng ký nhiều nhất
-    
-    useEffect(() => {
-        axios.get("http://localhost:3001/api/categories").then(res => {
+    const getHotCategory=async()=>{
+        await axios.get("http://localhost:3001/api/categories").then(res => {
             const listCategories = res.data;
             setListCategories(listCategories);
         })
             .catch(error => console.log(error));
+    }
+    
+    useEffect(() => {
+        const init =async ()=>{
+            await getHotCategory()
+        }
+        init()
     }, []);
 
     const handleCategoryPage = id => () => {
