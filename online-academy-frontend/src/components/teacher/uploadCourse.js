@@ -15,29 +15,103 @@ import UploadContent from './child_component/uploadContent';
 import UploadVideo from './child_component/uploadVideo';
 export default function UploadCourse(props) {
     const classes = useStyles();
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem("auth")))
 
     const id = props.match.params.id
-    const [selectedFile, setSelectedFile] = useState(null);
+
+    const [courseImage, setCourseImage] = useState(null);
+    const [thumbnailImage, setThumbnailImage] = useState(null);
+    const [courseImageName, setCourseImageName] = useState(null);
+    const [thumbnailImageName, setThumbnailImageName] = useState(null);
+
+    const [fileName, setFileName] = useState(null);
+
+    const dataURLtoFile = (dataurl, filename) => {
+        const arr = dataurl.split(',')
+        const mime = arr[0].match(/:(.*?);/)[1]
+        const bstr = atob(arr[1])
+        let n = bstr.length
+        const u8arr = new Uint8Array(n)
+        while (n) {
+            u8arr[n - 1] = bstr.charCodeAt(n - 1)
+            n -= 1 // to make eslint happy
+        }
+        return new File([u8arr], filename, { type: mime })
+    }
 
 
-    const onSubmit = data => {
+    const onSubmit = async data => {
         console.log(data)
-        console.log('Hình nè: ' + selectedFile)
-        //Hiển thị hình 
-        //------------
-            // < img  
-            // src = { selectedFile }
-            //     />
-        //------------
-        // axios.post("http://localhost:3001/api/users", {
-        //     email: data.email,
-        //     password: data.password,
-        //     username: data.username
-        // }).then(res => {
-        //     window.location.replace("/verify-otp/" + data.email)
 
-        // })
-        //     .catch(error => console.log(error));
+        let ret = await axios.post('http://localhost:3001/api/courses', data, {
+            headers: {
+                'x-access-token': user.accessToken
+            }
+        }).then(res => {
+            console.log("Course success!")
+            return res.data.courseId;
+        }).catch(e => {
+            console.log(e)
+            return null;
+        })
+
+        console.log(ret)
+
+        if (ret !== null) {
+            if (courseImage !== null) {
+                let formData = new FormData();
+                console.log(courseImage.fileName)
+                let a = dataURLtoFile(courseImage[0], courseImageName);
+
+                // console.log(selectedFile[0]);
+                console.log(courseImageName);
+                formData.append("file", a, courseImageName)
+                formData.append("courseId", ret);
+
+
+                // console.log(selectedFile)
+
+                let result1 = axios.post('http://localhost:3001/api/courses/course-image', formData, {
+                    headers: {
+                        'x-access-token': user.accessToken,
+                        'Content-Type': `multipart/form-data; boundary=${formData._boundary}`
+                    }
+                }).then(res => {
+                    console.log("Upload success!")
+                    return true;
+                }).catch(e => {
+                    console.log(e)
+                    return false;
+                })
+            }
+
+            if (thumbnailImage != null) {
+                let thumbnailFormData = new FormData();
+                console.log(thumbnailImage.fileName)
+                let a = dataURLtoFile(thumbnailImage[0], thumbnailImageName);
+
+                // console.log(selectedFile[0]);
+                console.log(thumbnailImageName);
+                thumbnailFormData.append("file", a, thumbnailImageName)
+                thumbnailFormData.append("courseId", ret);
+
+
+                // console.log(selectedFile)
+
+                let result2 = axios.post('http://localhost:3001/api/courses/thumbnail-image', thumbnailFormData, {
+                    headers: {
+                        'x-access-token': user.accessToken,
+                        'Content-Type': `multipart/form-data; boundary=${thumbnailFormData._boundary}`
+                    }
+                }).then(res => {
+                    console.log("Upload success!")
+                    return true;
+                }).catch(e => {
+                    console.log(e)
+                    return false;
+                })
+            }
+        }
     }
 
     return (
@@ -50,18 +124,29 @@ export default function UploadCourse(props) {
                         Đăng khóa học mới
                     </h2>
                 </Grid>
-                <Grid item xs={1}>
+
+                <Grid item xs={2}>
                 </Grid>
-                <Grid item xs={3}>
-                    <ImageUploadCard selectedFile={selectedFile} setSelectedFile={setSelectedFile} />
+                <Grid item xs={4}>
+                    <Typography variant='h5' align='left'>
+                        Ảnh bìa:
+                    </Typography>
+                    <ImageUploadCard id='1' selectedFile={courseImage} setSelectedFile={setCourseImage} setFileName={setCourseImageName} />
                 </Grid>
-                <Grid item xs={7}>
+                <Grid item xs={4}>
+                    <Typography variant='h5' align='left'>
+                        Ảnh minh họa:
+                    </Typography>
+                    <ImageUploadCard id='2' selectedFile={thumbnailImage} setSelectedFile={setThumbnailImage} setFileName={setThumbnailImageName} />
+                </Grid>
+                <Grid item xs={2}>
+                </Grid>
+                <Grid item xs={2}>
+                </Grid>
+                <Grid item xs={8}>
                     <UploadContent onSubmit={onSubmit} />
                 </Grid>
-                <Grid item xs={1}>
-                </Grid>
-                <Grid item xs={12}>
-                    {/* <UploadVideo /> */}
+                <Grid item xs={2}>
                 </Grid>
             </Grid>
             <Container component="main" maxWidth="xs">

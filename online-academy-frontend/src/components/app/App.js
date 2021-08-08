@@ -15,6 +15,7 @@ import AdminHome from '../admin/home/AdminHome';
 import AdminUser from '../admin/user/UserTable';
 import HomeTeacher from '../teacher/homeTeacher';
 import UploadCourse from '../teacher/uploadCourse';
+import UploadVideo from '../teacher/child_component/uploadVideo';
 import UpdateContent from '../teacher/update/updateCourse';
 // import css
 
@@ -28,6 +29,10 @@ function App() {
                 <Route exact path="/admin/users" component={AdminUser}/>
                 <Route exact path="/teacher" component={HomeTeacher}/>
                 <Route exact path="/teacher/updateCourse/:id?" component={UpdateContent}/>
+
+                <Route exact path="/teacher/uploadCourse" component={UploadCourse} />
+                <Route exact path="/teacher/uploadVideo" component={UploadVideo} />
+
 
                 <Route exact path="/detail/:id"
                     render={(props) => <DetailPage {...props} />} />
@@ -48,7 +53,6 @@ function App() {
                     render={(props) => <SearchPage {...props} />}
                 >
                 </Route>
-                <Route exact path="/uploadCourse" component={UploadCourse} />
                 <Route exact path="/upload" component={UploadTest} />
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/signup" component={SignUp} />

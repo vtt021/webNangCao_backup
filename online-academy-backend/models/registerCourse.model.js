@@ -24,6 +24,12 @@ module.exports = {
         return registration;
     },
 
+    async getAllIds() {
+        // const registration = await db(TABLE_NAME);
+        const registration = await RegisterCourse.find({}, ['userId', 'courseId']).exec();
+        return registration;
+    },
+
     async getIdOnly() {
         const registration = await RegisterCourse.find({}, '_id').exec();
         return registration;
@@ -69,27 +75,52 @@ module.exports = {
 
         let users = await userModel.getAllUsernameWithId();
         console.log(users);
-
-        let ratings = await RegisterCourse.find({ courseId: courseId }, contentData).exec();
+        console.log(courseId)
+        console.log("Here");
+        let ratings = await RegisterCourse.find({ courseId: courseId }).exec();
+        console.log("ratings" , ratings)
 
         let newRegistration = [];
 
-        for (let i = 0; i < ratings.length; i++) {
-            let user = users.find(u => {
-                let a = u['_id'];
-                let b = ratings[i]['userId'];
-                return a == b
+        let userMap = users.map(u => {
+            return ({
+                id: (u['_id'].toString()),
+                username: u['username']
             });
+        })
+        
+        // console.log(userMap)
+
+
+        for (let i = 0; i < ratings.length; i++) {
+            let str = ratings[i]["userId"];
+           
+            // console.log("user", user)
+            let name = "";
+
+            for(let j = 0; j < userMap.length; j++) {
+                // console.log(str.localeCompare(userMap[j]['id']))
+                if (str.localeCompare(userMap[j]['id']) == 0) {
+                    name = userMap[j]['username']
+                    break;
+                }
+            }
 
             let data = {};
             data["rating"] = ratings[i]["rating"]
             data["rateContent"] = ratings[i]["rateContent"]
-            // data["_id"] = ratings[i]["_id"]
             data["userId"] = ratings[i]["userId"]
-            data["username"] = user.username;
+            data["username"] = name
+
             newRegistration.push(data)
         }
         return newRegistration;
+    },
+
+    async changeId(oldId, newId) {
+        await RegisterCourse.find({userId: oldId}).updateMany({
+            userId: newId
+        })
     },
 
     async getRegistration(userId, courseId) {

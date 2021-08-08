@@ -19,16 +19,22 @@ export default function UpdateCourse(props) {
     const id = props.match.params.id
     const [selectedFile, setSelectedFile] = useState(null); //Nhớ set cái hình cũ ở đây luôn nha
     const [courseInfo, setCourseInfo] = useState(null); //gọi API để lấy thông tin cũ của khóa học
+    const [courseImage, setCourseImage] = useState(null);
+    const [thumbnailImage, setThumbnailImage] = useState(null);
 
+    const [courseImageName, setCourseImageName] = useState(null);
+    const [thumbnailImageName, setThumbnailImageName] = useState(null);
+
+    const [fileName, setFileName] = useState(null);
 
     const onSubmit = data => {
         console.log(data) //Dữ liệu khóa học người dùng nhập vào
-        console.log('Hình nè: ' + selectedFile)
+        console.log(courseImage)
         //Hiển thị hình 
         //------------
-            // < img  
-            // src = { selectedFile }
-            //     />
+        // < img  
+        // src = { selectedFile }
+        //     />
         //------------
     }
 
@@ -42,15 +48,30 @@ export default function UpdateCourse(props) {
                         Cập nhật thông tin khóa học
                     </h2>
                 </Grid>
-                <Grid item xs={1}>
+
+                <Grid item xs={2}>
                 </Grid>
-                <Grid item xs={3}>
-                    <ImageUploadCard selectedFile={selectedFile} setSelectedFile={setSelectedFile} />
+                <Grid item xs={4}>
+                    <Typography variant='h5' align='left'>
+                        Ảnh bìa:
+                    </Typography>
+                    <ImageUploadCard id='1' selectedFile={courseImage} setSelectedFile={setCourseImage} setFileName={setFileName} />
                 </Grid>
-                <Grid item xs={7}>
+                <Grid item xs={4}>
+                    <Typography variant='h5' align='left'>
+                        Ảnh minh họa:
+                    </Typography>
+                    <ImageUploadCard id='2' selectedFile={thumbnailImage} setSelectedFile={setThumbnailImage} setFileName={setThumbnailImageName} />
+                </Grid>
+                <Grid item xs={2}>
+                </Grid>
+                
+                <Grid item xs={2}>
+                </Grid>
+                <Grid item xs={8}>
                     <UpdateContent onSubmit={onSubmit} courseInfo={courseInfo} />
                 </Grid>
-                <Grid item xs={1}>
+                <Grid item xs={2}>
                 </Grid>
             </Grid>
             <Footer />

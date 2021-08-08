@@ -13,7 +13,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import DescribeDialog from "./uploadDescribe";
 import draftToHtml from 'draftjs-to-html';
 import UploadVideo from './uploadVideo';
-
+import { Input } from '@material-ui/core';
 export default function UploadContent(props) {
     const classes = useStyles();
     const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm();
@@ -28,6 +28,7 @@ export default function UploadContent(props) {
 
     const [currenctCategory, setCurrenctCategory] = useState(listCategories[0]._id);
     const [currentSubCategory, setCurrentSubCategory] = useState(listActiveSub[0]._id);
+
     const handleChangeCategory = (event) => {
         setCurrenctCategory(event.target.value);
     };
@@ -47,37 +48,45 @@ export default function UploadContent(props) {
 
 
 
-    const getSubCategory = () => {
-        axios.get("http://localhost:3001/api/sub-categories/").then(res => {
+    const getSubCategory = async () => {
+        await axios.get("http://localhost:3001/api/sub-categories/").then(res => {
             setListSub(res.data)
         }).catch(error => console.log(error))
     }
 
-    useEffect(() => {
-        axios.get("http://localhost:3001/api/categories").then(res => {
+    useEffect(async () => {
+        await axios.get("http://localhost:3001/api/categories").then(res => {
             const listCategories = res.data;
             setListCategories(listCategories);
-
         })
             .catch(error => console.log(error));
     }, []);
 
-    useEffect(() => {
-        getSubCategory()
+    useEffect(async () => {
+        await getSubCategory()
+        setCurrenctCategory(listCategories[0]._id)
     }, [listCategories]);
 
 
 
-    useEffect(() => {
+    useEffect(async () => {
         setListActiveSub([])
-        {listSubCategory.map((sub)=>{
-            if((new String(sub.categoryId)).localeCompare(new String(currenctCategory))===0){
-                setListActiveSub(prevArray => [...prevArray,{
-                    _id: sub._id,
-                    categoryName: sub.subCategoryName,
-                }, ]);
-        }})}
+        {
+            listSubCategory.map((sub) => {
+                if ((new String(sub.categoryId)).localeCompare(new String(currenctCategory)) === 0) {
+                    setListActiveSub(prevArray => [...prevArray, {
+                        _id: sub._id,
+                        categoryName: sub.subCategoryName,
+                    },]);
+                }
+            })
+        }
+
     }, [currenctCategory]);
+
+    useEffect(async () => {
+        setCurrentSubCategory(listActiveSub[0]._id)
+    }, [listActiveSub]);
 
     return (
         <div className={classes.paper}>
@@ -96,7 +105,6 @@ export default function UploadContent(props) {
                             {...register("courseName", { required: true })}
                         />
                     </Grid>
-                    {errors.courseName && <span className='errors'>*Chưa nhập tên khóa học</span>}
                     {/* Chọn lĩnh vực */}
                     <Grid item xs={12}>
                         <TextField
@@ -120,7 +128,7 @@ export default function UploadContent(props) {
                         <input
                             name="categoryid"
                             type='hidden'
-                            id="categoryid"
+                            id="categoryidHidden"
                             value={currenctCategory}
                             onChange={setValue('categoryid', currenctCategory)}
                             {...register("categoryid", { required: true })}
@@ -149,7 +157,7 @@ export default function UploadContent(props) {
                         <input
                             name="subCategoryId"
                             type='hidden'
-                            id="subCategoryId"
+                            id="subCategoryIdHidden"
                             value={currentSubCategory}
                             onChange={setValue('subCategoryId', currentSubCategory)}
                             {...register("subCategoryId", { required: true })}
@@ -216,7 +224,7 @@ export default function UploadContent(props) {
                         <input
                             name="detailLong"
                             type='hidden'
-                            id="detailLong"
+                            id="detailLongHidden"
                             value={detailLong}
                             onChange={setValue('detailLong', detailLong)}
                             {...register("detailLong", { required: true })}
@@ -224,6 +232,19 @@ export default function UploadContent(props) {
                     </Grid>
                     {errors.detailLong && <span className='errors'>*Chưa có mô tả</span>}
 
+                    {/* <Grid container item xs={12} alignItems='center'>
+                        <Typography variant='h5' align='left' className={classes.textAlign}>
+                            Đã hoàn thiện:
+                        </Typography>
+                        <input
+                            name="isCompleted"
+                            type='checkbox'
+                            id={"isCompleted" + props.id}
+                            className={classes.Checkbox}
+                            {...register("isCompleted", {})}
+                        />
+
+                    </Grid> */}
 
                 </Grid>
 
@@ -262,4 +283,11 @@ const useStyles = makeStyles((theme) => ({
     submit: {
         margin: theme.spacing(3, 0, 2),
     },
+    textAlign: {
+        marginRight: '3%'
+    },
+    Checkbox: {
+        width: '20px',
+        height: '20px'
+    }
 }));

@@ -24,6 +24,19 @@ router.get('/', adminAuthMdw, async (req, res) => {
 
 })
 
+router.get('/ids', async (req, res) => {
+    try {
+        const list = await registerCourseModel.getAllIds();
+        return res.json(list);
+    }
+    catch (e) {
+        console.log(e.stack);
+        res.status(500).json({
+            message: e.message
+        })
+    }
+})
+
 router.get('/my-course', userAuthMdw, async (req, res) => {
     try {
         let userId = req.accessTokenPayload.id;
@@ -79,6 +92,46 @@ router.get('/detail', userAuthMdw,  async(req, res) => {
         }
         const registration = await registerCourseModel.getRegistration(userId, courseId);
         return res.status(200).json(registration);
+    }
+    catch (e) {
+        console.log(e.stack);
+        res.status(500).json({
+            message: e.message
+        })
+    }
+})
+
+router.get('/detail_ad',  async(req, res) => {
+    try {
+        const userId = req.query.userId;
+        const courseId = req.query.courseId;
+
+        if (courseId === undefined) {
+            return res.status(400).json({
+                message: 'Invalid courseId'
+            })
+        }
+        const registration = await registerCourseModel.getRegistration(userId, courseId);
+        return res.status(200).json(registration);
+    }
+    catch (e) {
+        console.log(e.stack);
+        res.status(500).json({
+            message: e.message
+        })
+    }
+})
+
+router.post('/changeId', async(req, res) => {
+    try {
+        let oldId = req.body.oldId;
+        let newId = req.body.newId;
+
+        await registerCourseModel.changeId(oldId, newId);
+        
+        return res.status(200).json({
+            message: 'OK'
+        });
     }
     catch (e) {
         console.log(e.stack);
