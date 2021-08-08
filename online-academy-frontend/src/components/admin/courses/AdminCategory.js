@@ -138,6 +138,16 @@ TablePaginationActions.propTypes = {
 export default function AdminCategory() {
     const [data,setData] = useState([]);
     const [user,setUser] = useState(JSON.parse(localStorage.getItem("auth")))
+    useEffect(()=>{
+        setUser(JSON.parse(localStorage.getItem("auth")))
+    },[localStorage.getItem("auth")])
+
+    useEffect(() => {
+        if (user===null||user.role != 2) 
+        {
+            window.location.replace("/")
+        }
+    }, [user])
     const classes = useStyles();
     const [page, setPage] = useState(0);
     const [rowsPerPage, _] = useState(5);

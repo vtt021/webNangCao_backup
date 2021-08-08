@@ -10,7 +10,16 @@ export default function HomeTeacher() {
     const classes = useStyles();
     const [courseList, setCourseList] = useState([]);
     const [user, setUser] = useState(JSON.parse(localStorage.getItem("auth")))
+    useEffect(()=>{
+        setUser(JSON.parse(localStorage.getItem("auth")))
+    },[localStorage.getItem("auth")])
 
+    useEffect(() => {
+        if (user===null||user.role != 1) 
+        {
+            window.location.replace("/")
+        }
+    }, [user])
     useEffect(() => {
         axios.get("http://localhost:3001/api/courses/teacher?teacherId=" + 
         //user._id ||

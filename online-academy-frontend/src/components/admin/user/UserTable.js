@@ -45,7 +45,7 @@ function createData(_id,name, email, role, lastUpdated) {
         usersRole="Quản trị viên"
     }
     let last = formatDateTime(new Date(lastUpdated)).toLocaleString()
-    let deleted = (<Deleteaction/>)
+    let deleted = (<Deleteaction id = {_id}/>)
     return { stt, name, email, usersRole, last ,deleted};
 }
 
@@ -142,11 +142,20 @@ TablePaginationActions.propTypes = {
     rowsPerPage: PropTypes.number.isRequired,
 };
 
-
-
 export default function AdminUser({projects}) {
-    const [data,setData] = useState([]);
     const [auth,setAuth] = useState(JSON.parse(localStorage.getItem("auth")))
+    useEffect(()=>{
+        setAuth(JSON.parse(localStorage.getItem("auth")))
+    },[localStorage.getItem("auth")])
+
+    useEffect(() => {
+        if (auth===null||auth.role != 2) 
+        {
+            window.location.replace("/")
+        }
+    }, [auth])
+    const [data,setData] = useState([]);
+    
     const classes = useStyles();
     const [page, setPage] = useState(0);
     const [rowsPerPage, _] = useState(5);
