@@ -20,13 +20,19 @@ export default function CourseCard(props) {
     const [subCategoryName, setSubName] = useState()
 
     const [image, setImage] = useState()
-    useEffect(() => {
+    const getImage = async () =>{
         console.log(props.courseInfo._id)
         setImage("http://localhost:3001/api/files/send?fileName=" + props.courseInfo.imageThumbnail)
-        axios.get("http://localhost:3001/api/sub-categories/id?id=" + props.courseInfo.subCategoryId).then(res => {
+        await axios.get("http://localhost:3001/api/sub-categories/id?id=" + props.courseInfo.subCategoryId).then(res => {
             setSubName(res.data.subCategoryName)
         })
             .catch(error => console.log(error));
+    }
+    useEffect(() => {
+        const init = async ()=>{
+            await getImage()
+        }
+        init()
     }, []);
 
     const handleDetailPage = id => () => {

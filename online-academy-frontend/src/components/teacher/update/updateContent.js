@@ -29,17 +29,16 @@ export default function UpdateContent(props) {
         //props.courseInfo.detailLong
     );
 
-    const [listCategories, setListCategories] = useState([{ id: 1, categoryName: 'Tất cả lĩnh vực' }])
-    const [listSubCategory, setListSub] = useState([{ id: 1, categoryName: 'Tất cả lĩnh vực phụ' }])
+
 
     const [listActiveSub, setListActiveSub] = useState([{ id: 1, categoryName: 'Chọn lĩnh vực chính trước' }])
     // Set defaut Category từ data  
-    const [currenctCategory, setCurrenctCategory] = useState();
+    const [currentCategory, setCurrentCategory] = useState(null);
     // Set defaut SubCategory từ database (id của sub: props.courseInfo.subCategoryId)
-    const [currentSubCategory, setCurrentSubCategory] = useState();
+    const [currentSubCategory, setCurrentSubCategory] = useState(null);
 
     const handleChangeCategory = (event) => {
-        setCurrenctCategory(event.target.value);
+        setCurrentCategory(event.target.value);
     };
     const handleChangeSubCategory = (event) => {
         setCurrentSubCategory(event.target.value);
@@ -53,259 +52,306 @@ export default function UpdateContent(props) {
         setDetailLong(draftToHtml(convertToRaw(editorState.getCurrentContent())))
     }, [editorState]);
 
+    useEffect(() => {
+
+        console.log("props.courseInfo", props.courseInfo);
+        if (props.courseInfo !== null) {
+
+            console.log(props.listSubCategory)
+            let a = props.listSubCategory.findIndex(p => p._id.localeCompare(props.courseInfo.subCategoryId) == 0);
+            console.log("a", a);
+            console.log(props.listSubCategory[a].categoryId)
+            setCurrentCategory(props.listSubCategory[a].categoryId);
+            setTimeout(() => {
+                setCurrentSubCategory(props.courseInfo.subCategoryId);
+            }, 500)
+        }
 
 
-    const getSubCategory = async () => {
-        await axios.get("http://localhost:3001/api/sub-categories/").then(res => {
-            setListSub(res.data)
-        }).catch(error => console.log(error))
-    }
 
-    useEffect(async () => {
-        await axios.get("http://localhost:3001/api/categories").then(res => {
-            const listCategories = res.data;
-            setListCategories(listCategories);
-        })
-            .catch(error => console.log(error));
+
+
+
+    }, [props.courseInfo])
+
+
+    // const setupSubcate = async () => {
+    //     let subData = await axios.get("http://localhost:3001/api/sub-categories/").then(res => {
+    //         props.setListSub(res.data)
+    //         return res.data;
+    //     }).catch(error => {
+    //         console.log(error);
+    //         return null;
+    //     })
+
+    //     return subData;
+    // }
+
+    // const setupCategory = async () => {
+    //     await axios.get("http://localhost:3001/api/categories").then(res => {
+    //         const listCategories = res.data;
+    //         props.setListCategories(listCategories);
+    //     })
+    //         .catch(error => console.log(error));
+    // }
+
+    useEffect(() => {
+        const init = async () => {
+            // await setupCategory();
+            // await setupSubcate();
+            // propssetCurrentCategory(listCategories[0]._id);
+        }
+
+        init();
     }, []);
 
-    useEffect(async () => {
-        await getSubCategory()
-        setCurrenctCategory(listCategories[0]._id)
-    }, [listCategories]);
-
-
-
-    useEffect(async () => {
+    useEffect(() => {
+        console.log("currentCategory");
         setListActiveSub([])
-        {
-            listSubCategory.map((sub) => {
-                if ((new String(sub.categoryId)).localeCompare(new String(currenctCategory)) === 0) {
-                    setListActiveSub(prevArray => [...prevArray, {
-                        _id: sub._id,
-                        categoryName: sub.subCategoryName,
-                    },]);
-                }
-            })
-        }
-    }, [currenctCategory]);
+        props.listSubCategory.forEach((sub) => {
+            if ((new String(sub.categoryId)).localeCompare(new String(currentCategory)) === 0) {
+                setListActiveSub(prevArray => [...prevArray, {
+                    _id: sub._id,
+                    categoryName: sub.subCategoryName,
+                },]);
+            }
+        })
+    }, [currentCategory]);
 
-    useEffect(async () => {
-        setCurrentSubCategory(listActiveSub[0]._id)
+    useEffect(() => {
+        if (listActiveSub != null && listActiveSub.length != 0) {
+            setCurrentSubCategory(listActiveSub[0]._id)
+        }
     }, [listActiveSub]);
+
+    const handleInitData = () => {
+
+        if (props.courseInfo == null || currentCategory == null || currentSubCategory == null) {
+            return;
+        }
+        else {
+            return (
+                <form className={classes.form} noValidate onSubmit={handleSubmit(props.onSubmit)}>
+                    <Grid container spacing={2}>
+                        {/* Tên khóa học    */}
+                        <Grid item xs={12}>
+                            <TextField
+                                name="courseName"
+                                variant="filled"
+                                required
+                                fullWidth
+                                id="courseName"
+                                label="Tên khóa học"
+                                defaultValue={props.courseInfo.courseName}
+                                // value={props.courseInfo.courseName}
+                                autoFocus
+                                {...register("courseName", { required: true })}
+                            />
+                        </Grid>
+                        {errors.courseName && <span className='errors'>*Chưa nhập tên khóa học</span>}
+
+                        {/* Chọn lĩnh vực */}
+                        <Grid item xs={12}>
+                            <TextField
+                                id="categoryId"
+                                select
+                                label="Lĩnh vực"
+                                fullWidth
+                                // defaultValue=
+                                value={currentCategory}
+                                onChange={handleChangeCategory}
+                                SelectProps={{
+                                    native: true,
+                                }}
+                                variant="filled"
+                            >
+                                {props.listCategories.map((option) => (
+                                    <option key={option._id} value={option._id}>
+                                        {option.categoryName}
+                                    </option>
+                                ))}
+                            </TextField>
+                            <input
+                                name="categoryid"
+                                type='hidden'
+                                id="categoryid"
+                                value={currentCategory}
+                                onChange={setValue('categoryid', currentCategory)}
+                                {...register("categoryid", { required: true })}
+                            />
+                        </Grid>
+                        {errors.categoryid && <span className='errors'>*Chưa chọn lĩnh vực</span>}
+
+                        {/* Chọn lĩnh vực phụ */}
+                        <Grid item xs={12}>
+                            <TextField
+                                id="subCategoryId"
+                                select
+                                label="Lĩnh vực phụ"
+                                fullWidth
+                                defaultValue={props.courseInfo.subCategoryId}
+                                value={currentSubCategory}
+                                onChange={handleChangeSubCategory}
+                                SelectProps={{
+                                    native: true,
+                                }}
+                                variant="filled"
+                            >
+                                {listActiveSub.map((option) => (
+                                    <option key={option._id} value={option._id}>
+                                        {option.categoryName}
+                                    </option>
+                                ))}
+                            </TextField>
+                            <input
+                                name="subCategoryId"
+                                type='hidden'
+                                id="subCategoryId"
+                                value={currentSubCategory}
+                                onChange={setValue('subCategoryId', currentSubCategory)}
+                                {...register("subCategoryId", { required: true })}
+                            />
+                        </Grid>
+                        {errors.subCategoryId && <span className='errors'>*Chưa chọn lĩnh vực phụ</span>}
+
+                        {/* Mô tả ngắn */}
+                        <Grid item xs={12}>
+                            <TextField
+                                name="detailShort"
+                                variant="filled"
+                                required
+                                fullWidth
+                                multiline
+                                rows={5}
+                                id="detailShort"
+                                label='Mô tả ngắn'
+                                defaultValue={
+                                    //props.courseInfo.detailShort || 
+                                    'Chưa có API'}
+                                autoFocus
+                                {...register("detailShort", { required: true })}
+                            />
+                        </Grid>
+                        {errors.detailShort && <span className='errors'>*Chưa có mô tả</span>}
+
+                        {/* Học phí */}
+                        <Grid item xs={12}>
+                            <TextField
+                                name="price"
+                                variant="filled"
+                                type='number'
+                                required
+                                fullWidth
+                                id="price"
+                                label="Học phí"
+                                defaultValue={
+                                    //props.courseInfo.price ||
+                                    'Chưa gọi API'
+                                }
+                                {...register("price", { required: true, min: 0 })}
+                            />
+                        </Grid>
+                        {errors.price && <span className='errors'>*Chưa có học phí</span>}
+
+                        {/* Giảm giá */}
+                        <Grid item xs={12}>
+                            <TextField
+                                name="salePrice"
+                                variant="filled"
+                                type='number'
+                                fullWidth
+                                id="salePrice"
+                                label="Học phí giảm giá"
+                                defaultValue={
+                                    //props.courseInfo.salePrice ? props.courseInfo.salePrice : 
+                                    '0'}
+                                {...register("salePrice", { min: 0 })}
+                            />
+                        </Grid>
+
+                        {/* Mô tả chi tiết (wysiwyg)*/}
+                        <Grid
+                            justify="flex-start" // Add it here :)
+                            container
+                            spacing={2}
+                            item xs={12}
+                        >
+                            <Grid item>
+                                <Typography variant='h5' color="inherit">
+                                    Mô tả chi tiết:
+                                </Typography>
+                            </Grid>
+                            <Grid item>
+                                <DescribeDialog editorState={editorState} onEditorStateChange={onEditorStateChange} />
+                            </Grid>
+                        </Grid>
+
+                        <Grid item xs={12}
+                            justify="flex-start"
+                            container
+                            className={classes.editorContent}
+                        >
+                            <div dangerouslySetInnerHTML={{
+                                __html: draftToHtml(convertToRaw(editorState.getCurrentContent()))
+                                // props.courseInfo.detailLong
+                            }}>
+                            </div>
+                            <input
+                                name="detailLong"
+                                type='hidden'
+                                id="detailLong"
+                                value={detailLong}
+                                defaultValue={
+                                    //props.courseInfo.detailLong
+                                    'Chưa có APi'
+                                }
+                                onChange={setValue('detailLong', detailLong)}
+                                {...register("detailLong", { required: true })}
+                            />
+                        </Grid>
+                        {errors.detailLong && <span className='errors'>*Chưa có mô tả</span>}
+
+                        <Grid container item xs={12} alignItems='center'>
+                            <Typography variant='h5' align='left' className={classes.textAlign}>
+                                Đã hoàn thiện:
+                            </Typography>
+                            <input
+                                name="isCompleted"
+                                type='checkbox'
+                                id={"isCompleted" + props.id}
+                                className={classes.Checkbox}
+                                {...register("isCompleted", {})}
+                            />
+
+                        </Grid>
+
+                    </Grid>
+
+                    <Grid container justify="center">
+                        <Grid item>
+                            <Button
+                                type="submit"
+                                width='50%'
+                                variant="contained"
+                                color="primary"
+                                className={classes.submit}
+                            >
+                                Đăng khóa học
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </form>
+            )
+        }
+    }
+
+
     return (
         <div className={classes.paper}>
-            <form className={classes.form} noValidate onSubmit={handleSubmit(props.onSubmit)}>
-                <Grid container spacing={2}>
-                    {/* Tên khóa học    */}
-                    <Grid item xs={12}>
-                        <TextField
-                            name="courseName"
-                            variant="filled"
-                            required
-                            fullWidth
-                            id="courseName"
-                            label="Tên khóa học"
-                            defaultValue={
-                                //props.courseInfo.courseName || 
-                                'Chưa có API'}
-                            autoFocus
-                            {...register("courseName", { required: true })}
-                        />
-                    </Grid>
-                    {errors.courseName && <span className='errors'>*Chưa nhập tên khóa học</span>}
-
-                    {/* Chọn lĩnh vực */}
-                    <Grid item xs={12}>
-                        <TextField
-                            id="categoryId"
-                            select
-                            label="Lĩnh vực"
-                            fullWidth
-                            value={currenctCategory}
-                            onChange={handleChangeCategory}
-                            SelectProps={{
-                                native: true,
-                            }}
-                            variant="filled"
-                        >
-                            {listCategories.map((option) => (
-                                <option key={option._id} value={option._id}>
-                                    {option.categoryName}
-                                </option>
-                            ))}
-                        </TextField>
-                        <input
-                            name="categoryid"
-                            type='hidden'
-                            id="categoryid"
-                            value={currenctCategory}
-                            onChange={setValue('categoryid', currenctCategory)}
-                            {...register("categoryid", { required: true })}
-                        />
-                    </Grid>
-                    {errors.categoryid && <span className='errors'>*Chưa chọn lĩnh vực</span>}
-
-                    {/* Chọn lĩnh vực phụ */}
-                    <Grid item xs={12}>
-                        <TextField
-                            id="subCategoryId"
-                            select
-                            label="Lĩnh vực phụ"
-                            fullWidth
-                            value={currentSubCategory}
-                            onChange={handleChangeSubCategory}
-                            SelectProps={{
-                                native: true,
-                            }}
-                            variant="filled"
-                        >
-                            {listActiveSub.map((option) => (
-                                <option key={option._id} value={option._id}>
-                                    {option.categoryName}
-                                </option>
-                            ))}
-                        </TextField>
-                        <input
-                            name="subCategoryId"
-                            type='hidden'
-                            id="subCategoryId"
-                            value={currentSubCategory}
-                            onChange={setValue('subCategoryId', currentSubCategory)}
-                            {...register("subCategoryId", { required: true })}
-                        />
-                    </Grid>
-                    {errors.subCategoryId && <span className='errors'>*Chưa chọn lĩnh vực phụ</span>}
-
-                    {/* Mô tả ngắn */}
-                    <Grid item xs={12}>
-                        <TextField
-                            name="detailShort"
-                            variant="filled"
-                            required
-                            fullWidth
-                            multiline
-                            rows={5}
-                            id="detailShort"
-                            label='Mô tả ngắn'
-                            defaultValue={
-                                //props.courseInfo.detailShort || 
-                                'Chưa có API'}
-                            autoFocus
-                            {...register("detailShort", { required: true })}
-                        />
-                    </Grid>
-                    {errors.detailShort && <span className='errors'>*Chưa có mô tả</span>}
-
-                    {/* Học phí */}
-                    <Grid item xs={12}>
-                        <TextField
-                            name="price"
-                            variant="filled"
-                            type='number'
-                            required
-                            fullWidth
-                            id="price"
-                            label="Học phí"
-                            defaultValue={
-                                //props.courseInfo.price ||
-                                'Chưa gọi API'
-                            }
-                            {...register("price", { required: true, min: 0 })}
-                        />
-                    </Grid>
-                    {errors.price && <span className='errors'>*Chưa có học phí</span>}
-
-                    {/* Giảm giá */}
-                    <Grid item xs={12}>
-                        <TextField
-                            name="salePrice"
-                            variant="filled"
-                            type='number'
-                            fullWidth
-                            id="salePrice"
-                            label="Học phí giảm giá"
-                            defaultValue={
-                                //props.courseInfo.salePrice ? props.courseInfo.salePrice : 
-                                '0'}
-                            {...register("salePrice", { min: 0 })}
-                        />
-                    </Grid>
-
-                    {/* Mô tả chi tiết (wysiwyg)*/}
-                    <Grid
-                        justify="flex-start" // Add it here :)
-                        container
-                        spacing={2}
-                        item xs={12}
-                    >
-                        <Grid item>
-                            <Typography variant='h5' color="inherit">
-                                Mô tả chi tiết:
-                            </Typography>
-                        </Grid>
-                        <Grid item>
-                            <DescribeDialog editorState={editorState} onEditorStateChange={onEditorStateChange} />
-                        </Grid>
-                    </Grid>
-
-                    <Grid item xs={12}
-                        justify="flex-start"
-                        container
-                        className={classes.editorContent}
-                    >
-                        <div dangerouslySetInnerHTML={{
-                            __html: draftToHtml(convertToRaw(editorState.getCurrentContent()))
-                            // props.courseInfo.detailLong
-                        }}>
-                        </div>
-                        <input
-                            name="detailLong"
-                            type='hidden'
-                            id="detailLong"
-                            value={detailLong}
-                            defaultValue={
-                                //props.courseInfo.detailLong
-                                'Chưa có APi'
-                            }
-                            onChange={setValue('detailLong', detailLong)}
-                            {...register("detailLong", { required: true })}
-                        />
-                    </Grid>
-                    {errors.detailLong && <span className='errors'>*Chưa có mô tả</span>}
-
-                    <Grid container item xs={12} alignItems='center'>
-                        <Typography variant='h5' align='left' className={classes.textAlign}>
-                            Đã hoàn thiện:
-                        </Typography>
-                        <input
-                            name="isCompleted"
-                            type='checkbox'
-                            id={"isCompleted" + props.id}
-                            className={classes.Checkbox}
-                            {...register("isCompleted", {})}
-                        />
-
-                    </Grid>
-
-                </Grid>
-
-                <Grid container justify="center">
-                    <Grid item>
-                        <Button
-                            type="submit"
-                            width='50%'
-                            variant="contained"
-                            color="primary"
-                            className={classes.submit}
-                        >
-                            Đăng khóa học
-                        </Button>
-                    </Grid>
-                </Grid>
-            </form>
+            {
+                handleInitData()
+            }
         </div>
-
     );
 }
 

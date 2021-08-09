@@ -21,21 +21,30 @@ export default function DetailPage(props) {
     const id = props.match.params.id
     const [courseDetail, setCoursesDetail] = useState({});
     const [email, setEmail] = useState("");
-    const getTeacherEmail = () => {
-        axios.get("http://localhost:3001/api/users/id?id=" + courseDetail.teacherId).then(res => {
+    const getTeacherEmail = async () => {
+        await axios.get("http://localhost:3001/api/users/id?id=" + courseDetail.teacherId).then(res => {
             setEmail(res.data.email)
             console.log(res.data.email)
         }).catch(error => console.log(error));
     }
-    useEffect(() => {
-        axios.get("http://localhost:3001/api/courses/id?id=" + id).then(res => {
+    const getCourseDetail = async ()=>{
+        await axios.get("http://localhost:3001/api/courses/id?id=" + id).then(res => {
             setCoursesDetail(res.data)
-        }).catch(error => console.log(error));
+        }).catch(error => console.log(error))
+    }
+    useEffect(() => {
+        const init =async ()=>{
+            await getCourseDetail()
+        }
+        init()
 
     }, []);
 
     useEffect(() => {
-        getTeacherEmail()
+        const init =async ()=>{
+            await getTeacherEmail()
+        }
+        init()
     }, [courseDetail]);
 
     return (

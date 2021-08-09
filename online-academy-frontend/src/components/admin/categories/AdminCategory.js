@@ -25,7 +25,6 @@ import CategoryAction from './CategoryAction';
 import { formatDateTime } from '../../../utils/helpers';
 
 let stt = 0;
-const actions = (<CategoryAction/>)
 const columns = [
     { id: 'stt', label: '#', minWidth: 10 },
     { id: 'name', label: 'Tên', minWidth: 100 },
@@ -37,6 +36,7 @@ const columns = [
 function createData(id,name, lastUpdated) {
     stt += 1;
     var last = formatDateTime(new Date(lastUpdated)).toLocaleString()
+    let actions = (<CategoryAction id ={id}/>)
     return { stt,id, name, last,actions };
 }
 
@@ -138,6 +138,16 @@ TablePaginationActions.propTypes = {
 export default function AdminCategory() {
     const [data,setData] = useState([]);
     const [user,setUser] = useState(JSON.parse(localStorage.getItem("auth")))
+    useEffect(()=>{
+        setUser(JSON.parse(localStorage.getItem("auth")))
+    },[localStorage.getItem("auth")])
+
+    useEffect(() => {
+        if (user===null||user.role != 2) 
+        {
+            window.location.replace("/")
+        }
+    }, [user])
     const classes = useStyles();
     const [page, setPage] = useState(0);
     const [rowsPerPage, _] = useState(5);
@@ -147,24 +157,22 @@ export default function AdminCategory() {
         setPage(newPage);
     };
     const [categories, setCategories] = useState([]);
-
+    const getCategory = async() => {
+        await axios.get('http://localhost:3001/api/categories/admin',{
+            headers:{
+                "x-access-token":user.accessToken
+            }
+        })
+        .then(res => {
+            console.log(res.data)
+            setCategories(res.data);
+        })
+    }
     useEffect(() => {
         Refreshtoken()
         setUser(JSON.parse(localStorage.getItem("auth")))
-        const getCategory = async() => {
-            await axios.get('http://localhost:3001/api/categories/admin',{
-                headers:{
-                    "x-access-token":user.accessToken
-                }
-            })
-            .then(res => {
-                console.log(res.data)
-                setCategories(res.data);
-            })
-        }
-
         const init = async() => {
-            getCategory();
+            await getCategory();
         }
 
         init();

@@ -14,16 +14,8 @@ export default function MultiCarousel(props) {
     const [numEachSlide, setNumEachSlide] = useState(3)
 
     
-
-    // const getTeachers = () => {
-    //     axios.get("http://localhost:3001/api/users/teacher").then(res => {
-    //         const listTeacher = res.data;
-    //         setTeachers(listTeacher);
-    //         console.log(listTeacher)
-    //     }).catch(error => console.log(error));
-    // }
-    const getCourseItems = () => {
-        axios.get("http://localhost:3001/api/" + props.categoryId).then(res => {
+    const getCourseItems = async () => {
+        await axios.get("http://localhost:3001/api/" + props.categoryId).then(res => {
             const listCourse = res.data;
             setItems(listCourse);
         }).catch(error => console.log(error));
@@ -56,8 +48,10 @@ export default function MultiCarousel(props) {
     }
     //TODO: LẤY DANH SÁCH KHÓA HỌC THEO categoryId rồi để vào items nha
     useEffect(() => {
-        getCourseItems()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        const init = async () =>{
+            getCourseItems()
+        }
+        init()
      }, []);
 
 

@@ -11,19 +11,21 @@ export default function SingleCarousel(props) {
     const [items, setItems] = useState()
     const [teachers, setTeachers] = useState([{}])
 
-    const getCouresItems = () => {
+    const getCouresItems = async () => {
         const path = 'http://localhost:3001/api/courses/' + props.coursesPath;
         console.log(path)
-        axios.get(path).then(res => {
+        await axios.get(path).then(res => {
             const listCourse = res.data;
             setItems(listCourse);
             console.log(listCourse);
         }).catch(error => console.log(error));
     }
 
-    //TODO: LẤY DANH SÁCH KHÓA HỌC theo yêu cầu từ FE rồi để vào items nha
     useEffect(() => {
-        getCouresItems()
+        const init= async()=>{
+            await getCouresItems()
+        }
+        init()
     }, []);
 
     return (

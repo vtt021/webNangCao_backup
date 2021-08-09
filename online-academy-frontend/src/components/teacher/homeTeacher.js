@@ -10,11 +10,15 @@ export default function HomeTeacher() {
     const classes = useStyles();
     const [courseList, setCourseList] = useState([]);
     const [user, setUser] = useState(JSON.parse(localStorage.getItem("auth")))
+    useEffect(()=>{
+        setUser(JSON.parse(localStorage.getItem("auth")))
+    },[localStorage.getItem("auth")])
 
     useEffect(() => {
-        axios.get("http://localhost:3001/api/courses/teacher?teacherId=" +
-            //user._id ||
-            '60ed31a444b83939d4197e57').then(res => {
+
+        const init = async () => {
+            console.log("user", user);
+            await axios.get("http://localhost:3001/api/courses/teacher?teacherId=" + user.id).then(res => {
                 res.data.map((course, i) => {
                     course.id = course._id;
                 }
@@ -22,8 +26,8 @@ export default function HomeTeacher() {
                     setCourseList(res.data)
                 )
             }).catch(error => console.log(error));
-
-
+        }
+        init();
     }, []);
 
 
@@ -106,7 +110,6 @@ export default function HomeTeacher() {
                     <Button
                         variant="contained"
                         color="primary"
-                        disabled={cellValues.row.isCompleted}
                         onClick={(event) => {
 
                             handleUpdateVideo(cellValues)
@@ -137,7 +140,7 @@ export default function HomeTeacher() {
                 </Grid>
                 <div style={{ display: "flex" }}>
                     <Button onClick={handleUpCourse} variant="contained" color="primary"
-                        style={{ marginLeft: "auto", marginTop:'2%' }}
+                        style={{ marginLeft: "auto", marginTop: '2%' }}
                     >
                         Đăng khóa học mới
                     </Button>
