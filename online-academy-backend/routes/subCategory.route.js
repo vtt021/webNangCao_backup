@@ -88,7 +88,7 @@ router.get('/id', async (req, res, next) => {
     }
 })
 
-router.get('/admin', async (req, res) => {
+router.get('/admin', adminAuthMdw, async (req, res) => {
     try {
         const categoryId = req.body.id;
 

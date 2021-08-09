@@ -16,8 +16,8 @@ module.exports = {
     },
 
     async getCategoryName(id) {
-        const category = await Category.findOne({_id: id, isDeleted: false}, ['_id', 'categoryName']).exec();
-        return category;
+        const category = await Category.find({_id: id, isDeleted: false}, ['_id', 'categoryName']).exec();
+        return category[0];
     },
 
     async add(category) {
