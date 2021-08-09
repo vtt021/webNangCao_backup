@@ -49,8 +49,8 @@ export default function UpdateCourse(props) {
                     </h2>
                 </Grid>
 
-                <Grid item xs={2}>
-                </Grid>
+                {/* Load ảnh */}
+                <Grid item xs={2} />
                 <Grid item xs={4}>
                     <Typography variant='h5' align='left'>
                         Ảnh bìa:
@@ -63,16 +63,15 @@ export default function UpdateCourse(props) {
                     </Typography>
                     <ImageUploadCard id='2' selectedFile={thumbnailImage} setSelectedFile={setThumbnailImage} setFileName={setThumbnailImageName} />
                 </Grid>
-                <Grid item xs={2}>
-                </Grid>
-                
-                <Grid item xs={2}>
-                </Grid>
+                <Grid item xs={2} />
+
+
+                {/* Nội dung */}
+                <Grid item xs={2} />
                 <Grid item xs={8}>
                     <UpdateContent onSubmit={onSubmit} courseInfo={courseInfo} />
                 </Grid>
-                <Grid item xs={2}>
-                </Grid>
+                <Grid item xs={2} />
             </Grid>
             <Footer />
         </div>
