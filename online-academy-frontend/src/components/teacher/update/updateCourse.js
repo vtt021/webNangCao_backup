@@ -80,7 +80,7 @@ export default function UpdateCourse(props) {
 
         //     if (props.courseInfo != null){
         //         await loadImage(props.courseInfo.imageCourse);
-                
+
         //     }
 
         // }
@@ -109,12 +109,6 @@ export default function UpdateCourse(props) {
     const onSubmit = data => {
         console.log(data) //Dữ liệu khóa học người dùng nhập vào
         console.log(courseImage)
-        //Hiển thị hình 
-        //------------
-        // < img  
-        // src = { selectedFile }
-        //     />
-        //------------
     }
 
     return (
@@ -127,18 +121,37 @@ export default function UpdateCourse(props) {
                         Cập nhật thông tin khóa học
                     </h2>
                 </Grid>
+                {/* ảnh cố định*/}
+                <Grid item xs={2} />
+                <Grid item xs={4}>
+                    <Typography variant='h5' align='left'>
+                        Ảnh bìa cũ:
+                    </Typography>
+                    <img src='http://localhost:3001/api/files/send?fileName=course3.png'
+                        alt="Ảnh bìa" className={classes.photo}
+                    />
+                </Grid>
+                <Grid item xs={4}>
+                    <Typography variant='h5' align='left'>
+                        Ảnh minh họa cũ:
+                    </Typography>
+                    <img src='http://localhost:3001/api/files/send?fileName=course3.png'
+                        alt="Ảnh bìa" className={classes.photo}
+                    />
+                </Grid>
+                <Grid item xs={2} />
 
                 {/* Load ảnh */}
                 <Grid item xs={2} />
                 <Grid item xs={4}>
                     <Typography variant='h5' align='left'>
-                        Ảnh bìa:
+                        Ảnh bìa mới:
                     </Typography>
                     <ImageUploadCard id='1' selectedFile={courseImage} setSelectedFile={setCourseImage} setFileName={setCourseImageName} />
                 </Grid>
                 <Grid item xs={4}>
                     <Typography variant='h5' align='left'>
-                        Ảnh minh họa:
+                        Ảnh minh họa mới:
                     </Typography>
                     <ImageUploadCard id='2' selectedFile={thumbnailImage} setSelectedFile={setThumbnailImage} setFileName={setThumbnailImageName} />
                 </Grid>
@@ -168,35 +181,14 @@ const useStyles = makeStyles((theme) => ({
         justify: 'flex-start',
 
     },
-    leftPaper: {
-        padding: theme.spacing(2),
-        background: '#E6DDC6',
-        width: '100%',
-        marginBottom: '5%',
-    },
-    rightPaper: {
-        padding: theme.spacing(2),
-        background: '#FEF7DC',
-        width: '100%',
-        marginBottom: '5%',
-    },
     underline: {
         borderBottom: '2px solid',
 
     },
-    grid1: {
-    },
-    grid2: {
-
-    },
-    grid3: {
-        marginTop: '20%'
-    },
-    list: {
-        width: '100%'
-    },
-    listItem: {
-        background: '#E6DDC6'
+    photo: {
+        height: 400,
+        width: '100%',
+        objectFit: 'scale-down'
     }
 
 }));
