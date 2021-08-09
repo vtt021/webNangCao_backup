@@ -16,19 +16,22 @@ export default function SubCategoryPage(props) {
     const subCategoryId = props.match.params.subId
     const [categoryName,setCategoryName] = useState("")
     const [subCategoryName,setSubName] = useState("")
-    useEffect(() => {
-        axios.get("http://localhost:3001/api/categories/id?id="+categoryId).then(res => {
+    const getListSubCategory = async ()=>{
+        await axios.get("http://localhost:3001/api/categories/id?id="+categoryId).then(res => {
             setCategoryName(res.data.categoryName)
             console.log(res.data)
-        })
-            .catch(error => console.log(error));
-    }, []);
-    useEffect(() => {
-        axios.get("http://localhost:3001/api/sub-categories/id?id="+subCategoryId).then(res => {
+        }).catch(error => console.log(error));
+
+        await axios.get("http://localhost:3001/api/sub-categories/id?id="+subCategoryId).then(res => {
             setSubName(res.data.subCategoryName)
             console.log(res.data)
-        })
-            .catch(error => console.log(error));
+        }).catch(error => console.log(error));
+    }
+    useEffect(() => {
+        const init = async ()=>{
+            await getListSubCategory()
+        }
+        init()
     }, []);
     return (
         <div fluid >

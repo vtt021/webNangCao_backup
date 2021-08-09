@@ -13,13 +13,17 @@ export default function ControlledAccordions(props) {
     const classes = useStyles();
     const [expanded, setExpanded] = React.useState(false);
     const [courseContent, setCourseContent] = useState([]);
-
-    useEffect(() => {
-        axios.get("http://localhost:3001/api/course-contents/course?courseId=" + props.courseId).then(res => {
+    const getCourseContent=async ()=>{
+        await axios.get("http://localhost:3001/api/course-contents/course?courseId=" + props.courseId).then(res => {
             setCourseContent(res.data)
             console.log(props.courseId)
         }).catch(error => console.log(error));
-
+    }
+    useEffect(() => {
+        const init=async()=>{
+            await getCourseContent()
+        }
+        init()
     }, []);
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);

@@ -22,12 +22,18 @@ export default function Category() {
     };
 
     
-    const getSubCategory =()=>{
-        axios.get("http://localhost:3001/api/sub-categories/").then(res => {    
+    const getSubCategory = async()=>{
+        await axios.get("http://localhost:3001/api/sub-categories/").then(res => {    
             setListSub(res.data)
         }).catch(error => console.log(error))
     }
-    
+    const getCategory = async()=>{
+        await axios.get("http://localhost:3001/api/categories").then(res => {
+            const listCategories = res.data;
+            setListCategories(listCategories);
+            
+        }).catch(error => console.log(error));
+    }
     const [listCategories, setListCategories] = useState([{ id: 1, categoryName: 'Không có khóa học' }])
     const [listSubCategory,setListSub]=useState([{}])
 
@@ -58,16 +64,17 @@ export default function Category() {
         )))
     }
     useEffect(() => {
-        axios.get("http://localhost:3001/api/categories").then(res => {
-            const listCategories = res.data;
-            setListCategories(listCategories);
-            
-        })
-            .catch(error => console.log(error));
+        const init = async ()=>{
+            await getCategory()
+        }
+        init()
     }, []);
 
     useEffect(() => {
-        getSubCategory()
+        const init =async ()=>{
+            await getSubCategory()
+        }
+        init()
     }, [listCategories]);
 
     return (

@@ -12,12 +12,20 @@ import FormLabel from '@material-ui/core/FormLabel';
 export default function LeftOption(props) {
     const classes = useStyles();
     const [listCategories, setListCategories] = useState([{ id: 1, categoryName: 'Không có khóa học' }])
-    useEffect(() => {
+    
+    const getListCategory = async () =>{
         axios.get("http://localhost:3001/api/categories").then(res => {
             const listCategories = res.data;
             setListCategories(listCategories);
         })
             .catch(error => console.log(error));
+    }
+    
+    useEffect(() => {
+        const init =async ()=>{
+            await getListCategory()
+        }
+        init()
     }, []);
     return (
         <Grid container direction="column" justifyContent='flex-start'>

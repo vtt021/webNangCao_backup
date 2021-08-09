@@ -19,8 +19,8 @@ export default function SignUp() {
     const classes = useStyles();
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
 
-    const onSubmit = data => {
-        axios.post("http://localhost:3001/api/users", {
+    const onSubmit = async (data) => {
+        await axios.post("http://localhost:3001/api/users", {
             email: data.email,
             password: data.password,
             username: data.username

@@ -21,9 +21,9 @@ export default function Login() {
     const [loginStatus, setLoginStatus] = useState(true)
     const { register, handleSubmit, formState: { errors } } = useForm();
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         localStorage.removeItem("auth")
-        axios.post("http://localhost:3001/api/auth", {
+        await axios.post("http://localhost:3001/api/auth", {
             email: data.email,
             password: data.password
         }).then(res => {
