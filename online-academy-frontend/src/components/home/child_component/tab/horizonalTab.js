@@ -77,8 +77,6 @@ const useStyles = makeStyles((theme) => ({
     underline: {
         borderBottom: '2px solid',
         paddingTop: '5%',
-
-
     },
     grid1: {
     },

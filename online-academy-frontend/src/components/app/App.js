@@ -17,6 +17,7 @@ import HomeTeacher from '../teacher/homeTeacher';
 import UploadCourse from '../teacher/uploadCourse';
 import UploadVideo from '../teacher/child_component/uploadVideo';
 import UpdateContent from '../teacher/update/updateCourse';
+import PersonalManagement from '../student/personalManagement';
 // import css
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
                 <Route exact path="/teacher/uploadCourse" component={UploadCourse} />
                 <Route exact path="/teacher/uploadVideo" component={UploadVideo} />
 
+                <Route exact path="/profile" component={PersonalManagement} />
 
                 <Route exact path="/detail/:id"
                     render={(props) => <DetailPage {...props} />} />

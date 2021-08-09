@@ -12,37 +12,40 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import './SignUp.css';
 
 
-export default function SignUp() {
+export default function UpdateInfo() {
     const classes = useStyles();
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    //Gọi API lấy tên với email của tài khoản nha
 
     const onSubmit = async (data) => {
-        if (watch("verifyPassword") === watch("password")) {
-            await axios.post("http://localhost:3001/api/users", {
-                email: data.email,
-                password: data.password,
-                username: data.username
-            }).then(res => {
-                window.location.replace("/verify-otp/" + data.email)
-
-            })
-                .catch(error => console.log(error));
+        console.log(data) 
+        if (data.password!= 0)
+        {
+            //Sai mật khẩu thì alert nó lên
         }
+        else
+        {
+            //đúng thì đổi thou
+        }
+        // await axios.post("http://localhost:3001/api/users", {
+        //     email: data.email,
+        //     password: data.password,
+        //     username: data.username
+        // }).then(res => {
+        //     window.location.replace("/verify-otp/" + data.email)
 
+        // })
+        //     .catch(error => console.log(error));
     }
 
     return (
-        <Container component="main" maxWidth="xs">
+        <div maxWidth="xs">
             <CssBaseline />
             <div className={classes.paper}>
-                <Avatar className={classes.avatar}>
-                    <LockOutlinedIcon />
-                </Avatar>
                 <Typography component="h1" variant="h5">
-                    Đăng ký tài khoản
+                    Cập nhật thông tin
                 </Typography>
                 <form className={classes.form} noValidate onSubmit={handleSubmit(onSubmit)}>
                     <Grid container spacing={2}>
@@ -50,6 +53,7 @@ export default function SignUp() {
                         {/* Tên đăng nhập */}
                         <Grid item xs={12}>
                             <TextField
+                                defaultValue='Điền tên vô đây nè'
                                 autoComplete="fname"
                                 name="username"
                                 variant="filled"
@@ -66,6 +70,7 @@ export default function SignUp() {
                         {/* Email */}
                         <Grid item xs={12}>
                             <TextField
+                                defaultValue='abc@gmail.com'
                                 variant="filled"
                                 required
                                 fullWidth
@@ -78,8 +83,13 @@ export default function SignUp() {
                             />
                         </Grid>
                         {errors.email && <span className='errors'>*Email chưa đúng định dạng </span>}
+                        <Grid item xs={12} >
+                            <div style={{ display: "flex" }}>
+                                <Typography variant='h6' style={{ marginRight: "auto", paddingBottom: '1%' }}>
+                                    Nhập mật khẩu để xác nhận
+                                </Typography>
+                            </div>
 
-                        <Grid item xs={12}>
                             <TextField
                                 variant="filled"
                                 required
@@ -89,71 +99,33 @@ export default function SignUp() {
                                 type="password"
                                 id="password"
                                 autoComplete="current-password"
-                                {...register("password", { required: true, minLength: 6 })}
-
+                                {...register("password", { required: true, minLength: 1 })}
                             />
                         </Grid>
-                        {errors.password && <span className='errors'>*Mật khẩu tối thiểu 6 ký tự</span>}
-                        <Grid item xs={12}>
-                            <TextField
-                                variant="filled"
-                                required
-                                fullWidth
-                                name="verifyPassword"
-                                label="Xác nhận mật khẩu"
-                                type="password"
-                                id="verifyPassword"
-                                autoComplete="current-password"
-                                {...register("verifyPassword", { required: true})}
-
-                            />
-                        </Grid>
-                        {(errors.verifyPassword || watch("verifyPassword") != watch("password")) && <span className='errors'>*Mật khẩu không trùng khớp</span>}
-
+                        {errors.password && <span className='errors'>*Chưa nhập mật khẩu</span>}
                     </Grid>
                     <Button
                         type="submit"
-                        fullWidth
                         variant="contained"
                         color="primary"
                         className={classes.submit}
                     >
-                        Đăng ký
+                        Cập nhật
                     </Button>
-                    <Grid container justify="flex-end">
-                        <Grid item>
-                            <Link href="/login" variant="body2">
-                                Đã có tài khoản? Đăng nhập
-                            </Link>
-                        </Grid>
-                    </Grid>
                 </form>
             </div>
-            <Box mt={5}>
-                <Copyright />
-            </Box>
-        </Container>
-    );
-}
-function Copyright() {
-    return (
-        <Typography variant="body2" color="textSecondary" align="center">
-            {'Copyright © '}
-            <Link color="inherit" href="https://material-ui.com/">
-                Your Website
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
+        </div>
     );
 }
 
+
 const useStyles = makeStyles((theme) => ({
     paper: {
-        marginTop: theme.spacing(8),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        paddingLeft: '5%',
+        paddingRight: '5%',
     },
     avatar: {
         margin: theme.spacing(1),
