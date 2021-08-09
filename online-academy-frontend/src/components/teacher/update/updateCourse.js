@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
@@ -25,7 +25,86 @@ export default function UpdateCourse(props) {
     const [courseImageName, setCourseImageName] = useState(null);
     const [thumbnailImageName, setThumbnailImageName] = useState(null);
 
-    const [fileName, setFileName] = useState(null);
+    const [listCategories, setListCategories] = useState([{ id: 1, categoryName: 'Tất cả lĩnh vực' }])
+    const [listSubCategory, setListSub] = useState([{ id: 1, categoryName: 'Tất cả lĩnh vực phụ' }])
+
+    const initData = async () => {
+        let info = await axios.get('http://localhost:3001/api/courses/id?id=' + id)
+            .then(res => {
+                let receiveData = res.data;
+                console.log(res.data);
+                setCourseInfo(receiveData);
+                console.log("abc", courseInfo);
+                return courseInfo;
+
+            }).catch(e => {
+                console.log(e);
+            });
+        console.log(info);
+        return info;
+    }
+
+    const setupSubcate = async () => {
+        let subData = await axios.get("http://localhost:3001/api/sub-categories/").then(res => {
+            setListSub(res.data)
+            return res.data;
+        }).catch(error => {
+            console.log(error);
+            return null;
+        })
+
+        return subData;
+    }
+
+    const setupCategory = async () => {
+        await axios.get("http://localhost:3001/api/categories").then(res => {
+            const listCategories = res.data;
+            setListCategories(listCategories);
+        })
+            .catch(error => console.log(error));
+    }
+
+    const loadImage = async (filename) => {
+        let data = axios.get(`http://localhost:3001/api/files/send?fileName=${filename}`)
+            .then(res => {
+                let data = res.data;
+                let buff = btoa(unescape(encodeURIComponent(data)))
+
+                console.log(buff);
+                setCourseImage(buff);
+            })
+    }
+
+    useEffect(() => {
+        // const init = async () => {
+
+        //     if (props.courseInfo != null){
+        //         await loadImage(props.courseInfo.imageCourse);
+                
+        //     }
+
+        // }
+        // init();
+
+    }, [props.courseInfo])
+
+
+    useEffect(() => {
+        const init = async () => {
+            await setupCategory();
+            await setupSubcate();
+            let info = await initData();
+            // console.log("here", convertImgToBase64("http://localhost:3001/api/files/send?fileName=course1.jpg", (dataUrl) => {
+            //     console.log("DataURL", dataUrl);
+            //     return dataUrl;
+            // }));
+            // console.log("info.imageCourse", info);
+
+
+        }
+
+        init();
+    }, [])
 
     const onSubmit = data => {
         console.log(data) //Dữ liệu khóa học người dùng nhập vào
@@ -55,7 +134,7 @@ export default function UpdateCourse(props) {
                     <Typography variant='h5' align='left'>
                         Ảnh bìa:
                     </Typography>
-                    <ImageUploadCard id='1' selectedFile={courseImage} setSelectedFile={setCourseImage} setFileName={setFileName} />
+                    <ImageUploadCard id='1' selectedFile={courseImage} setSelectedFile={setCourseImage} setFileName={setCourseImageName} />
                 </Grid>
                 <Grid item xs={4}>
                     <Typography variant='h5' align='left'>
@@ -65,11 +144,13 @@ export default function UpdateCourse(props) {
                 </Grid>
                 <Grid item xs={2}>
                 </Grid>
-                
+
                 <Grid item xs={2}>
                 </Grid>
                 <Grid item xs={8}>
-                    <UpdateContent onSubmit={onSubmit} courseInfo={courseInfo} />
+                    <UpdateContent onSubmit={onSubmit} courseInfo={courseInfo}
+                        listCategories={listCategories} listSubCategory={listSubCategory}
+                        setListCategories={setListCategories} setListSub={setListSub} />
                 </Grid>
                 <Grid item xs={2}>
                 </Grid>

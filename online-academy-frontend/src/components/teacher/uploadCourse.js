@@ -56,6 +56,7 @@ export default function UploadCourse(props) {
         })
 
         console.log(ret)
+        console.log(courseImage[0]);
 
         if (ret !== null) {
             if (courseImage !== null) {

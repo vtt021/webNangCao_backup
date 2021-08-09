@@ -12,8 +12,10 @@ export default function HomeTeacher() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem("auth")))
 
     useEffect(() => {
-        console.log("user", user);
-        axios.get("http://localhost:3001/api/courses/teacher?teacherId=" + user.id).then(res => {
+
+        const init = async () => {
+            console.log("user", user);
+            await axios.get("http://localhost:3001/api/courses/teacher?teacherId=" + user.id).then(res => {
                 res.data.map((course, i) => {
                     course.id = course._id;
                 }
@@ -21,8 +23,8 @@ export default function HomeTeacher() {
                     setCourseList(res.data)
                 )
             }).catch(error => console.log(error));
-
-
+        }
+        init();
     }, []);
 
 
@@ -135,7 +137,7 @@ export default function HomeTeacher() {
                 </Grid>
                 <div style={{ display: "flex" }}>
                     <Button onClick={handleUpCourse} variant="contained" color="primary"
-                        style={{ marginLeft: "auto", marginTop:'2%' }}
+                        style={{ marginLeft: "auto", marginTop: '2%' }}
                     >
                         Đăng khóa học mới
                     </Button>
