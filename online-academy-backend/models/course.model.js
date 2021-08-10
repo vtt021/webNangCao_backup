@@ -47,6 +47,40 @@ module.exports = {
         return courses;
     },
 
+    async getArrayDetailedCourses(courseIds) {
+        const courses = await Course.find({'_id': {
+            $in: courseIds
+        }}).exec();
+
+        let users = await userModel.getAllUsernameWithId();
+
+        let newCourses = [];
+
+        for (let i = 0; i < courses.length; i++) {
+            let user = users.find(u => {
+                let a = u['_id'];
+                let b = courses[i]['teacherId'];
+                return a == b
+            });
+
+            let data = {};
+
+            data['_id'] = courses[i]['_id'];
+            data["teacherName"] = user.username;
+            data['courseName'] = courses[i]['courseName']
+            data['subCategoryId'] = courses[i]['subCategoryId']
+            data['teacherId'] = courses[i]['teacherId']
+            data['rating'] = courses[i]['rating']
+            data['ratingCount'] = courses[i]['ratingCount']
+            data['imageThumbnail'] = courses[i]['imageThumbnail']
+            data['imageCourse'] = courses[i]['imageCourse']
+            data['price'] = courses[i]['price']
+            data['salePrice'] = courses[i]['salePrice']
+            newCourses.push(data)
+        }
+        return newCourses;
+    },
+
     async getTopHotCourses(limit) {
         // const courses = await db.select(mainPageData)
         //     .from(TABLE_NAME)
