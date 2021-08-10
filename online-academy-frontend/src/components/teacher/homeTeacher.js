@@ -2,17 +2,18 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { DataGrid } from "@material-ui/data-grid"; import HeaderTeacher from './child_component/headerTeacher';
-import { Button, Grid } from '@material-ui/core';
+import { DataGrid } from "@material-ui/data-grid";
+import HeaderTeacher from './child_component/headerTeacher';
+import { Button, Container, Grid } from '@material-ui/core';
 import Rating from '@material-ui/lab/Rating';
 
 export default function HomeTeacher() {
     const classes = useStyles();
     const [courseList, setCourseList] = useState([]);
     const [user, setUser] = useState(JSON.parse(localStorage.getItem("auth")))
-    useEffect(()=>{
+    useEffect(() => {
         setUser(JSON.parse(localStorage.getItem("auth")))
-    },[localStorage.getItem("auth")])
+    }, [localStorage.getItem("auth")])
 
     useEffect(() => {
 
@@ -135,17 +136,14 @@ export default function HomeTeacher() {
                         classes.row
                     }
                 />
-                <Grid item xs={12} justify='flex-start' justifyContent='flex-start'>
-
-                </Grid>
-                <div style={{ display: "flex" }}>
-                    <Button onClick={handleUpCourse} variant="contained" color="primary"
-                        style={{ marginLeft: "auto", marginTop: '2%' }}
-                    >
-                        Đăng khóa học mới
-                    </Button>
-                </div>
             </Grid>
+            <div style={{ display: "flex" }}>
+                <Button onClick={handleUpCourse} variant="contained" color="primary"
+                    style={{ marginLeft: "auto", marginTop: '2%' }}
+                >
+                    Đăng khóa học mới
+                </Button>
+            </div>
         </div>
     );
 }

@@ -14,6 +14,11 @@ module.exports = {
         return data;
     },
 
+    async getAllInfoById(id) {
+        const user = await User.find({_id: id}).exec();
+        return user[0];
+    },
+
     async getUserById(id) {
         // const users = await db.select(contentData).from(TABLE_NAME)
         //     .where({
@@ -40,8 +45,9 @@ module.exports = {
     },
 
     async getFavoriteCourses(id) {
-        const favorites = await User.find({_id: id, isDeleted: false}, ['favorite']).exec();
-        return favorites[0].favorite;
+        const favorites = await User.find({_id: id, isDeleted: false}, ['favorite']).exec();  
+        let fav = favorites[0].favorite;
+        return fav;
     },
 
     async updateFavorite(userId, favorites) {

@@ -51,6 +51,10 @@ export default function Header() {
     const handleUserClose = () => {
         setUserAnchorEl(null);
     };
+    const handleProfile = () => 
+    {
+        window.location.href = '/profile'
+    }
     const handleUserLogout = () => {
         localStorage.removeItem("auth")
         localStorage.removeItem("time")
@@ -163,9 +167,8 @@ export default function Header() {
                                 open={userOpen}
                                 onClose={handleUserClose}
                             >
-                                <MenuItem onClick={handleUserClose}>Profile</MenuItem>
-                                <MenuItem onClick={handleUserClose}>My account</MenuItem>
-                                <MenuItem onClick={handleUserLogout}>Logout</MenuItem>
+                                <MenuItem onClick={handleProfile}>Quản lý cá nhân</MenuItem>
+                                <MenuItem onClick={handleUserLogout}>Đăng xuất</MenuItem>
                             </Menu>
                         </div>
                     )}
