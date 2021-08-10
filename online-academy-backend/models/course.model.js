@@ -40,6 +40,13 @@ module.exports = {
         return courses;
     },
 
+    async getArrayCourses(courseIds) {
+        const courses = await Course.find({'_id': {
+            $in: courseIds
+        }}, ['_id', 'courseName']).exec();
+        return courses;
+    },
+
     async getTopHotCourses(limit) {
         // const courses = await db.select(mainPageData)
         //     .from(TABLE_NAME)
@@ -457,7 +464,8 @@ module.exports = {
 
         const courses = await Course.find({
             $text: {
-                $search: queryString
+                $search: "/" + queryString + "/",
+                $language: 'en'
             }
         }, mainPageData, {
             skip: parseInt(offset),

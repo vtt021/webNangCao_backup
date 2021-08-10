@@ -40,8 +40,9 @@ module.exports = {
     },
 
     async getFavoriteCourses(id) {
-        const favorites = await User.find({_id: id, isDeleted: false}, ['favorite']).exec();
-        return favorites[0].favorite;
+        const favorites = await User.find({_id: id, isDeleted: false}, ['favorite']).exec();  
+        let fav = favorites[0].favorite;
+        return fav;
     },
 
     async updateFavorite(userId, favorites) {
