@@ -1,18 +1,15 @@
 import React, { useState } from 'react';
-import { useHistory } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 
-import { Paper, Typography, List, ListItem, ListItemAvatar, ListItemText } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { Container, } from 'react-bootstrap'
 import Grid from '@material-ui/core/Grid';
 import Header from '../common/header/header';
 import Footer from '../common/footer/footer';
-import { useForm } from "react-hook-form";
 import Link from '@material-ui/core/Link';
 import ImageUploadCard from './child_component/uploadImage';
 import UploadContent from './child_component/uploadContent';
-import UploadVideo from './child_component/uploadVideo';
 export default function UploadCourse(props) {
     const classes = useStyles();
     const [user, setUser] = useState(JSON.parse(localStorage.getItem("auth")))
@@ -24,7 +21,7 @@ export default function UploadCourse(props) {
     const [courseImageName, setCourseImageName] = useState(null);
     const [thumbnailImageName, setThumbnailImageName] = useState(null);
 
-    const [fileName, setFileName] = useState(null);
+    // const [fileName, setFileName] = useState(null);
 
     const dataURLtoFile = (dataurl, filename) => {
         const arr = dataurl.split(',')
@@ -56,7 +53,7 @@ export default function UploadCourse(props) {
         })
 
         console.log(ret)
-        console.log(courseImage[0]);
+        // console.log(courseImage[0]);
 
         if (ret !== null) {
             if (courseImage !== null) {

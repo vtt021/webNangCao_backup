@@ -16,12 +16,8 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
 import TextField from '@material-ui/core/TextField';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import { Button, FormControl, MenuItem } from '@material-ui/core';
-import { getDate } from 'date-fns';
 import Refreshtoken from '../../../refreshToken';
-import CategoryAction from './CategoryAction';
+import SubCategoryAction from './SubCategoryAction';
 import { formatDateTime } from '../../../utils/helpers';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import Dialog from '@material-ui/core/Dialog';
@@ -30,28 +26,34 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Tag from '../user/UserStatus';
-
+import Button from '@material-ui/core/Button';
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
 let stt = 0;
 const columns = [
     { id: 'stt', label: '#', minWidth: 10 },
     { id: 'name', label: 'Tên', minWidth: 100 },
+    { id: 'category', label: 'Tên lĩnh vực', minWidth: 100 },
     { id: 'last', label: 'Cập nhật lần cuối', minWidth: 100 },
     { id: 'tag', label: 'Trạng thái', minWidth: 100 ,align: 'center'},
-    { id: 'actions', label: 'Hành động',align:'center', minWidth: 300,align: 'center' },
+    { id: 'actions', label: 'Hành động',align:'center', minWidth: 200 },
 
 ];
 
-function createData(id,name, lastUpdated,isDeleted) {
+function createData(id,name,category, lastUpdated,isDeleted) {
     stt += 1;
     var last = formatDateTime(new Date(lastUpdated)).toLocaleString()
-    let actions = (<CategoryAction isDeleted={isDeleted} id ={id}/>)
+    let actions = (<SubCategoryAction isDeleted={isDeleted} id ={id}/>)
     let tag;
     if (isDeleted) {
         tag = <Tag content="Đã xóa" backGroundColor="#999999" textColor="white" />
     }else{
         tag = <Tag content="Đang hoạt động" backGroundColor="#2980b9" textColor="white" />;
     }
-    return { stt,id, name, last,tag,actions };
+    return { stt,id, name,category, last,tag,actions };
 }
 
 const StyledTableCell = withStyles(theme => ({
@@ -149,11 +151,14 @@ TablePaginationActions.propTypes = {
 
 
 
-export default function AdminCategory() {
+export default function AdminSubCategory() {
     const [data,setData] = useState([]);
     const [user,setUser] = useState(JSON.parse(localStorage.getItem("auth")))
     const [newName, setNewName] = useState("")
     const [open, setOpen] = useState(false);
+    const [category,setCategory] = useState("")
+    const [listCategory,setListCategory]=useState([{}])
+
     useEffect(()=>{
         setUser(JSON.parse(localStorage.getItem("auth")))
     },[localStorage.getItem("auth")])
@@ -179,45 +184,35 @@ export default function AdminCategory() {
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
-    const [categories, setCategories] = useState([]);
-    const getCategory = async() => {
-        await axios.get('http://localhost:3001/api/categories/admin',{
+
+    const [subCategories, setSubCategories] = useState([]);
+
+    const getSubCategory = async() => {
+        await axios.get('http://localhost:3001/api/sub-categories/admin',{
             headers:{
                 "x-access-token":user.accessToken
             }
         })
         .then(res => {
             console.log(res.data)
-            setCategories(res.data);
+            setSubCategories(res.data);
         })
     }
-    useEffect(() => {
-        Refreshtoken()
-        setUser(JSON.parse(localStorage.getItem("auth")))
-        const init = async() => {
-            await getCategory();
-        }
-
-        init();
-    
-    }, []);
-    useEffect(()=>{
-        stt = 0;
-        const temp = categories.map((category=>{
-            return createData(category._id,category.categoryName,category.lastUpdated,category.isDeleted)
-        }));
-        setData(temp);
-        setRows(temp.slice());
-    },[categories])
-
-    const handledAddCategory = async ()=>{
+    const getCategory = async()=>{
+        await axios.get("http://localhost:3001/api/categories").then(res => {
+            const listCategories = res.data;
+            setListCategory(listCategories);
+            
+        }).catch(error => console.log(error));
+    }
+    const handleAddSubCategory = async ()=>{
         Refreshtoken()
         if (newName != "") {
             const data = {
-                categoryName: newName
+                categoryId:category,
+                subCategoryName: newName
             }
-            console.log(data)
-            await axios.post('http://localhost:3001/api/categories/', data, {
+            await axios.post('http://localhost:3001/api/sub-categories/', data, {
                 headers: {
                     'x-access-token': user.accessToken
                 },
@@ -229,11 +224,41 @@ export default function AdminCategory() {
                 })
         }
     }
+    useEffect(() => {
+        Refreshtoken()
+        setUser(JSON.parse(localStorage.getItem("auth")))
+        const init = async() => {
+            await getSubCategory();
+        }
 
+        init();
+    
+    }, []);
+
+    useEffect(() => {
+        const init = async() => {
+            await getCategory();
+        }
+        setCategory(listCategory._id)
+        init();
+    }, []);
+
+    useEffect(()=>{
+        stt = 0;
+        const temp = subCategories.map((subCategory=>{
+            return createData(subCategory._id,subCategory.subCategoryName,subCategory.categoryName,subCategory.lastUpdated,subCategory.isDeleted)
+        }));
+        setData(temp);
+        setRows(temp.slice());
+    },[subCategories])
+
+    useEffect(()=>{
+        setCategory(listCategory[0]._id)
+    },[listCategory])
     const searchData = (value) => {
         if (value) {
             const filtered = data.filter(d => {
-                if (d.name.search(new RegExp(value.replace('\\',''), "i")) >= 0){
+                if (d.name.search(new RegExp(value.replace('\\',""), "i")) >= 0){
                     setPage(0);
                     return d;
                 }
@@ -246,11 +271,24 @@ export default function AdminCategory() {
     return (
         <Paper className={classes.root}>
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">Thêm lĩnh vực</DialogTitle>
+                <DialogTitle id="form-dialog-title">Thêm lĩnh vực con</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Hãy nhập tên lĩnh vực này.
+                        Hãy nhập tên lĩnh vực con này.
                     </DialogContentText>
+                    <form className={classes.form} noValidate>
+            <FormControl style={{width:"100%"}} className={classes.formControl}>
+              <InputLabel htmlFor="max-width">Lĩnh vực</InputLabel>
+              <Select
+                defaultValue={category}
+              >
+                {listCategory.map((item)=>{return(
+                    <MenuItem value={item._id}>{item.categoryName}</MenuItem>
+                  )})}
+              </Select>
+            </FormControl>
+            
+          </form>
                     <TextField
                         autoFocus
                         margin="dense"
@@ -264,7 +302,7 @@ export default function AdminCategory() {
                     <Button onClick={handleClose} color="primary">
                         Hủy
                     </Button>
-                    <Button onClick={handledAddCategory} color="primary">
+                    <Button onClick={handleAddSubCategory} color="primary">
                         Thêm
                     </Button>
                 </DialogActions>
@@ -279,7 +317,6 @@ export default function AdminCategory() {
       >
         Thêm
       </Button>
-            
             <TextField
                 label="Search"
                 id="outlined-size-normal"
@@ -311,7 +348,6 @@ export default function AdminCategory() {
                                 <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                                     {columns.map((column) => {
                                         const value = row[column.id];
-                                        console.log(value)
                                         return (
                                             <TableCell key={column.id} align={column.align}>
                                                 {value}
