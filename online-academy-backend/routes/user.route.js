@@ -1,6 +1,6 @@
 const express = require('express');
 const userModel = require('../models/user.model');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 const router = express.Router();
 const adminAuthMdw = require('../middlewares/adminAuth.mdw');
@@ -137,7 +137,7 @@ router.post('/', async (req, res) => {
             }
         }
         else {
-            await userModel.update(existData.id, user);
+            await userModel.update(existData._id, user);
             sendMail(user.email);
             res.status(200).json({
                 message: 'User already added, check email for OTP'
@@ -231,8 +231,13 @@ router.put('/password', userAuthMdw, async (req, res) => {
         const newPass = req.body.newPass;
         const confirmPass = req.body.confirmPass;
 
-        const user = await userModel.getUserById(id);
-        if (user === undefined || !bcrypt.compareSync(currentPass, user.password)) {
+        const user = await userModel.getAllInfoById(id);
+        // if (user === undefined || !bcrypt.compareSync(currentPass, user.password)) {
+
+        console.log(currentPass);
+        console.log(user.password);
+        if (user === undefined || currentPass.localeCompare(user.password) != 0) {
+            console.log('User not exist or incorrect pass')
             return res.status(401).json({
                 message: 'User not exist or incorrect pass'
             });
@@ -244,8 +249,8 @@ router.put('/password', userAuthMdw, async (req, res) => {
             });
         }
 
-        const hashPass = bcrypt.hashSync(newPass, saltRounds);
-        await userModel.updatePassword(id, hashPass);
+        // const hashPass = bcrypt.hashSync(newPass, saltRounds);
+        await userModel.updatePassword(id, newPass);
 
         return res.status(200).json({
             message: 'OK'

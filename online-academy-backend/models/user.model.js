@@ -14,6 +14,11 @@ module.exports = {
         return data;
     },
 
+    async getAllInfoById(id) {
+        const user = await User.find({_id: id}).exec();
+        return user[0];
+    },
+
     async getUserById(id) {
         // const users = await db.select(contentData).from(TABLE_NAME)
         //     .where({
