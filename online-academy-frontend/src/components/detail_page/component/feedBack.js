@@ -9,22 +9,13 @@ export default function FeedBack(props) {
     const classes = useStyles();
     const imageString = 'http://localhost:3001/api/files/send?fileName='
 
-    const handleChangeLove = (event) => {
-        console.log(event.target.checked); //True: Yêu thích - False: Không
-    };
-
-    const handleBuyCourse = (event) => {
-        console.log('Mua khóa học');
-
-    };
-
     return (
         <div className={classes.container}>
             <Paper className={classes.paper}>
                 <Grid container spacing={2}>
-                    <ListItemText primary={'Tên người đánh giá'} secondary={'Nội dung đánh giá'} />
+                    <ListItemText primary={props.username} secondary={props.rateContent} />
                     <Grid container justify="flex-start">
-                        <Rating name="half-rating-read" defaultValue={'5'} precision={0.1} readOnly />
+                        <Rating name="half-rating-read" defaultValue={props.rating} precision={0.1} readOnly />
                     </Grid>
                 </Grid>
             </Paper>
@@ -38,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     paper: {
         padding: theme.spacing(2),
         margin: 'auto',
-        background: '#FFFFFF',
+        background: '#FDF6F0',
     },
 
 }));

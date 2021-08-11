@@ -84,31 +84,42 @@ export default function CourseInfo(props) {
                             </Grid>
 
                             <Grid item xs container direction='column' spacing={2} alignItems='flex-start' justifyContent='flex-start'>
-                                {
-                                    !(props.courseInfo.salePrice === props.courseInfo.Price)
-                                        ? ( //Không có giảm giá
-                                            <container>
-                                                <Typography gutterBottom variant="h5" align='justify' className={classes.price}>
-                                                    {'Học phí: ' + (props.courseInfo.price ? props.courseInfo.price : '0')}
+                                {!props.courseInfo.salePrice && ( //Không có giảm giá
+                                    <container>
+                                        <Typography gutterBottom variant="h5" align='justify' className={classes.price}>
+                                            {props.courseInfo.price === '0'
+                                                ? 'Học phí: ' + props.courseInfo.price
+                                                : 'Miễn phí'
+                                            }
+                                        </Typography>
+                                        <Typography gutterBottom variant="subtitle1" align='justify' className={classes.oldPrice} >
+                                            <br />
+                                        </Typography>
+                                    </container>
+                                )}
+
+                                {props.courseInfo.salePrice != 0 && props.courseInfo.salePrice && ( // Có giảm giá
+                                    <container>
+                                        <Typography gutterBottom variant="h5" align='justify' className={classes.price}>
+                                            {props.courseInfo.salePrice === '0'
+                                                ? 'Học phí: ' + props.courseInfo.salePrice
+                                                : 'Miễn phí'
+                                            }
+                                        </Typography>
+                                        {
+                                            props.courseInfo.salePrice === props.courseInfo.price
+                                                ? <Typography gutterBottom variant="subtitle1" align='justify' className={classes.oldPrice} >
+                                                    {
+                                                        '( Học phí gốc: ' + props.courseInfo.price + ' )'
+                                                    }
                                                 </Typography>
-                                                <Typography gutterBottom variant="subtitle1" align='justify' className={classes.oldPrice} >
+                                                : <Typography gutterBottom variant="subtitle1" align='justify' className={classes.oldPrice} >
                                                     <br />
                                                 </Typography>
-                                            </container>
-                                        )
-                                        :
-                                        ( //Không có giảm giá
-                                            <container>
-                                                <Typography gutterBottom variant="h5" align='justify' className={classes.price}>
-                                                    {'Học phí: ' + (props.courseInfo.salePrice ? props.courseInfo.salePrice : '0')}
-                                                </Typography>
-                                                <Typography gutterBottom variant="subtitle1" align='justify' className={classes.oldPrice} >
-                                                    {'( Học phí gốc: ' + props.courseInfo.price + ' )'}
-                                                </Typography>
-                                            </container>
-                                        )
-                                }
+                                        }
 
+                                    </container>
+                                )}
                                 <Grid container justify="flex-start" className={classes.containerRating}>
                                     <Rating name="half-rating-read" defaultValue={props.courseInfo.rating} precision={0.1} readOnly />
                                     <Typography variant="body2" color="textSecondary" className={classes.numberRating}>
