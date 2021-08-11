@@ -155,6 +155,64 @@ router.post('/', async (req, res) => {
     }
 });
 
+router.post('/teacher-acc', adminAuthMdw, async (req, res) => {
+    try {
+        const user = req.body;
+        if (user.email === undefined || user.password === undefined || user.username === undefined) {
+            res.status(400).json({
+                message: 'Invalid data'
+            })
+        }
+        user.password = bcrypt.hashSync(user.password, saltRounds);
+
+        const existData = await userModel.getUserByEmailForVerification(user.email);
+        console.log("existData", existData)
+
+        if (existData === undefined) {
+            await userModel.addTeacher(user);
+            // sendMail(user.email)
+            return res.status(201).json({
+                message: 'OK'
+            });
+        }
+        else {
+            return res.status(400).json({
+                message: 'User exists'
+            })
+        }
+
+
+        // if (existData.isUnlocked == true) {
+        //     if (existData.isDeleted == false) {
+        //         return res.status(400).json({
+        //             message: 'User exists'
+        //         })
+        //     }
+        //     else {
+        //         return res.status(400).json({
+        //             message: 'User banned'
+        //         })
+        //     }
+        // }
+        // else {
+        //     await userModel.update(existData._id, user);
+        //     sendMail(user.email);
+        //     res.status(200).json({
+        //         message: 'User already added, check email for OTP'
+        //     });
+        // }
+
+
+
+    }
+    catch (e) {
+        console.log(e.stack);
+        res.status(500).json({
+            message: e.message
+        })
+    }
+})
+
 
 
 router.get('/favorite', userAuthMdw, async (req, res) => {

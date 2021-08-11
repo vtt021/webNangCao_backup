@@ -3,7 +3,8 @@ const courseModel = require('../models/course.model');
 const teacherAuthMdw = require('../middlewares/teacherAuth.mdw');
 const userAuthMdw = require('../middlewares/userAuth.mdw');
 const adminAuthMdw = require('../middlewares/adminAuth.mdw')
-const upload = require('../middlewares/upload.mdw')
+const upload = require('../middlewares/upload.mdw');
+const registerCourseModel = require('../models/registerCourse.model');
 
 const router = express.Router();
 
@@ -11,6 +12,9 @@ const router = express.Router();
 router.get('/', adminAuthMdw, async (req, res) => {
     try {
         const list = await courseModel.getAll();
+
+
+
         return res.json(list);
     }
     catch (e) {
@@ -495,34 +499,37 @@ router.put('/admin', adminAuthMdw, async (req, res) => {
 
 })
 
-router.delete('/', teacherAuthMdw, async (req, res) => {
-    try {
-        const courseId = req.body.courseId;
+// router.delete('/', teacherAuthMdw, async (req, res) => {
+//     try {
+//         const courseId = req.body.courseId;
 
-        const course = await courseModel.getCourseById(courseId);
-        console.log(course);
-        if (course === undefined || course.teacherId !== teacherId) {
-            res.status(400).json({
-                message: 'Incorrect courseId or wrong teacher'
-            })
-        }
+//         const course = await courseModel.getCourseById(courseId);
+//         console.log(course);
+//         if (course === undefined || course.teacherId !== teacherId) {
+//             res.status(400).json({
+//                 message: 'Incorrect courseId or wrong teacher'
+//             })
+//         }
 
-        await courseModel.delete(courseId);
-        return res.status(200).json({
-            message: 'OK'
-        });
-    }
-    catch (e) {
-        console.log(e.stack);
-        res.status(500).json({
-            message: e.message
-        })
-    }
-})
+//         await courseModel.delete(courseId);
+//         return res.status(200).json({
+//             message: 'OK'
+//         });
+//     }
+//     catch (e) {
+//         console.log(e.stack);
+//         res.status(500).json({
+//             message: e.message
+//         })
+//     }
+// })
 
 router.delete('/admin', adminAuthMdw, async (req, res) => {
     try {
         const courseId = req.body.courseId;
+
+        await registerCourseModel.deleteAllCourseRegistration(courseId);
+
         await courseModel.delete(courseId);
         return res.status(200).json({
             message: 'OK'

@@ -267,6 +267,10 @@ module.exports = {
         await RegisterCourse.find({ courseId: courseId, userId: userId }).updateMany(courseContent);
     },
 
+    async deleteAllCourseRegistration(courseId) {
+        await RegisterCourse.find({courseId: courseId}).deleteMany();
+    },
+
     async delete(courseId, userId) {
         // return db(TABLE_NAME).where({
         //     courseId: courseId,
