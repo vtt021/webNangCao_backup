@@ -4,6 +4,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Grid } from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
 import CourseCard from '../../common/courseCard/courseCard.js'
+import Refreshtoken from '../../../refreshToken.js';
+
 
 export default function PagingRegisteredList(props) {
     const numEachPage = 6;
@@ -12,7 +14,11 @@ export default function PagingRegisteredList(props) {
     const [minValue, setMinValue] = useState(0);
     const [maxValue, setmaxValue] = useState(numEachPage);
     const [page, setPage] = useState(1);
-    
+
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem("auth")))
+    useEffect(() => {
+        setUser(JSON.parse(localStorage.getItem("auth")))
+    }, [localStorage.getItem("auth")])
 
     const [items, setItems] = useState({})
 
@@ -28,9 +34,17 @@ export default function PagingRegisteredList(props) {
     };
 
     const getCouresItems = async () => {
-        const path = 'http://localhost:3001/api/courses/hot?limit=6';
+
+        const path = 'http://localhost:3001/api/register-courses/course-only';
         console.log(path)
-        await axios.get(path).then(res => {
+        
+        await Refreshtoken()
+
+        await axios.get(path, {
+            headers: {
+                'x-access-token': user.accessToken
+            }
+        }).then(res => {
             const listCourse = res.data;
             setItems(listCourse);
             console.log(listCourse);
@@ -38,7 +52,7 @@ export default function PagingRegisteredList(props) {
     }
 
     useEffect(() => {
-        const init= async()=>{
+        const init = async () => {
             await getCouresItems()
         }
         init()

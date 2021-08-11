@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import { useForm } from "react-hook-form";
 import Avatar from '@material-ui/core/Avatar';
@@ -16,33 +16,55 @@ import Container from '@material-ui/core/Container';
 
 export default function UpdateInfo() {
     const classes = useStyles();
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm();
     //Gọi API lấy tên với email của tài khoản nha
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem("auth")))
+    const [userData, setUserData] = useState(null);
+
+    useEffect(() => {
+        setUser(JSON.parse(localStorage.getItem("auth")))
+    }, [localStorage.getItem("auth")])
 
     const onSubmit = async (data) => {
-        console.log(data) 
-        if (data.password!= 0)
-        {
-            //Sai mật khẩu thì alert nó lên
-        }
-        else
-        {
-            //đúng thì đổi thou
-        }
-        // await axios.post("http://localhost:3001/api/users", {
-        //     email: data.email,
-        //     password: data.password,
-        //     username: data.username
-        // }).then(res => {
-        //     window.location.replace("/verify-otp/" + data.email)
-
-        // })
-        //     .catch(error => console.log(error));
+        console.log(data)
+        await axios.put('http://localhost:3001/api/users', {
+            password: data.password,
+            email: data.email,
+            username: data.username
+        }, {
+            headers: {
+                'x-access-token': user.accessToken
+            }
+        }).then(res => {
+            console.log("Success")
+        }).catch(e => {
+            console.log(e);
+        });
     }
 
-    return (
-        <div maxWidth="xs">
-            <CssBaseline />
+    useEffect(() => {
+        const init = async () => {
+            await axios.get('http://localhost:3001/api/users/id?id=' + user.id)
+                .then(res => {
+                    let data = res.data;
+                    console.log(data);
+                    setUserData(data);
+
+
+
+
+                }).catch(e => {
+                    console.log(e);
+                })
+        }
+        init();
+    }, [])
+
+    const handleUI = () => {
+        if (userData === null) {
+            return;
+        }
+        return (
             <div className={classes.paper}>
                 <Typography component="h1" variant="h5">
                     Cập nhật thông tin
@@ -53,7 +75,7 @@ export default function UpdateInfo() {
                         {/* Tên đăng nhập */}
                         <Grid item xs={12}>
                             <TextField
-                                defaultValue='Điền tên vô đây nè'
+                                defaultValue={userData.username}
                                 autoComplete="fname"
                                 name="username"
                                 variant="filled"
@@ -70,7 +92,7 @@ export default function UpdateInfo() {
                         {/* Email */}
                         <Grid item xs={12}>
                             <TextField
-                                defaultValue='abc@gmail.com'
+                                defaultValue={userData.email}
                                 variant="filled"
                                 required
                                 fullWidth
@@ -79,6 +101,8 @@ export default function UpdateInfo() {
                                 name="email"
                                 autoComplete="email"
                                 type="email"
+                                onChange={(event) => setValue('email', event.target.value)}
+
                                 {...register("email", { required: true, pattern: /^\S+@\S+$/i })}
                             />
                         </Grid>
@@ -114,6 +138,15 @@ export default function UpdateInfo() {
                     </Button>
                 </form>
             </div>
+        )
+    }
+
+    return (
+        <div maxWidth="xs">
+            <CssBaseline />
+            {
+                handleUI()
+            }
         </div>
     );
 }

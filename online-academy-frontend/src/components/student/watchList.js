@@ -5,6 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import { Typography, Button } from '@material-ui/core';
 import { DataGrid } from "@material-ui/data-grid";
 import Link from '@material-ui/core/Link';
+import Refreshtoken from '../../refreshToken';
 
 export default function WatchList(props) {
     const classes = useStyles();
@@ -14,15 +15,57 @@ export default function WatchList(props) {
         setUser(JSON.parse(localStorage.getItem("auth")))
     }, [localStorage.getItem("auth")])
 
-    const [items, setItems] = useState([
-        { id: 1, courseName: 'Snow' },
-        { id: 2, courseName: 'Lannister' },
-    ])
+    const [items, setItems] = useState([])
 
-    function handleChangeLove(cellValues) {
+    useEffect(() => {
+        const init = async () => {
+            await Refreshtoken();
+        
+            await axios.get('http://localhost:3001/api/users/favorite', {
+                headers: {
+                    'x-access-token': user.accessToken
+                }
+            }).then(res => {
+                console.log(res.data);
+                let newData = res.data.map(e => {
+                    return {
+                        id: e._id,
+                        courseName: e.courseName
+                    }
+                })
+                console.log(newData);
+                setItems(newData);
+            }).catch(e => {
+                console.log(e);
+            })
+        }
+
+        init();
+    }, [])
+
+    const handleChangeLove = async (cellValues) => {
+        await Refreshtoken();
         //Làm cái gì đó với database ở đây nè
+        console.log(cellValues.id);
 
-        setItems(items.filter((value, i) => value.id !== cellValues.row.id));
+        await axios.post('http://localhost:3001/api/users/favorite', {
+            courseId: cellValues.id
+        }, {
+            headers: {
+                'x-access-token': user.accessToken
+            }
+        }).then(res => {
+            //Nếu api trả về false --> Đã bỏ khỏi danh sách --> Gỡ khỏi danh sách client
+            if (res.data.isFavorite === false) {
+                setItems(items.filter((value, i) => value.id !== cellValues.row.id));
+            }
+        }).catch(e => {
+            console.log(e);
+        })
+        
+
+
+        // setItems(items.filter((value, i) => value.id !== cellValues.row.id));
     }
     const columns = [
         {
