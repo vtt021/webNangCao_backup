@@ -35,7 +35,7 @@ export default function SingleCarousel(props) {
             justifyContent="center"
             alignItems="flex-start"
             justify="center" >
-            <Carousel animation='slide' indicators={false}>
+            <Carousel animation='slide' indicators={false}  interval='8000'>
                 {items &&
                     items.map((item, i) =>
                         <CourseCard key={i} courseInfo={item}/>

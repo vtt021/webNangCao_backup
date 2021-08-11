@@ -4,6 +4,7 @@ const TABLE_NAME = 'register_course'
 const { CourseContent, RegisterCourse } = require('../schema/mongodb.schema');
 const courseContentModel = require('./courseContent.model');
 const userModel = require('./user.model');
+const courseModel = require('./course.model');
 
 const contentData = [
     'courseId',
@@ -39,6 +40,17 @@ module.exports = {
     async getRegisterCourseByUserId(userId) {
         const registration = await RegisterCourse.find({ userId: userId }, contentData).exec();
         return registration;
+    },
+
+    async getRegisterCourseDataByUserId(userId) {
+        const registration = await RegisterCourse.find({ userId: userId }, ['courseId']).exec();
+
+        let courses = registration.map(r => r.courseId);
+        console.log(courses);
+
+        let data = courseModel.getArrayDetailedCourses(courses);
+
+        return data;
     },
 
     async getRatingDetail(courseId) {
@@ -111,6 +123,9 @@ module.exports = {
             data["rateContent"] = ratings[i]["rateContent"]
             data["userId"] = ratings[i]["userId"]
             data["username"] = name
+
+
+            
 
             newRegistration.push(data)
         }

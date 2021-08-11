@@ -155,6 +155,8 @@ router.post('/', async (req, res) => {
     }
 });
 
+
+
 router.get('/favorite', userAuthMdw, async (req, res) => {
     try {
         let userId = req.accessTokenPayload.id;
@@ -232,11 +234,11 @@ router.put('/password', userAuthMdw, async (req, res) => {
         const confirmPass = req.body.confirmPass;
 
         const user = await userModel.getAllInfoById(id);
-        // if (user === undefined || !bcrypt.compareSync(currentPass, user.password)) {
+        if (user === undefined || !bcrypt.compareSync(currentPass, user.password)) {
 
-        console.log(currentPass);
-        console.log(user.password);
-        if (user === undefined || currentPass.localeCompare(user.password) != 0) {
+        // console.log(currentPass);
+        // console.log(user.password);
+        // if (user === undefined || currentPass.localeCompare(user.password) != 0) {
             console.log('User not exist or incorrect pass')
             return res.status(401).json({
                 message: 'User not exist or incorrect pass'
@@ -249,8 +251,8 @@ router.put('/password', userAuthMdw, async (req, res) => {
             });
         }
 
-        // const hashPass = bcrypt.hashSync(newPass, saltRounds);
-        await userModel.updatePassword(id, newPass);
+        const hashPass = bcrypt.hashSync(newPass, saltRounds);
+        await userModel.updatePassword(id, hashPass);
 
         return res.status(200).json({
             message: 'OK'
@@ -264,28 +266,31 @@ router.put('/password', userAuthMdw, async (req, res) => {
     }
 });
 
-router.put('/', adminAuthMdw, async (req, res) => {
+router.put('/', userAuthMdw, async (req, res) => {
     try {
         const id = req.accessTokenPayload.id;
-        const user = req.body;
+        const password = req.body.password;
+        const email = req.body.email;
+        const username = req.body.username;
 
-        const email = user.email;
-        // if (typeof(email) === 'string') {
-        //     if (!email.match("\/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$\/g")) {
-        //         return res.status(400).json({
-        //             message: 'Incorrect email format'
-        //         });
-        //     }
-        // }
-        const username = user.username;
+        const user = await userModel.getAllInfoById(id);
+        if (user === undefined || !bcrypt.compareSync(password, user.password)) {
+            console.log('User not exist or incorrect pass')
+            return res.status(401).json({
+                message: 'User not exist or incorrect pass'
+            });
+        }
+
         if (typeof (username) === 'string' && username.length === 0) {
             return res.status(400).json({
                 message: 'Username cannot be empty'
             });
         }
-        if (Object.keys(user).length != 0) {
-            await userModel.update(id, user);
+        let users = {
+            email: email,
+            username: username
         }
+        await userModel.update(id, users);
 
         return res.status(200).json({
             message: 'OK'

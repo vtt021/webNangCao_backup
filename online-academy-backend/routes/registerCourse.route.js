@@ -49,7 +49,20 @@ router.get('/my-course', userAuthMdw, async (req, res) => {
             message: e.message
         })
     }
+})
 
+router.get('/course-only', userAuthMdw, async (req, res) => {
+    try {
+        let userId = req.accessTokenPayload.id;
+        const list = await registerCourseModel.getRegisterCourseDataByUserId(userId);
+        return res.json(list);
+    }
+    catch (e) {
+        console.log(e.stack);
+        res.status(500).json({
+            message: e.message
+        })
+    }
 })
 
 router.get('/course', async (req, res) => {
