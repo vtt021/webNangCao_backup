@@ -6,6 +6,7 @@ const TABLE_NAME = 'course'
 
 const { Course } = require('../schema/mongodb.schema');
 const { getAllUsernameWithId } = require('./user.model');
+const categoryModel = require('./category.model');
 const contentData = 'courseName subCategoryId teacherId rating ratingCount imageThumbnail price salePrice'
 
 
@@ -19,7 +20,8 @@ const mainPageData = [
     'imageCourse',
     'price',
     'salePrice',
-    '_id'
+    '_id',
+    'studentCount'
 ];
 
 
@@ -27,7 +29,55 @@ module.exports = {
     async getAll() {
         // const courses = await db(TABLE_NAME).where({ isDeleted: false });
         const courses = await Course.find({}).exec();
-        return courses;
+        let users = await userModel.getAllUsernameWithId();
+
+        let subCategories = await subCategoryModel.getAll();
+        console.log(subCategories)
+        let subCateMapping = {}
+
+        subCategories.forEach(sub => {
+            subCateMapping[sub['_id']] = sub['categoryId']
+        })
+
+        let categories = await categoryModel.getCategory();
+        let cateMapping = {}
+
+        categories.forEach(cate => {
+            cateMapping[cate['_id']] = cate['categoryName']
+        })
+
+        console.log(cateMapping)
+
+        
+
+        
+
+
+        let newCourses = [];
+        for (let i = 0; i < courses.length; i++) {
+            let user = users.find(u => {
+                let a = u['_id'];
+                let b = courses[i]['teacherId'];
+                return a == b
+            });
+
+            let data = {};
+
+            data['_id'] = courses[i]['_id'];
+            data["teacherName"] = user.username;
+            data['courseName'] = courses[i]['courseName']
+            data['subCategoryId'] = courses[i]['subCategoryId']
+            data['teacherId'] = courses[i]['teacherId']
+            data['rating'] = courses[i]['rating']
+            data['ratingCount'] = courses[i]['ratingCount']
+            data['imageThumbnail'] = courses[i]['imageThumbnail']
+            data['imageCourse'] = courses[i]['imageCourse']
+            data['price'] = courses[i]['price']
+            data['salePrice'] = courses[i]['salePrice']
+            data['categoryName'] = cateMapping[subCateMapping[courses[i]['subCategoryId']]]
+            newCourses.push(data)
+        }
+        return newCourses;
     },
 
     async getAllId() {
@@ -122,6 +172,67 @@ module.exports = {
             data['imageCourse'] = courses[i]['imageCourse']
             data['price'] = courses[i]['price']
             data['salePrice'] = courses[i]['salePrice']
+            newCourses.push(data)
+        }
+        return newCourses;
+    },
+
+    async getTopRelatedCourses(courseId, subCategoryId, limit) {
+        let users = await userModel.getAllUsernameWithId();
+        let subCategories = await subCategoryModel.getAll();
+        console.log(subCategories)
+        let t = {}
+
+        subCategories.forEach(sub => {
+            t[sub['_id']] = sub['categoryId']
+        })
+
+        let cate = t[subCategoryId];
+        let subCateInCate = Object.keys(t).filter(a => t[a].localeCompare(cate) == 0);
+        console.log(subCateInCate)
+
+        // console.log(t);
+        // let categoryId = subCategories.find(sub => sub['_id'].toString().localeCompare(subCategoryId) == 0);
+        // console.log(categoryId);
+        // let allSub = await subCategoryModel.getSubcategoryInCategory
+
+        
+        let courses = await Course.find({ 
+            isDeleted: false,
+            subCategoryId: subCateInCate,
+            _id: {
+                $nin: courseId
+            }
+        }, mainPageData, {
+            skip: 0,
+            limit: parseInt(limit),
+            sort: {
+                studentCount: -1
+            }
+        }).exec();
+
+        let newCourses = [];
+        for (let i = 0; i < courses.length; i++) {
+            let user = users.find(u => {
+                let a = u['_id'];
+                let b = courses[i]['teacherId'];
+                return a == b
+            });
+
+            let data = {};
+
+            data['_id'] = courses[i]['_id'];
+            data["teacherName"] = user.username;
+            data['courseName'] = courses[i]['courseName']
+            data['subCategoryId'] = courses[i]['subCategoryId']
+            data['teacherId'] = courses[i]['teacherId']
+            data['rating'] = courses[i]['rating']
+            data['ratingCount'] = courses[i]['ratingCount']
+            data['imageThumbnail'] = courses[i]['imageThumbnail']
+            data['imageCourse'] = courses[i]['imageCourse']
+            data['price'] = courses[i]['price']
+            data['salePrice'] = courses[i]['salePrice']
+            data['studentCount'] = courses[i]['studentCount']
             newCourses.push(data)
         }
         return newCourses;

@@ -57,7 +57,12 @@ module.exports = {
         let users = await userModel.getAllUsernameWithId();
         console.log(users);
 
-        let ratings = await RegisterCourse.find({ courseId: courseId }, 'userId rating rateContent').exec();
+        let ratings = await RegisterCourse.find({ 
+            courseId: courseId,
+            rating: {
+                $ne: 0
+            }
+        }, 'userId rating rateContent').exec();
 
         let newRatings = [];
 
@@ -260,6 +265,10 @@ module.exports = {
         //     isDeleted: false
         // }).update(courseContent);
         await RegisterCourse.find({ courseId: courseId, userId: userId }).updateMany(courseContent);
+    },
+
+    async deleteAllCourseRegistration(courseId) {
+        await RegisterCourse.find({courseId: courseId}).deleteMany();
     },
 
     async delete(courseId, userId) {

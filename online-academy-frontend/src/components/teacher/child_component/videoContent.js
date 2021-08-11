@@ -41,13 +41,6 @@ export default function VideoContent(props) {
                 <Grid item xs={2} />
                 <Grid item xs={8} justify='flex-start'>
                     <form className={classes.form} noValidate onSubmit={handleSubmit(props.onSubmit)}>
-                        {
-                            props.completed && (
-                                <Typography>
-                                    ahihi
-                                </Typography>
-                            )
-                        }
                         <Grid container spacing={2} justify='flex-start'>
                             {/* Tên bài giảng    */}
                             <Grid item xs={12}>
@@ -101,7 +94,7 @@ export default function VideoContent(props) {
                         <Grid container justify="center">
                             <Grid item>
                                 <Button
-                                    type="submit"
+                                    type="reset"
                                     width='50%'
                                     variant="contained"
                                     color="primary"

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -12,20 +12,56 @@ import Button from '@material-ui/core/Button';
 import Favorite from '@material-ui/icons/Favorite';
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
+import CheckIcon from '@material-ui/icons/Check';
 import defaultImage from '../../common/images/testImage.jpg'
+import axios from 'axios';
 
 export default function CourseInfo(props) {
     const classes = useStyles();
     const imageString = 'http://localhost:3001/api/files/send?fileName='
 
-    const handleChangeLove = (event) => {
-        console.log(event.target.checked); //True: Yêu thích - False: Không
+
+
+
+
+    const handleChangeLove = async (event) => {
+        await props.handleChangeLove(event);
     };
 
-    const handleBuyCourse = (event) => {
-        console.log('Mua khóa học');
+    const handleBuyCourse = async (event) => {
+        // if (isBought) {
+        //     return;
+        // }
+        await props.handleBuyCourse();
 
     };
+
+
+
+    const handleUIBuyCourse = () => {
+        if (props.isBought == false) {
+            return (
+                <FormControlLabel
+                    control={
+                        <ShoppingCartOutlinedIcon className={classes.iconSize} />
+                    }
+                    label={"Mua khóa học"}
+                    className={classes.loveContainer}
+                />
+            )
+        }
+        else {
+            return (
+                <FormControlLabel
+                    control={
+                        <CheckIcon className={classes.iconSize} />
+                    }
+                    label={"Đã mua khóa học"}
+                    className={classes.loveContainer}
+                />
+            )
+        }
+    }
 
     return (
         <div className={classes.container}>
@@ -35,7 +71,7 @@ export default function CourseInfo(props) {
                         <img className={classes.img} alt="complex" src={props.courseInfo.imageCourse ? imageString + props.courseInfo.imageCourse : defaultImage} />
                     </Grid>
 
-                    <Grid item xs={8} container style={{ paddingLeft: '2%'}}>
+                    <Grid item xs={8} container style={{ paddingLeft: '2%' }}>
                         <Grid item xs container direction="column" spacing={2} alignItems='flex-start'>
                             <Grid item xs container direction="column" spacing={2}
                                 style={{ display: 'flex', justify: 'flex-start', alignItems: 'flex-start' }}>
@@ -83,15 +119,11 @@ export default function CourseInfo(props) {
                                 <Grid container justify="flex-start" className={classes.buttonContainer} >
                                     <Button variant="outlined" color="primary"
                                         className={classes.button2}
-                                        onClick={handleBuyCourse}
-                                    >
-                                        <FormControlLabel
-                                            control={
-                                                <ShoppingCartOutlinedIcon className={classes.iconSize} />
-                                            }
-                                            label={"Mua khóa học"}
-                                            className={classes.loveContainer}
-                                        />
+                                        disabled={props.isBought}
+                                        onClick={handleBuyCourse}>
+                                        {
+                                            handleUIBuyCourse()
+                                        }
                                     </Button>
 
                                     <Button variant="outlined" color="primary" className={classes.button1}>
@@ -99,7 +131,7 @@ export default function CourseInfo(props) {
                                             control={
                                                 <Checkbox icon={<FavoriteBorder />} checkedIcon={<Favorite />}
                                                     className={classes.iconSize} style={{ backgroundColor: 'transparent' }}
-                                                    onChange={handleChangeLove} />
+                                                    onChange={handleChangeLove} checked={props.isFavorite} />
                                             }
                                             label="Yêu thích"
                                             className={classes.loveContainer}

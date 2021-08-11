@@ -43,6 +43,7 @@ export default function HomeTeacher() {
     }
     function handleUpdateVideo(cellValues) {
         console.log(cellValues.row.id)
+        window.location.href = "/teacher/uploadVideo/" + cellValues.row.id
     }
     const columns = [
         {

@@ -8,24 +8,28 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import AlertDialog from '../common/alert';
 import VideoContent from './videoContent';
-
+import { Link } from '@material-ui/core';
+import PlayerControl from '../../detail_page/component/videoPlayer';
 export default function UploadVideo() {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
 
     const [activeStep, setActiveStep] = useState(0);
-    const [steps, setsteps] = useState(['Chương 1', 'Chương 2']);
-    const [completed, setCompleted] = React.useState([0, 0]);
+    const [steps, setsteps] = useState(['Chương 1', 'Chương 2']); // Tên các chương đã có sẵn, gọi từ Database
+    const [completed, setCompleted] = React.useState([1, 0]); // Kiểm tra có video cũ chưa
 
-    const [videoFile, setVideoFile] = useState();
-    const [content, setContent] = useState();
-    const [isPreview, setIsPreview] = useState(false);
+    const [oldVideo, setOldVideo] = useState('1_1.mp4');
+    const [videoFile, setVideoFile] = useState(); // input của video để lưu
+    const [content, setContent] = useState(); // input tên video
+    const [isPreview, setIsPreview] = useState(false); // input checkbox 
 
     const handleSave = () => {
+        //Lưu bài giảng đang nhập (gọi trong hàm onSubmit)
         if (activeStep > 0) {
             setCompleted(array => [...array.slice(0, activeStep + 1),
                 1,
             ...array.slice(activeStep + 2)])
+
         }
         else {
             setCompleted(array => [1, ...array])
@@ -34,16 +38,21 @@ export default function UploadVideo() {
     };
 
     const handleNext = () => {
+        //chuyển đến bài giảng tiếp theo or tạo thêm bài giảng mới
+        //Nếu được thì reset form ở đây sẽ logic hơn :v
         if (activeStep === steps.length - 1) {
             setsteps(prevArray => [...prevArray, 'Chương ' + (steps.length + 1)]);
             setCompleted(prevArray => [...prevArray, 0])
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
+            
         }
         else {
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
+
         }
     };
     const onSubmit = async data => {
+        //Còn không thì cứ reset khi lưu 
         handleSave();
         console.log(activeStep)
         console.log(data)
@@ -103,18 +112,6 @@ export default function UploadVideo() {
                         </Button>
                     </Grid>
                 </Grid>
-                <Grid container item xs={12} justify='center' spacing={2}>
-                    <Grid item>
-                        {
-                            completed[activeStep] === 1 && (
-                                <Typography variant='h5'>
-                                    Đã lưu
-                                </Typography>
-                            )
-                        }
-                    </Grid>
-                </Grid>
-
             </Grid>
 
             <Stepper activeStep={activeStep} alternativeLabel>
@@ -126,7 +123,15 @@ export default function UploadVideo() {
             </Stepper>
             <div>
                 <div>
-                    {/* {getStepContent(activeStep)} */}
+                    {completed[activeStep] === 1 && (
+                        <Link align='left'
+                            rel="noopener noreferrer" target="_blank" variant='h4'
+                            href={'http://localhost:3001/api/files/download?fileName=' + oldVideo}
+                        >
+                            Video hiện tại
+                        </Link>
+                    )
+                    }
                     <VideoContent id={activeStep} completed={completed[activeStep]}
                         onSubmit={onSubmit} setSelectedFile={setVideoFile}
                         content={content} isPreview={isPreview}
