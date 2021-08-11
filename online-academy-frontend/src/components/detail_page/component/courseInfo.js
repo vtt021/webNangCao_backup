@@ -35,10 +35,11 @@ export default function CourseInfo(props) {
                         <img className={classes.img} alt="complex" src={props.courseInfo.imageCourse ? imageString + props.courseInfo.imageCourse : defaultImage} />
                     </Grid>
 
-                    <Grid item xs={8} container>
+                    <Grid item xs={8} container style={{ paddingLeft: '2%'}}>
                         <Grid item xs container direction="column" spacing={2} alignItems='flex-start'>
-                            <Grid item xs container direction="column" spacing={2} alignItems='flex-start'>
-                                <Typography gutterBottom variant="h2">
+                            <Grid item xs container direction="column" spacing={2}
+                                style={{ display: 'flex', justify: 'flex-start', alignItems: 'flex-start' }}>
+                                <Typography gutterBottom variant="h3" align='left'>
                                     {props.courseInfo ? props.courseInfo.courseName : 'Tên khóa học'}
                                 </Typography>
                                 <Typography variant="h5" gutterBottom>
@@ -48,7 +49,7 @@ export default function CourseInfo(props) {
 
                             <Grid item xs container direction='column' spacing={2} alignItems='flex-start' justifyContent='flex-start'>
                                 {
-                                    !(props.courseInfo.salePrice===props.courseInfo.Price)
+                                    !(props.courseInfo.salePrice === props.courseInfo.Price)
                                         ? ( //Không có giảm giá
                                             <container>
                                                 <Typography gutterBottom variant="h5" align='justify' className={classes.price}>
@@ -83,7 +84,7 @@ export default function CourseInfo(props) {
                                     <Button variant="outlined" color="primary"
                                         className={classes.button2}
                                         onClick={handleBuyCourse}
-                                        >
+                                    >
                                         <FormControlLabel
                                             control={
                                                 <ShoppingCartOutlinedIcon className={classes.iconSize} />
@@ -108,9 +109,9 @@ export default function CourseInfo(props) {
                                 </Grid>
 
                                 <Grid container justify="flex-end"  >
-                                <Typography gutterBottom variant="subtitle2">
-                                    {props.courseInfo ? props.courseInfo.createdDate : '1/1/2021'}
-                                </Typography>
+                                    <Typography gutterBottom variant="subtitle2">
+                                        {props.courseInfo ? props.courseInfo.createdDate : '1/1/2021'}
+                                    </Typography>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -134,6 +135,9 @@ const useStyles = makeStyles((theme) => ({
     image: {
         width: 480,
         height: 480,
+        display: 'flex',
+        alignItems: 'center',
+        justify: 'center'
     },
     img: {
         margin: 'auto',

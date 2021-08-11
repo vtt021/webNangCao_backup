@@ -20,17 +20,17 @@ export default function CourseCard(props) {
     const [subCategoryName, setSubName] = useState()
 
     const [image, setImage] = useState()
-    const getImage = async () =>{
+    const getImage = async () => {
         setImage("http://localhost:3001/api/files/send?fileName=" + props.courseInfo.imageThumbnail)
         await axios.get("http://localhost:3001/api/sub-categories/id?id=" + props.courseInfo.subCategoryId).then(res => {
             setSubName(res.data.subCategoryName)
         }).catch(error => console.log(error));
     }
     useEffect(() => {
-        const init = async ()=>{
+        const init = async () => {
             await getImage()
         }
-        init()        
+        init()
     }, []);
 
     const handleDetailPage = id => () => {
@@ -62,68 +62,68 @@ export default function CourseCard(props) {
 
                         className={classes.cardHeader}
                     />
-                </CardActionArea>
 
-                <CardMedia
-                    className={classes.media}
-                    image={image}
-                    title={props.courseInfo.courseName}
-                />
 
-                <CardContent>
+                    <CardMedia
+                        className={classes.media}
+                        image={image}
+                        title={props.courseInfo.courseName}
+                    />
 
-                    {!props.courseInfo.salePrice && ( //Không có giảm giá
-                        <container>
-                            <Typography gutterBottom variant="h6" align='justify' className={classes.price}>
-                                {props.courseInfo.price === '0'
-                                    ? 'Học phí: ' + props.courseInfo.price
-                                    : 'Miễn phí'
+                    <CardContent>
+
+                        {!props.courseInfo.salePrice && ( //Không có giảm giá
+                            <container>
+                                <Typography gutterBottom variant="h6" align='justify' className={classes.price}>
+                                    {props.courseInfo.price === '0'
+                                        ? 'Học phí: ' + props.courseInfo.price
+                                        : 'Miễn phí'
+                                    }
+                                </Typography>
+                                <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
+                                    <br />
+                                </Typography>
+                            </container>
+                        )}
+
+                        {props.courseInfo.salePrice != 0 && props.courseInfo.salePrice && ( // Có giảm giá
+                            <container>
+                                <Typography gutterBottom variant="h6" align='justify' className={classes.price}>
+                                    {props.courseInfo.salePrice === '0'
+                                        ? 'Học phí: ' + props.courseInfo.salePrice
+                                        : 'Miễn phí'
+                                    }
+                                </Typography>
+                                {
+                                    props.courseInfo.salePrice === props.courseInfo.price
+                                        ? <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
+                                            {
+                                                '( Học phí gốc: ' + props.courseInfo.price + ' )'
+                                            }
+                                        </Typography>
+                                        : <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
+                                            <br />
+                                        </Typography>
                                 }
-                            </Typography>
-                            <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
-                                <br />
-                            </Typography>
-                        </container>
-                    )}
 
-                    {props.courseInfo.salePrice != 0 && props.courseInfo.salePrice && ( // Có giảm giá
-                        <container>
-                            <Typography gutterBottom variant="h6" align='justify' className={classes.price}>
-                                {props.courseInfo.salePrice === '0'
-                                    ? 'Học phí: ' + props.courseInfo.salePrice
-                                    : 'Miễn phí'
-                                }
+                            </container>
+                        )}
+                        <Grid container justify="flex-start" className={classes.containerRating}>
+                            <Rating name="half-rating-read" defaultValue={props.courseInfo.rating} precision={0.1} readOnly />
+                            <Typography variant="body2" color="textSecondary" className={classes.numberRating}>
+                                {'(' + props.courseInfo.ratingCount + ' đánh giá)'}
                             </Typography>
-                            {
-                                props.courseInfo.salePrice === props.courseInfo.price
-                                    ? <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
-                                        {
-                                            '( Học phí gốc: ' + props.courseInfo.price + ' )'
-                                        }
-                                    </Typography>
-                                    : <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
-                                        <br />
-                                    </Typography>
+                        </Grid>
+                        <Grid container justify="flex-end" alignItems='flex-end'>
+                            {props.courseInfo.subCategoryId &&
+                                (<Typography noWrap align='left' variant="overline">
+                                    {subCategoryName}
+                                </Typography>)
                             }
+                        </Grid>
 
-                        </container>
-                    )}
-                    <Grid container justify="flex-start" className={classes.containerRating}>
-                        <Rating name="half-rating-read" defaultValue={props.courseInfo.rating} precision={0.1} readOnly />
-                        <Typography variant="body2" color="textSecondary" className={classes.numberRating}>
-                            {'(' + props.courseInfo.ratingCount + ' đánh giá)'}
-                        </Typography>
-                    </Grid>
-                    <Grid container justify="flex-end" alignItems='flex-end'>
-                        {props.courseInfo.subCategoryId &&
-                            (<Typography noWrap align='left' variant="overline">
-                                {subCategoryName}
-                            </Typography>)
-                        }
-                    </Grid>
-
-                </CardContent>
-
+                    </CardContent>
+                </CardActionArea>
             </Card>
         </div >
     );
