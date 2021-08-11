@@ -2,6 +2,7 @@ const express = require('express');
 const adminAuthMdw = require('../middlewares/adminAuth.mdw');
 const courseModel = require('../models/course.model');
 const subCategoryModel = require('../models/subCategory.model');
+const categoryModel = require('../models/category.model');
 
 const router = express.Router();
 
@@ -42,10 +43,10 @@ router.get('/all', async (req, res) => {
 
         let ret = {};
 
-        for(let i = 0; i < list.length; i++) {
-            ret[list[i]['_id']] = list[i]['categoryId'] 
+        for (let i = 0; i < list.length; i++) {
+            ret[list[i]['_id']] = list[i]['categoryId']
         }
-       
+
 
         // if (id === undefined) {
         //     const list = await subCategoryModel.getAll();
@@ -91,13 +92,44 @@ router.get('/admin', adminAuthMdw, async (req, res) => {
     try {
         const categoryId = req.body.id;
 
+        let cateList = await categoryModel.getAll();
+        let cateObj = {};
+
+        cateList.forEach(c => {
+            cateObj[c['_id']] = c['categoryName'];
+        })
+
         if (categoryId === undefined) {
-            const list = await subCategoryModel.getAll();
-            res.json(list);
+            let list = await subCategoryModel.getAll();
+
+
+            let arr = list.map(a => {
+                return {
+                    "isDeleted": a["isDeleted"],
+                    "_id": a["_id"],
+                    "categoryId": a["categoryId"],
+                    "subCategoryName": a["subCategoryName"],
+                    "lastUpdated": a["lastUpdated"],
+                    "categoryName": cateObj[a["categoryId"]]
+                }
+            })
+
+            res.status(200).send(arr);
         }
         else {
             const list = await subCategoryModel.getSubcategoryInCategory(categoryId);
-            res.json(list);
+            let arr = list.map(a => {
+                return {
+                    "isDeleted": a["isDeleted"],
+                    "_id": a["_id"],
+                    "categoryId": a["categoryId"],
+                    "subCategoryName": a["subCategoryName"],
+                    "lastUpdated": a["lastUpdated"],
+                    "categoryName": cateObj[a["categoryId"]]
+                }
+            })
+
+            res.status(200).send(arr);
         }
     }
     catch (e) {
@@ -151,7 +183,7 @@ router.delete('/', async (req, res) => {
                 message: 'There are courses in this sub-category'
             });
         }
-        
+
         return res.status(200).json({
             message: 'OK'
         });

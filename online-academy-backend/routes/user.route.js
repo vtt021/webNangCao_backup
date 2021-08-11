@@ -1,6 +1,6 @@
 const express = require('express');
 const userModel = require('../models/user.model');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 const router = express.Router();
 const adminAuthMdw = require('../middlewares/adminAuth.mdw');
@@ -37,7 +37,7 @@ router.get('/id', async (req, res) => {
         delete user.lastUpdated;
         return res.json(user);
 
-        
+
 
     }
     catch (e) {
@@ -137,7 +137,7 @@ router.post('/', async (req, res) => {
             }
         }
         else {
-            await userModel.update(existData.id, user);
+            await userModel.update(existData._id, user);
             sendMail(user.email);
             res.status(200).json({
                 message: 'User already added, check email for OTP'
@@ -145,7 +145,7 @@ router.post('/', async (req, res) => {
         }
 
 
-        
+
     }
     catch (e) {
         console.log(e.stack);
@@ -155,28 +155,45 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.get('/favorite', userAuthMdw, async (req, res) => {
-    let userId = req.accessTokenPayload.id;
-    const favorites = await userModel.getFavoriteCourses(userId);
 
-    return res.status(200).send({
-        favorite: favorites
-    })
+
+router.get('/favorite', userAuthMdw, async (req, res) => {
+    try {
+        let userId = req.accessTokenPayload.id;
+        const favorites = await userModel.getFavoriteCourses(userId);
+        const data = await courseModel.getArrayCourses(favorites);
+    
+        return res.status(200).send(data);
+    }
+    catch (e) {
+        console.log(e.stack);
+        res.status(500).json({
+            message: e.message
+        })
+    }
 })
 
 router.get('/favorite-course', userAuthMdw, async (req, res) => {
-    let userId = req.accessTokenPayload.id;
-    let courseId = req.query.courseId;
-
-    const favorites = await userModel.getFavoriteCourses(userId);
-    if (favorites.findIndex(e => e.localeCompare(courseId) == 0) == -1) {
-        return res.status(200).send({
-            isFavorite: false
-        })
+    try {
+        let userId = req.accessTokenPayload.id;
+        let courseId = req.query.courseId;
+    
+        const favorites = await userModel.getFavoriteCourses(userId);
+        if (favorites.findIndex(e => e.localeCompare(courseId) == 0) == -1) {
+            return res.status(200).send({
+                isFavorite: false
+            })
+        }
+        else {
+            return res.status(200).send({
+                isFavorite: true
+            })
+        }
     }
-    else {
-        return res.status(200).send({
-            isFavorite: true
+    catch (e) {
+        console.log(e.stack);
+        res.status(500).json({
+            message: e.message
         })
     }
 })
@@ -184,7 +201,7 @@ router.get('/favorite-course', userAuthMdw, async (req, res) => {
 router.post('/favorite', userAuthMdw, async (req, res) => {
     let courseId = req.body.courseId;
     let userId = req.accessTokenPayload.id;
-    
+
     const favorites = await userModel.getFavoriteCourses(userId);
 
     let find = favorites.findIndex(e => e.localeCompare(courseId) == 0);
@@ -202,17 +219,27 @@ router.post('/favorite', userAuthMdw, async (req, res) => {
     })
 })
 
+// router.put('/remove-favorite', userAuthMdw, async (req, res) => {
+//     let courseId = req.body.courseId;
+//     let userId = req.accessTokenPayload.id;
+// })
 
 
-router.put('/password', userAuthMdw, async(req, res) => {
+
+router.put('/password', userAuthMdw, async (req, res) => {
     try {
         const id = req.accessTokenPayload.id;
         const currentPass = req.body.currentPass;
         const newPass = req.body.newPass;
         const confirmPass = req.body.confirmPass;
 
-        const user = await userModel.getUserById(id);
+        const user = await userModel.getAllInfoById(id);
         if (user === undefined || !bcrypt.compareSync(currentPass, user.password)) {
+
+        // console.log(currentPass);
+        // console.log(user.password);
+        // if (user === undefined || currentPass.localeCompare(user.password) != 0) {
+            console.log('User not exist or incorrect pass')
             return res.status(401).json({
                 message: 'User not exist or incorrect pass'
             });
@@ -231,7 +258,7 @@ router.put('/password', userAuthMdw, async(req, res) => {
             message: 'OK'
         });
     }
-    catch(e) {
+    catch (e) {
         console.log(e.stack);
         res.status(500).json({
             message: e.message
@@ -239,28 +266,31 @@ router.put('/password', userAuthMdw, async(req, res) => {
     }
 });
 
-router.put('/',adminAuthMdw, async (req, res) => {
+router.put('/', userAuthMdw, async (req, res) => {
     try {
         const id = req.accessTokenPayload.id;
-        const user = req.body;
+        const password = req.body.password;
+        const email = req.body.email;
+        const username = req.body.username;
 
-        const email = user.email;
-        // if (typeof(email) === 'string') {
-        //     if (!email.match("\/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$\/g")) {
-        //         return res.status(400).json({
-        //             message: 'Incorrect email format'
-        //         });
-        //     }
-        // }
-        const username = user.username;
-        if (typeof(username) === 'string' && username.length === 0) {
+        const user = await userModel.getAllInfoById(id);
+        if (user === undefined || !bcrypt.compareSync(password, user.password)) {
+            console.log('User not exist or incorrect pass')
+            return res.status(401).json({
+                message: 'User not exist or incorrect pass'
+            });
+        }
+
+        if (typeof (username) === 'string' && username.length === 0) {
             return res.status(400).json({
                 message: 'Username cannot be empty'
             });
         }
-        if (Object.keys(user).length != 0) {
-            await userModel.update(id, user);
+        let users = {
+            email: email,
+            username: username
         }
+        await userModel.update(id, users);
 
         return res.status(200).json({
             message: 'OK'
@@ -274,7 +304,7 @@ router.put('/',adminAuthMdw, async (req, res) => {
     }
 })
 
-router.delete('/', adminAuthMdw,  async (req, res) => {
+router.delete('/', adminAuthMdw, async (req, res) => {
     try {
         const adminId = req.accessTokenPayload.id;
         const id = req.body.id;

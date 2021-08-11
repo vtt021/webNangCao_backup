@@ -2,6 +2,7 @@ const db = require('../utils/db');
 const TABLE_NAME = 'sub_category'
 
 const {SubCategory, Category} = require('../schema/mongodb.schema');
+const categoryModel = require('./category.model');
 const contentData = '_id subCategoryName'
 
 module.exports = {
@@ -62,10 +63,20 @@ module.exports = {
 
     async update(id, subCategory) {
         subCategory.lastUpdated = new Date();
-        return db(TABLE_NAME).where({
-            id: id,
-            isDeleted: false
-        }).update(subCategory);
+
+        // if (subCategory.categoryId != null) {
+        //     let a = categoryModel.getCategoryName(subCategory.categoryId);
+        //     console.log(a);
+        //     if (a == null) {
+        //         throw new Error("Invalid category id");
+        //     }
+        // }
+
+        await SubCategory.find({_id: id}).updateMany(subCategory).exec(); 
+        // return db(TABLE_NAME).where({
+        //     id: id,
+        //     isDeleted: false
+        // }).update(subCategory);
     },
 
     async delete(id) {
