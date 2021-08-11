@@ -16,17 +16,17 @@ import Container from '@material-ui/core/Container';
 
 export default function UpdateInfo() {
     const classes = useStyles();
+    const inputRef = React.useRef();
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
     //Gọi API lấy tên với email của tài khoản nha
 
     const onSubmit = async (data) => {
-        console.log(data) 
-        if (data.password!= 0)
-        {
+        console.log(data)
+        
+        if (data.password != 0) {
             //Sai mật khẩu thì alert nó lên
         }
-        else
-        {
+        else {
             //đúng thì đổi thou
         }
         // await axios.post("http://localhost:3001/api/users", {
@@ -53,6 +53,7 @@ export default function UpdateInfo() {
                         {/* Tên đăng nhập */}
                         <Grid item xs={12}>
                             <TextField
+
                                 defaultValue='Điền tên vô đây nè'
                                 autoComplete="fname"
                                 name="username"
@@ -70,6 +71,7 @@ export default function UpdateInfo() {
                         {/* Email */}
                         <Grid item xs={12}>
                             <TextField
+                                ref={node => inputRef.current = node}
                                 defaultValue='abc@gmail.com'
                                 variant="filled"
                                 required
@@ -79,6 +81,7 @@ export default function UpdateInfo() {
                                 name="email"
                                 autoComplete="email"
                                 type="email"
+                                autoFocus
                                 {...register("email", { required: true, pattern: /^\S+@\S+$/i })}
                             />
                         </Grid>
