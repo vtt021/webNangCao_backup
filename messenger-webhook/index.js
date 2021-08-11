@@ -92,9 +92,14 @@ var incorrectReturn = {
 // Handles messages events
 async function handleMessage(sender_psid, received_message) {
     let response;
+    console.log("Handle message")
+    console.log("received_message", received_message)
+    if (received_message.quick_reply) {
+        response = await handleGetCourseByCategory(received_message.quick_reply.payload)
 
+    }
     // Check if the message contains text
-    if (received_message.text) {
+    else if (received_message.text) {
 
         // Create the payload for a basic text message
         // response = {
@@ -113,11 +118,23 @@ async function handlePostback(sender_psid, received_postback) {
     // let response = incorrectReturn;
 
     // Get the payload for the postback
+    console.log("Postback")
     let payload = received_postback.payload;
 
-    
-    let response = await handleDetailMessage(payload);
-    
+    let tokens = payload.split(" ");
+    let response = { "text": "Invalid" };
+
+    if (tokens[0] == '1') {
+        response = await handleDetailMessage(tokens[1]);
+    }
+    else if (tokens[0] == '2') {
+        console.log("Đã vào phần 2 ")
+        response = await handleGetCourseByCategory(tokens[1])
+    }
+
+
+
+
 
 
     // // Set the response based on the postback payload
@@ -138,6 +155,7 @@ async function callSendAPI(sender_psid, response) {
         "recipient": {
             "id": sender_psid
         },
+        "messaging_type": "RESPONSE",
         "message": response
     }
 
@@ -178,6 +196,9 @@ async function handleTextMessage(text) {
             }
             else if (command.localeCompare("detail") == 0) {
                 res = await handleDetailMessage(data);
+            }
+            else if (command.localeCompare("cateCourse") == 0) {
+                res = await handleGetCourseByCategory(data);
             }
             else {
                 res = { "text": "Câu lệnh sai: " + command + ", text là: " + text };
@@ -255,7 +276,7 @@ async function handleSearchMessage(data) {
                         }, {
                             "type": "postback",
                             "title": "Xem chi tiết",
-                            "payload": d._id
+                            "payload": "1 " + d._id
                         }
                     ]
                 })
@@ -285,84 +306,180 @@ async function handleSearchMessage(data) {
 
     return finalData;
 
+}
+
+// async function handleGetCateMessage(data) {
+//     const finalData = await axios.get(LIVE_URL + '/courses/cateName', {
+//         params: {
+//             categoryName: data,
+//             limit: 3,
+//             page: 1
+//         }
+//     }).then(res => {
+//         if (res.status === 200) {
+//             let receivedData = res.data;
+
+//             console.log("receivedData", receivedData)
+
+//             let elements = receivedData.courses.map(d => {
+//                 return ({
+//                     "title": d.courseName,
+//                     "image_url": LIVE_URL + '/files/send?fileName=' + d.imageThumbnail,
+//                     "default_action": {
+//                         "type": "web_url",
+//                         "url": "https://leetcode.com",
+//                         "webview_height_ratio": "tall",
+//                     },
+//                     "buttons": [
+//                         {
+//                             "type": "web_url",
+//                             "url": "https://leetcode.com",
+//                             "title": "Đăng ký ngay!"
+//                         }, {
+//                             "type": "postback",
+//                             "title": "All",
+//                             "payload": "!detail dosomething"
+//                         }
+//                     ]
+//                 })
+//             })
+
+//             console.log("elements:", elements)
+
+//             if (elements.length == 0) {
+//                 return ({
+//                     "text": "Không có khóa học hợp với từ khóa"
+//                 })
+//             }
+
+//             return ({
+//                 "attachment": {
+//                     "type": "template",
+//                     "payload": {
+//                         "template_type": "generic",
+//                         "elements": elements
+//                     }
+//                 }
+//             })
+//         }
+//     }).catch(e => {
+//         return incorrectReturn;
+//     })
+
+//     return finalData;
+// }
+
+async function handleGetCourseByCategory(data) {
+    const finalData = await axios.get(LIVE_URL + '/courses/category?limit=5&page=1&categoryId=' + data)
+        .then(res => {
+            if (res.status === 200) {
+                let receivedData = res.data;
+
+                console.log("receivedData", receivedData)
+
+                let elements = receivedData.map(d => {
+                    return ({
+                        "title": d.courseName,
+                        "image_url": LIVE_URL + '/files/send?fileName=' + d.imageThumbnail,
+                        "default_action": {
+                            "type": "web_url",
+                            "url": "https://leetcode.com",
+                            "webview_height_ratio": "tall",
+                        },
+                        "buttons": [
+                            {
+                                "type": "web_url",
+                                "url": "https://leetcode.com",
+                                "title": "Đăng ký ngay!"
+                            }, {
+                                "type": "postback",
+                                "title": "Xem chi tiết",
+                                "payload": "1 " + d._id
+                            }
+                        ]
+                    })
+                })
+
+                console.log("elements:", elements)
+
+                if (elements.length == 0) {
+                    return ({
+                        "text": "Không có khóa học trong lĩnh vực này"
+                    })
+                }
+
+                return ({
+                    "attachment": {
+                        "type": "template",
+                        "payload": {
+                            "template_type": "generic",
+                            "elements": elements
+                        }
+                    }
+                })
+            }
+        }).catch(e => {
+            console.log(e);
+            return incorrectReturn;
+        })
+
+    return finalData;
 }
 
 async function handleGetCateMessage(data) {
-    const finalData = await axios.get(LIVE_URL + '/courses/cateName', {
-        params: {
-            categoryName: data,
-            limit: 3,
-            page: 1
-        }
-    }).then(res => {
-        if (res.status === 200) {
-            let receivedData = res.data;
+    const finalData = await axios.get(LIVE_URL + '/categories')
+        .then(res => {
+            if (res.status === 200) {
+                let receivedData = res.data;
 
-            console.log("receivedData", receivedData)
+                console.log("receivedData", receivedData)
 
-            let elements = receivedData.courses.map(d => {
-                return ({
-                    "title": d.courseName,
-                    "image_url": LIVE_URL + '/files/send?fileName=' + d.imageThumbnail,
-                    "default_action": {
-                        "type": "web_url",
-                        "url": "https://leetcode.com",
-                        "webview_height_ratio": "tall",
-                    },
-                    "buttons": [
-                        {
-                            "type": "web_url",
-                            "url": "https://leetcode.com",
-                            "title": "Đăng ký ngay!"
-                        }, {
-                            "type": "postback",
-                            "title": "All",
-                            "payload": "!detail dosomething"
-                        }
-                    ]
+                let elements = receivedData.map(d => {
+                    return ({
+                        "content_type": "text",
+                        "title": d.categoryName,
+                        "payload": d._id
+                    })
                 })
-            })
 
-            console.log("elements:", elements)
+                console.log("elements:", elements)
 
-            if (elements.length == 0) {
+                // if (elements.length == 0) {
+                //     return ({
+                //         "text": "Không có khóa học hợp với từ khóa"
+                //     })
+                // }
+
                 return ({
-                    "text": "Không có khóa học hợp với từ khóa"
+                    "text": "Chọn 1 lĩnh vực:",
+                    "quick_replies": elements
                 })
             }
-
-            return ({
-                "attachment": {
-                    "type": "template",
-                    "payload": {
-                        "template_type": "generic",
-                        "elements": elements
-                    }
-                }
-            })
-        }
-    }).catch(e => {
-        return incorrectReturn;
-    })
+        }).catch(e => {
+            console.log(e);
+            return incorrectReturn;
+        })
 
     return finalData;
 }
 
+
+
 async function handleDetailMessage(data) {
     const detail = await axios.get(LIVE_URL + '/courses/id?id=' + data)
-    .then(res => {
-        let detail = res.data;
-        console.log(detail);
+        .then(res => {
+            let detail = res.data;
+            console.log(detail);
 
-        
-        return {
-            "text": `Tên khóa học: ${detail.courseName}\nTên giáo viên: ${detail.teacherName}\nGiới thiệu: ${detail.detailShort}\nGiá: ${detail.salePrice}`
-        }
-    }).catch(e => {
-        return {
-            "text": "Rất tiếc, một lỗi khong mong muốn đã xảy ra, vui lòng thử lại sau"
-        };
-    })
+
+            return {
+                "text": `Tên khóa học: ${detail.courseName}\nTên giáo viên: ${detail.teacherName}\nGiới thiệu: ${detail.detailShort}\nGiá: ${detail.salePrice}`
+            }
+        }).catch(e => {
+            return {
+                "text": "Rất tiếc, một lỗi khong mong muốn đã xảy ra, vui lòng thử lại sau"
+            };
+        })
 
     return detail;
 }
