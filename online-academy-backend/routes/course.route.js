@@ -86,6 +86,22 @@ router.get('/hot', async (req, res) => {
 
 })
 
+router.get('/related', async (req, res) => {
+    try {
+        const limit = req.query.limit;
+        const courseId = req.query.courseId;
+        const subCategoryId = req.query.subCategoryId;
+        const list = await courseModel.getTopRelatedCourses(courseId, subCategoryId, limit);
+        return res.json(list);
+    }
+    catch (e) {
+        console.log(e.stack);
+        res.status(500).json({
+            message: e.message
+        })
+    }
+})
+
 router.get('/search', async (req, res) => {
     try {
         const keyword = req.query.keyword;
