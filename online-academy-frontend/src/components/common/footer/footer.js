@@ -44,8 +44,8 @@ export default function Footer() {
 
       <footer className={classes.footer}>
         <Container maxWidth="sm">
-          <Typography variant="body1">My sticky footer can be found here.</Typography>
-          <Copyright />
+          <Typography variant="body1">Online Academy</Typography>
+          {/* <Copyright /> */}
         </Container>
       </footer>
     </div>

@@ -32,7 +32,7 @@ export default function ControlledAccordions(props) {
     return (
         <Grid container className={classes.root} >
             {courseContent.map((content, index) => {
-                if (content.isPreview === 'true') {
+                if (props.isBought === true || content.isPreview === 'true') {
                     return (
                         <Grid item xs={12}>
                             <Accordion expanded={expanded === 'panel' + index} onChange={handleChange('panel' + index)}>
@@ -41,7 +41,7 @@ export default function ControlledAccordions(props) {
                                     aria-controls="panel1bh-content"
                                     id="panel1bh-header"
                                 >
-                                    <Typography className={classes.heading}>Chương {index}</Typography>
+                                    <Typography className={classes.heading}>Chương {index + 1}</Typography>
                                     <Typography className={classes.secondaryHeading}>{content.content}</Typography>
                                 </AccordionSummary>
                                 <AccordionDetails>
@@ -72,7 +72,7 @@ export default function ControlledAccordions(props) {
                                     aria-controls="panel1bh-content"
                                     id="panel1bh-header"
                                 >
-                                    <Typography className={classes.heading}>Chương {index}</Typography>
+                                    <Typography className={classes.heading}>Chương {index + 1}</Typography>
                                     <Typography className={classes.secondaryHeading}>{content.content}</Typography>
                                 </AccordionSummary>
                                 <AccordionDetails>

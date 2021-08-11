@@ -57,7 +57,12 @@ module.exports = {
         let users = await userModel.getAllUsernameWithId();
         console.log(users);
 
-        let ratings = await RegisterCourse.find({ courseId: courseId }, 'userId rating rateContent').exec();
+        let ratings = await RegisterCourse.find({ 
+            courseId: courseId,
+            rating: {
+                $ne: 0
+            }
+        }, 'userId rating rateContent').exec();
 
         let newRatings = [];
 

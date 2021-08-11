@@ -104,7 +104,17 @@ router.get('/detail', userAuthMdw,  async(req, res) => {
             })
         }
         const registration = await registerCourseModel.getRegistration(userId, courseId);
-        return res.status(200).json(registration);
+        if (registration == undefined) {
+            return res.status(200).json({
+                isRegistered: false
+            })
+        }
+        else {
+            return res.status(200).json({
+                isRegistered: true,
+                registration: registration
+            });
+        }
     }
     catch (e) {
         console.log(e.stack);
