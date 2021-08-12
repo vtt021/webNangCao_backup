@@ -16,50 +16,44 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
 import TextField from '@material-ui/core/TextField';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import { FormControl, MenuItem } from '@material-ui/core';
-import { getDate } from 'date-fns';
-import { formatDateTime } from '../../../utils/helpers';
-import Deleteaction from './DeleteAction';
-import Tag from './UserStatus';
-import  Button from '@material-ui/core/Button';
 import Refreshtoken from '../../../refreshToken';
+import SubCategoryAction from './SubCategoryAction';
+import { formatDateTime } from '../../../utils/helpers';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Tag from '../user/UserStatus';
+import Button from '@material-ui/core/Button';
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
 let stt = 0;
 const columns = [
     { id: 'stt', label: '#', minWidth: 10 },
-    { id: 'name', label: 'Tên', minWidth: 150 },
-    { id: 'email', label: 'email', minWidth: 70 },
-    { id: 'usersRole', label: 'Phân hệ', minWidth: 100 },
-    { id: 'last', label: 'Cập nhật lần cuối', minWidth: 150 },
-    { id: 'tag', label: 'Trạng thái', minWidth: 150,align: 'center' },
-    { id: 'deleted', label: '', minWidth: 50 ,align: 'center'},
+    { id: 'name', label: 'Tên', minWidth: 100 },
+    { id: 'category', label: 'Tên lĩnh vực', minWidth: 100 },
+    { id: 'last', label: 'Cập nhật lần cuối', minWidth: 100 },
+    { id: 'tag', label: 'Trạng thái', minWidth: 100 ,align: 'center'},
+    { id: 'actions', label: 'Hành động',align:'center', minWidth: 200 },
+
 ];
 
-function createData(_id,name, email, role,isUnLock,isDelete, lastUpdated) {
+function createData(id,name,category, lastUpdated,isDeleted) {
     stt += 1;
-    let id = _id;
-    let usersRole;
-    if(role===0){
-        usersRole="Học viên"
-    }else if(role === 1){
-        usersRole="Giáo viên"
-    }else{
-        usersRole="Quản trị viên"
-    }
+    var last = formatDateTime(new Date(lastUpdated)).toLocaleString()
+    let actions = (<SubCategoryAction isDeleted={isDeleted} id ={id}/>)
     let tag;
-    if (isDelete) {
+    if (isDeleted) {
         tag = <Tag content="Đã xóa" backGroundColor="#999999" textColor="white" />
-    }else if(isUnLock){
-        tag = <Tag content="Đang hoạt động" backGroundColor="#2980b9" textColor="white" />;
     }else{
-        tag = <Tag content="Đang chờ xác thực" backGroundColor="red" textColor="white" />;
+        tag = <Tag content="Đang hoạt động" backGroundColor="#2980b9" textColor="white" />;
     }
-
-    let last = formatDateTime(new Date(lastUpdated)).toLocaleString()
-    let deleted = (<Deleteaction isDeleted={isDelete} id = {_id}/>)
-    return { stt, name, email, usersRole, last,tag ,deleted};
+    return { stt,id, name,category, last,tag,actions };
 }
 
 const StyledTableCell = withStyles(theme => ({
@@ -155,83 +149,169 @@ TablePaginationActions.propTypes = {
     rowsPerPage: PropTypes.number.isRequired,
 };
 
-export default function AdminUser() {
-    const [auth,setAuth] = useState(JSON.parse(localStorage.getItem("auth")))
+
+
+export default function AdminSubCategory() {
+    const [data,setData] = useState([]);
+    const [user,setUser] = useState(JSON.parse(localStorage.getItem("auth")))
+    const [newName, setNewName] = useState("")
+    const [open, setOpen] = useState(false);
+    const [category,setCategory] = useState("")
+    const [listCategory,setListCategory]=useState([{}])
+
     useEffect(()=>{
-        setAuth(JSON.parse(localStorage.getItem("auth")))
+        setUser(JSON.parse(localStorage.getItem("auth")))
     },[localStorage.getItem("auth")])
 
     useEffect(() => {
-        if (auth===null||auth.role != 2) 
+        if (user===null||user.role != 2) 
         {
             window.location.replace("/")
         }
-    }, [auth])
-    const [data,setData] = useState([]);
-    
+    }, [user])
     const classes = useStyles();
     const [page, setPage] = useState(0);
     const [rowsPerPage, _] = useState(5);
     const [rows, setRows] = useState(data)
+    
+    const handleClose = () => {
+        setOpen(false);
+    };
+    const handleOpen = () => {
+        setOpen(true);
+    };
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
-    const [users, setUser] = useState([]);
-    const getUsers = async() => {
-        await axios.get('http://localhost:3001/api/users',{
+
+    const [subCategories, setSubCategories] = useState([]);
+
+    const getSubCategory = async() => {
+        await axios.get('http://localhost:3001/api/sub-categories/admin',{
             headers:{
-                "x-access-token":auth.accessToken
+                "x-access-token":user.accessToken
             }
         })
         .then(res => {
-            setUser(res.data);
+            console.log(res.data)
+            setSubCategories(res.data);
         })
     }
-
+    const getCategory = async()=>{
+        await axios.get("http://localhost:3001/api/categories").then(res => {
+            const listCategories = res.data;
+            setListCategory(listCategories);
+            
+        }).catch(error => console.log(error));
+    }
+    const handleAddSubCategory = async ()=>{
+        Refreshtoken()
+        if (newName != "") {
+            const data = {
+                categoryId:category,
+                subCategoryName: newName
+            }
+            await axios.post('http://localhost:3001/api/sub-categories/', data, {
+                headers: {
+                    'x-access-token': user.accessToken
+                },
+            })
+                .then(res => {
+                    window.location.reload()
+                }).catch(e => {
+                    console.log(e);
+                })
+        }
+    }
     useEffect(() => {
         Refreshtoken()
-        setAuth(JSON.parse(localStorage.getItem("auth")))
-        
+        setUser(JSON.parse(localStorage.getItem("auth")))
         const init = async() => {
-            await getUsers();
+            await getSubCategory();
         }
 
         init();
     
     }, []);
+
+    useEffect(() => {
+        const init = async() => {
+            await getCategory();
+        }
+        setCategory(listCategory._id)
+        init();
+    }, []);
+
     useEffect(()=>{
         stt = 0;
-        const temp = users.map((user=>{
-            return createData(user._id,user.username,user.email,user.role,user.isUnlocked,user.isDeleted,user.lastUpdated)
+        const temp = subCategories.map((subCategory=>{
+            return createData(subCategory._id,subCategory.subCategoryName,subCategory.categoryName,subCategory.lastUpdated,subCategory.isDeleted)
         }));
         setData(temp);
         setRows(temp.slice());
-    },[users])
+    },[subCategories])
 
-    const filterData = (value) => {
+    useEffect(()=>{
+        setCategory(listCategory[0]._id)
+    },[listCategory])
+    const searchData = (value) => {
         if (value) {
             const filtered = data.filter(d => {
-                if (d.name.search(new RegExp(value, "i")) >= 0
-                    || d.email.search(new RegExp(value, "i")) >= 0){
-                        setPage(0);
-                        return d;
+                if (d.name.search(new RegExp(value.replace('\\',""), "i")) >= 0){
+                    setPage(0);
+                    return d;
                 }
             });
             setRows(filtered)
         } else {
-            
-                setRows(data)
-            }
+            setRows(data)
         }
-    
+    }
     return (
         <Paper className={classes.root}>
-             <Button
+            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title">Thêm lĩnh vực con</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Hãy nhập tên lĩnh vực con này.
+                    </DialogContentText>
+                    <form className={classes.form} noValidate>
+            <FormControl style={{width:"100%"}} className={classes.formControl}>
+              <InputLabel htmlFor="max-width">Lĩnh vực</InputLabel>
+              <Select
+                defaultValue={category}
+              >
+                {listCategory.map((item)=>{return(
+                    <MenuItem value={item._id}>{item.categoryName}</MenuItem>
+                  )})}
+              </Select>
+            </FormControl>
+            
+          </form>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="name"
+                        label="Tên"
+                        fullWidth
+                        onChange={(e) => { setNewName(e.target.value) }}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                        Hủy
+                    </Button>
+                    <Button onClick={handleAddSubCategory} color="primary">
+                        Thêm
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Button
         variant="contained"
         color="primary"
         style={{marginRight:'2%'}}
-        onClick={()=>{window.location.replace("admin/create-teacher")}}
+        onClick={handleOpen}
         className={classes.button}
         endIcon={<AddCircleIcon/>}
       >
@@ -244,7 +324,7 @@ export default function AdminUser() {
                 variant="outlined"
                 style={{ paddingBottom: '1%', width: '80%' }}
                 onChange={(e) => {
-                    filterData(e.target.value)}}
+                    searchData(e.target.value)}}
             />
 
             <TableContainer className={classes.container}>
@@ -270,8 +350,9 @@ export default function AdminUser() {
                                         const value = row[column.id];
                                         return (
                                             <TableCell key={column.id} align={column.align}>
-                                                {column.format && typeof value === 'number' ? column.format(value) : value}
+                                                {value}
                                             </TableCell>
+                                            
                                         );
                                     })}
                                 </TableRow>

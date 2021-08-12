@@ -62,38 +62,20 @@ export default function UpdateContent(props) {
             console.log("a", a);
             console.log(props.listSubCategory[a].categoryId)
             setCurrentCategory(props.listSubCategory[a].categoryId);
+
+            let htmlStr = convertFromHTML(props.courseInfo.detailLong);
+            let newState = ContentState.createFromBlockArray(
+                htmlStr.contentBlocks,
+                htmlStr.entityMap
+            );
+
+            setEditorState(EditorState.createWithContent(newState));
             setTimeout(() => {
                 setCurrentSubCategory(props.courseInfo.subCategoryId);
             }, 500)
         }
-
-
-
-
-
-
     }, [props.courseInfo])
 
-
-    // const setupSubcate = async () => {
-    //     let subData = await axios.get("http://localhost:3001/api/sub-categories/").then(res => {
-    //         props.setListSub(res.data)
-    //         return res.data;
-    //     }).catch(error => {
-    //         console.log(error);
-    //         return null;
-    //     })
-
-    //     return subData;
-    // }
-
-    // const setupCategory = async () => {
-    //     await axios.get("http://localhost:3001/api/categories").then(res => {
-    //         const listCategories = res.data;
-    //         props.setListCategories(listCategories);
-    //     })
-    //         .catch(error => console.log(error));
-    // }
 
     useEffect(() => {
         const init = async () => {
@@ -225,9 +207,7 @@ export default function UpdateContent(props) {
                                 rows={5}
                                 id="detailShort"
                                 label='Mô tả ngắn'
-                                defaultValue={
-                                    //props.courseInfo.detailShort || 
-                                    'Chưa có API'}
+                                defaultValue={props.courseInfo.detailShort}
                                 autoFocus
                                 {...register("detailShort", { required: true })}
                             />
@@ -244,10 +224,7 @@ export default function UpdateContent(props) {
                                 fullWidth
                                 id="price"
                                 label="Học phí"
-                                defaultValue={
-                                    //props.courseInfo.price ||
-                                    'Chưa gọi API'
-                                }
+                                defaultValue={props.courseInfo.price}
                                 {...register("price", { required: true, min: 0 })}
                             />
                         </Grid>
@@ -262,9 +239,7 @@ export default function UpdateContent(props) {
                                 fullWidth
                                 id="salePrice"
                                 label="Học phí giảm giá"
-                                defaultValue={
-                                    //props.courseInfo.salePrice ? props.courseInfo.salePrice : 
-                                    '0'}
+                                defaultValue={props.courseInfo.salePrice ? props.courseInfo.salePrice : '0'}
                                 {...register("salePrice", { min: 0 })}
                             />
                         </Grid>
@@ -319,6 +294,7 @@ export default function UpdateContent(props) {
                                 name="isCompleted"
                                 type='checkbox'
                                 id={"isCompleted" + props.id}
+                                defaultChecked={props.courseInfo.isCompleted}
                                 className={classes.Checkbox}
                                 {...register("isCompleted", {})}
                             />

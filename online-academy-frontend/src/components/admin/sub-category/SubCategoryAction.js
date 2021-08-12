@@ -24,7 +24,6 @@ export default function CategoryAction(props) {
     useEffect(()=>{
         setAuth(JSON.parse(localStorage.getItem("auth")))
     },[localStorage.getItem("auth")])
-
     useEffect(()=>{
         console.log(props.isDeleted)
         if(props.isDeleted){
@@ -34,17 +33,16 @@ export default function CategoryAction(props) {
         }
         
     },[props])
-
     const handleRenameAction = async () => {
         Refreshtoken()
         console.log(auth)
         if (newName != "") {
             const data = {
                 id: props.id,
-                categoryName: newName
+                subCategoryName: newName
             }
             console.log(data)
-            await axios.put('http://localhost:3001/api/categories/', data, {
+            await axios.put('http://localhost:3001/api/sub-categories/', data, {
                 headers: {
                     'x-access-token': auth.accessToken
                 },
@@ -68,7 +66,7 @@ export default function CategoryAction(props) {
             id: props.id
         }
         console.log(data)
-        await axios.delete('http://localhost:3001/api/categories/', {
+        await axios.delete('http://localhost:3001/api/sub-categories/', {
             headers: {
                 'x-access-token': auth.accessToken
             },
@@ -110,7 +108,7 @@ export default function CategoryAction(props) {
                 </DialogActions>
             </Dialog>
             <Button disabled={isDisabled} onClick={handleDeleteAction} variant='contained'>Xóa</Button>
-            <AlertDialog close={()=>{setOpenDelete(false)}} isOpened={openDelete} value={"Không thể xóa lĩnh vực này vì vẫn còn khóa học hoặc lĩnh vực con thuộc khóa học này"}/>
+            <AlertDialog close={()=>{setOpenDelete(false)}} isOpened={openDelete} value={"Không thể xóa lĩnh vực con này vì lĩnh vực này vẫn còn khóa học"}/>
         </td>
     )
 }

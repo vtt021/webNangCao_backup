@@ -15,10 +15,12 @@ export default function AdminHome(props) {
         }
     }, [auth])
     return (
-        <td style={{ display: 'flex',direction: 'column', justifyContent: 'space-evenly' }}>
+        <td style={{ display: 'flex',direction: 'column', justifyContent: 'space-evenly',flexDirection:'column' }}>
             <Header />
             <Button href="/admin/categories" variant='contained' color='secondary'>Categories</Button>
+            <Button href="/admin/sub-categories" variant='contained' color='inherit'>Sub Categories</Button>
             <Button href="/admin/users" variant='contained' color='primary'>Users</Button>
+            <Button href="/admin/courses" variant='contained' color='primary'>Courses</Button>
             {/* <Button variant='contained'>Xóa</Button> */}
         </td>
     )
