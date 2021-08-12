@@ -170,7 +170,6 @@ export default function DetailPage(props) {
         }
 
 
-
         const init = async () => {
             await getCourseDetail()
             await setBoughtCourseAndFeedbackStatus();
