@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     paper: {
         padding: theme.spacing(2),
         margin: 'auto',
-        background: '#FDF6F0',
+        background: '#E8F6EF',
     },
 
 }));

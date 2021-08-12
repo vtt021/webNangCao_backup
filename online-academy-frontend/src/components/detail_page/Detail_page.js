@@ -282,11 +282,11 @@ export default function DetailPage(props) {
                                         ?
                                         listFeedback.map((item, i) =>
                                             <ListItem alignItems="flex-start" className={classes.listItem}
-                                            rating={listFeedback[i].rating}
-                                            rateContent={listFeedback[i].rateContent}
-                                            username={user.username}
+
                                             >
-                                                <FeedBack />
+                                                <FeedBack rating={item.rating}
+                                                    rateContent={item.rateContent}
+                                                    username={item.username} />
                                             </ListItem>
                                         )
                                         : <Typography variant='h5' style={{ paddingBottom: '2%', width: '100%' }}>
