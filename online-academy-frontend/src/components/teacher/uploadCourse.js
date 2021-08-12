@@ -10,8 +10,10 @@ import Footer from '../common/footer/footer';
 import Link from '@material-ui/core/Link';
 import ImageUploadCard from './child_component/uploadImage';
 import UploadContent from './child_component/uploadContent';
+import Notification from './common/Notification';
 export default function UploadCourse(props) {
     const classes = useStyles();
+    const [isOpened, setOpen] = useState(false);
     const [user, setUser] = useState(JSON.parse(localStorage.getItem("auth")))
 
     const id = props.match.params.id
@@ -22,6 +24,13 @@ export default function UploadCourse(props) {
     const [thumbnailImageName, setThumbnailImageName] = useState(null);
 
     // const [fileName, setFileName] = useState(null);
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+    const handleOpen = () => {
+        setOpen(true);
+    };
 
     const dataURLtoFile = (dataurl, filename) => {
         const arr = dataurl.split(',')
@@ -45,7 +54,7 @@ export default function UploadCourse(props) {
                 'x-access-token': user.accessToken
             }
         }).then(res => {
-            console.log("Course success!")
+            handleOpen()
             return res.data.courseId;
         }).catch(e => {
             console.log(e)
@@ -116,6 +125,7 @@ export default function UploadCourse(props) {
         <div fluid>
 
             <Header />
+            <Notification close={()=>{setOpen(false)}} isOpened={isOpened} value={"Đăng khóa học thành công"}/>
             <Grid container spacing={3} className={classes.container}>
                 <Grid item xs={12}>
                     <h2>

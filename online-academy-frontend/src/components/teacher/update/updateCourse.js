@@ -8,9 +8,12 @@ import Link from '@material-ui/core/Link';
 import ImageUploadCard from '../child_component/uploadImage';
 import UpdateContent from './updateContent';
 import HeaderTeacher from '../child_component/headerTeacher';
+import Notification from '../common/Notification';
 
 export default function UpdateCourse(props) {
     const classes = useStyles();
+
+    const [isOpened, setOpen] = useState(false);
 
     const id = props.match.params.id
     const [user, setUser] = useState(JSON.parse(localStorage.getItem("auth")))
@@ -24,6 +27,13 @@ export default function UpdateCourse(props) {
 
     const [listCategories, setListCategories] = useState([{ id: 1, categoryName: 'Tất cả lĩnh vực' }])
     const [listSubCategory, setListSub] = useState([{ id: 1, categoryName: 'Tất cả lĩnh vực phụ' }])
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+    const handleOpen = () => {
+        setOpen(true);
+    };
 
     const dataURLtoFile = (dataurl, filename) => {
         const arr = dataurl.split(',')
@@ -153,7 +163,7 @@ export default function UpdateCourse(props) {
                     'Content-Type': `multipart/form-data; boundary=${thumbnailFormData._boundary}`
                 }
             }).then(res => {
-                console.log("Upload success!")
+                setOpen(true)
                 return true;
             }).catch(e => {
                 console.log(e)
@@ -169,7 +179,8 @@ export default function UpdateCourse(props) {
                 'x-access-token': user.accessToken
             }
         }).then(res => {
-            console.log("Change success!");
+            handleOpen()
+            
         }).catch(e => {
             console.log(e);
         })
@@ -240,6 +251,7 @@ export default function UpdateCourse(props) {
     return (
         <div fluid>
             <HeaderTeacher />
+            <Notification close={()=>{setOpen(false)}} isOpened={isOpened} value={"Cập nhật thành công"}/>
             {
                 handleUI()
             }

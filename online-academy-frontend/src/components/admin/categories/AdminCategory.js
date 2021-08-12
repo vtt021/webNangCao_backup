@@ -204,8 +204,9 @@ export default function AdminCategory() {
     useEffect(()=>{
         stt = 0;
         const temp = categories.map((category=>{
-            return createData(category._id,category.categoryName,category.lastUpdated,category.isDeleted)
-        }));
+            if(!category.isDeleted){
+                return createData(category._id,category.categoryName,category.lastUpdated,category.isDeleted)
+        }}));
         setData(temp);
         setRows(temp.slice());
     },[categories])
