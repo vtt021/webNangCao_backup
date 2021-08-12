@@ -176,8 +176,13 @@ async function handleTextMessage(text) {
         if (text.charAt(0) == '!') {
             let res = { "text": "Đã vào handle text message" }
             let newText = text.substring(1);
-            let index = newText.indexOf(' ');
 
+            if (newText.localeCompare("cate") == 0) {
+                res = await handleGetCateMessage();
+                return res;
+            }
+
+            let index = newText.indexOf(' ');
             if (index == -1) {
                 return incorrectReturn;
             }
@@ -190,9 +195,6 @@ async function handleTextMessage(text) {
             }
             else if (command.localeCompare("search") == 0) {
                 res = await handleSearchMessage(data);
-            }
-            else if (command.localeCompare("cate") == 0) {
-                res = await handleGetCateMessage(data);
             }
             else if (command.localeCompare("detail") == 0) {
                 res = await handleDetailMessage(data);
@@ -216,13 +218,12 @@ async function handleTextMessage(text) {
 }
 
 function handleHelpMessage(data) {
-    let res = {
-        "text": "Đã vào help message, data = " + data
-    };
+    let res = incorrectReturn;
+    console.log(data);
     switch (data) {
-        case "":
+        case "all":
             res = {
-                "text": "Các lệnh: !<tên lệnh>\n!search - Tìm kiếm\n!cate - Xem khóa học theo lĩnh vực\n!detail: Chi tiết khóa học\n!help <tên lệnh> - Hướng dẫn chi tiết lệnh"
+                "text": "Các lệnh: !<tên lệnh>\n!search - Tìm kiếm\n!cate - Xem khóa học theo lĩnh vực\n!help <tên lệnh> - Hướng dẫn chi tiết lệnh"
             }
             break;
         case "search":
@@ -232,14 +233,14 @@ function handleHelpMessage(data) {
             break;
         case "cate":
             res = {
-                "text": "!cate <Tên lĩnh vực>"
+                "text": "!cate"
             }
             break;
-        case "detail":
-            res = {
-                "text": "!detail <Mã khóa học>"
-            }
-            break;
+        // case "detail":
+        //     res = {
+        //         "text": "!detail <Mã khóa học>"
+        //     }
+        //     break;
     }
     return res;
 }
@@ -265,13 +266,13 @@ async function handleSearchMessage(data) {
                     "image_url": LIVE_URL + '/files/send?fileName=' + d.imageThumbnail,
                     "default_action": {
                         "type": "web_url",
-                        "url": "https://leetcode.com",
+                        "url": "http://localhost:3000/detail/" + d._id,
                         "webview_height_ratio": "tall",
                     },
                     "buttons": [
                         {
                             "type": "web_url",
-                            "url": "https://leetcode.com",
+                            "url": "http://localhost:3000/detail/" + d._id,
                             "title": "Đăng ký ngay!"
                         }, {
                             "type": "postback",
@@ -383,13 +384,13 @@ async function handleGetCourseByCategory(data) {
                         "image_url": LIVE_URL + '/files/send?fileName=' + d.imageThumbnail,
                         "default_action": {
                             "type": "web_url",
-                            "url": "https://leetcode.com",
+                            "url": "http://localhost:3000/detail/" + d._id,
                             "webview_height_ratio": "tall",
                         },
                         "buttons": [
                             {
                                 "type": "web_url",
-                                "url": "https://leetcode.com",
+                                "url": "http://localhost:3000/detail/" + d._id,
                                 "title": "Đăng ký ngay!"
                             }, {
                                 "type": "postback",
@@ -426,7 +427,7 @@ async function handleGetCourseByCategory(data) {
     return finalData;
 }
 
-async function handleGetCateMessage(data) {
+async function handleGetCateMessage() {
     const finalData = await axios.get(LIVE_URL + '/categories')
         .then(res => {
             if (res.status === 200) {
