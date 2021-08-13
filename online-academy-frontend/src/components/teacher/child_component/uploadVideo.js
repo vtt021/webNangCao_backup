@@ -95,7 +95,7 @@ export default function UploadVideo() {
     };
     return (
         <div className={classes.root}>
-            <AlertDialog open={open} handleClose={handleClose} />
+            <AlertDialog open={open} handleClose={handleClose} value='Không thể xóa' />
             <Grid container spacing={2} alignItems='flex-start' justify='center'>
                 <Grid container item xs={12} justify='center' spacing={2}>
                     <Grid item>
@@ -115,7 +115,7 @@ export default function UploadVideo() {
                 </Grid>
                 <Grid container item xs={12} justify='center' spacing={2}>
                     <Grid item>
-                        <Button disabled={activeStep === 0} variant="contained" color="primary" onClick={handleRemove}>
+                        <Button variant="contained" color="primary" onClick={handleRemove}>
                             Xóa
                         </Button>
                     </Grid>
