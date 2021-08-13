@@ -133,9 +133,14 @@ export default function UploadVideo() {
             </Stepper>
             <div>
                 <div>
+                    {
+                        <Typography  variant='h5' style={{ paddingBottom: '1%'}}>
+                            {steps[activeStep]}
+                        </Typography>
+                    }
                     {completed[activeStep] === 1 && (
                         <Link align='left'
-                            rel="noopener noreferrer" target="_blank" variant='h4'
+                            rel="noopener noreferrer" target="_blank" variant='h5'
                             href={'http://localhost:3001/api/files/download?fileName=' + oldVideo}
                         >
                             Video hiện tại
