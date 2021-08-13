@@ -19,7 +19,7 @@ export default function AlertDialog(props) {
         <DialogTitle id="alert-dialog-title">{"Xóa không thành công"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Hãy xóa chương cuối cùng trước
+            {props.value}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

@@ -157,7 +157,7 @@ export default function UploadVideo(props) {
     };
     return (
         <div className={classes.root}>
-            <AlertDialog open={open} handleClose={handleClose} />
+            <AlertDialog open={open} handleClose={handleClose} value='Không thể xóa' />
             <Grid container spacing={2} alignItems='flex-start' justify='center'>
                 <Grid container item xs={12} justify='center' spacing={2}>
                     <Grid item>
@@ -177,7 +177,7 @@ export default function UploadVideo(props) {
                 </Grid>
                 <Grid container item xs={12} justify='center' spacing={2}>
                     <Grid item>
-                        <Button disabled={activeStep === 0} variant="contained" color="primary" onClick={handleRemove}>
+                        <Button variant="contained" color="primary" onClick={handleRemove}>
                             Xóa
                         </Button>
                     </Grid>
@@ -195,9 +195,14 @@ export default function UploadVideo(props) {
             </Stepper>
             <div>
                 <div>
+                    {
+                        <Typography  variant='h5' style={{ paddingBottom: '1%'}}>
+                            {steps[activeStep]}
+                        </Typography>
+                    }
                     {completed[activeStep] === 1 && (
                         <Link align='left'
-                            rel="noopener noreferrer" target="_blank" variant='h4'
+                            rel="noopener noreferrer" target="_blank" variant='h5'
                             href={'http://localhost:3001/api/files/download?fileName=' + oldVideo}
                         >
                             Video hiện tại
