@@ -12,7 +12,14 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 export default function VideoContent(props) {
     const classes = useStyles();
-    const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm();
+    const { register, handleSubmit, watch, setValue, getValues, formState: { errors } } = useForm();
+    // const [title, setTitle] = useState("asd")
+
+    const ref = React.useRef();
+
+    const handleResetVid = () => {
+        ref.current.value = ""
+    }
 
     const handleUploadClick = async event => {
         console.log();
@@ -30,10 +37,107 @@ export default function VideoContent(props) {
         console.log('xong r ne')
     };
 
+    // useEffect(() => {
+    //     // console.log("content", props.content)
+    //     console.log("abcd")
+    //     // setTitle(props.content == null ? "abc": props.content.content)
+    //     if (props.content != null) {
+    //         // setTitle(props.content.content)
+    //         console.log("Here")
+    //         console.log(getValues())
+    //         setValue("content" + props.content._id, Math.random())
+    //     }
+    // }, [props.content])
+
+    // useEffect(() => {
+    //     console.log("Title changed")
+    // }, [])
+
+    useEffect(() => {
+        if (props.content != null) {
+            handleResetVid();
+        }
+    }, [props.content])
+
 
     useEffect(async () => {
 
+        // console.log("content", props.content)
+
     }, []);
+
+  
+
+    const handleUI = () => {
+        if (props.content == null) {
+            return;
+        }
+        return (
+            <Grid container spacing={2} justify='flex-start'>
+                {/* Tên bài giảng    */}
+                <Grid item xs={12}>
+                    <TextField
+                        name="content"
+                        variant="filled"
+                        required
+                        fullWidth
+                        value={props.title}
+                        // defaultValue={props.title}
+                        id={"content" + props.content._id}
+                        onChangeCapture={e => {
+                            props.setTitle(e.target.value)
+                        }}
+                        label="Tên bài giảng"
+                        autoFocus
+                        {...register("content", { required: true })}
+                    />
+                </Grid>
+                {errors.content && <span className='errors'>*Chưa nhập tên bài giảng</span>}
+
+                {/* File video */}
+
+                <Grid item xs={12}>
+                    <Typography variant='h5' align='left'>
+                        Tải lên video
+                    </Typography>
+                </Grid>
+
+                <Grid item xs={12} justify='flex-start'>
+                    <input
+                        name="video"
+                        ref={ref}
+                        id={'videoInput'}
+                        accept="video/mp4,video/x-m4v,video/*"
+                        type="file"
+                        onChange={handleUploadClick}
+                    />
+                </Grid>
+                <Grid container item xs={12} alignItems='center'>
+                    <Typography variant='h5' align='left' className={classes.textAlign}>
+                        Cho phép xem trước:
+                    </Typography>
+                    <input
+                        name="isPreview"
+                        type='checkbox'
+                        // value={props.isPreview}
+                        checked={props.isPreview}
+                        id={"isPreview" + props.id}
+                        className={classes.Checkbox}
+                        // onChange={e => {
+                        //     console.log(e.target.value)
+                        // }}
+                        onChangeCapture={e => {
+                            props.setIsPreview(!props.isPreview)
+                            // console.log(e.target.value)
+                        }}
+                        {...register("isPreview", {})}
+                    />
+
+                </Grid>
+            </Grid>
+
+        )
+    }
 
     return (
         <div className={classes.paper}>
@@ -41,56 +145,9 @@ export default function VideoContent(props) {
                 <Grid item xs={2} />
                 <Grid item xs={8} justify='flex-start'>
                     <form className={classes.form} noValidate onSubmit={handleSubmit(props.onSubmit)}>
-                        <Grid container spacing={2} justify='flex-start'>
-                            {/* Tên bài giảng    */}
-                            <Grid item xs={12}>
-                                <TextField
-                                    name="content"
-                                    variant="filled"
-                                    required
-                                    fullWidth
-                                    value={props.content}
-                                    id={"content" + props.id}
-                                    label="Tên bài giảng"
-                                    autoFocus
-                                    {...register("content", { required: true })}
-                                />
-                            </Grid>
-                            {errors.content && <span className='errors'>*Chưa nhập tên bài giảng</span>}
-
-                            {/* File video */}
-
-                            <Grid item xs={12}>
-                                <Typography variant='h5' align='left'>
-                                    Tải lên video
-                                </Typography>
-                            </Grid>
-
-                            <Grid item xs={12} justify='flex-start'>
-                                <input
-                                    name="video"
-                                    id={'video' + props.id}
-                                    accept="video/mp4,video/x-m4v,video/*"
-                                    type="file"
-                                    onChange={handleUploadClick}
-                                />
-                            </Grid>
-                            <Grid container item xs={12} alignItems='center'>
-                                <Typography variant='h5' align='left' className={classes.textAlign}>
-                                    Cho phép xem trước:
-                                </Typography>
-                                <input
-                                    name="isPreview"
-                                    type='checkbox'
-                                    value={props.isPreview}
-                                    id={"isPreview" + props.id}
-                                    className={classes.Checkbox}
-                                    {...register("isPreview", {})}
-                                />
-
-                            </Grid>
-                        </Grid>
-
+                        {
+                            handleUI()
+                        }
                         <Grid container justify="center">
                             <Grid item>
                                 <Button

@@ -12,18 +12,32 @@ import { Link } from '@material-ui/core';
 import StepButton from '@material-ui/core/StepButton';
 
 import PlayerControl from '../../detail_page/component/videoPlayer';
-export default function UploadVideo() {
+import axios from 'axios';
+export default function UploadVideo(props) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
+    const courseId = props.match.params.id
+
+    const [courseData, setCourseData] = useState([]);
 
     const [activeStep, setActiveStep] = useState(0);
-    const [steps, setsteps] = useState(['Chương 1', 'Chương 2']); // Tên các chương đã có sẵn, gọi từ Database
+    const [steps, setSteps] = useState(['Chương 1', 'Chương 2']); // Tên các chương đã có sẵn, gọi từ Database
     const [completed, setCompleted] = React.useState([1, 0]); // Kiểm tra có video cũ chưa
 
-    const [oldVideo, setOldVideo] = useState('1_1.mp4');
+    const [oldVideo, setOldVideo] = useState('');
     const [videoFile, setVideoFile] = useState(); // input của video để lưu
-    const [content, setContent] = useState(); // input tên video
+    const [content, setContent] = useState(); // Thông tin 1 video
     const [isPreview, setIsPreview] = useState(false); // input checkbox 
+
+    const [title, setTitle] = useState("")
+
+    const defaultData = {
+        "video": "",
+        "isPreview": "false",
+        "_id": "",
+        "courseId": "",
+        "content": ""
+    }
 
     const handleSave = () => {
         //Lưu bài giảng đang nhập (gọi trong hàm onSubmit)
@@ -36,16 +50,63 @@ export default function UploadVideo() {
         else {
             setCompleted(array => [1, ...array])
         }
-
     };
+
     useEffect(() => {
         //Nếu được thì reset form ở đây sẽ logic hơn :v
+        console.log("abc")
+        setContent(courseData[activeStep] || defaultData)
+        setTitle(courseData[activeStep] != null ? courseData[activeStep].content : defaultData.content)
+        setOldVideo(courseData[activeStep] != null ? courseData[activeStep].video : defaultData.video)
+        console.log(courseData[activeStep] != null ? courseData[activeStep].isPreview : "đcm")
+        setIsPreview(courseData[activeStep] != null ? courseData[activeStep].isPreview.localeCompare("true") === 0 : defaultData.isPreview)
+        setVideoFile()
+
     }, [activeStep]);
+
+    useEffect(() => {
+        const initDetailData = async () => {
+            await axios.get('http://localhost:3001/api/course-contents/course?courseId=60f1a3d20b04b858a41f1e13')
+            // await axios.get('http://localhost:3001/api/course-contents/course?courseId=' + courseId)
+            .then(res => {
+                let data = res.data;
+                console.log(data);
+
+                if (data.length === 0) {
+                    setSteps(['Chương 1']);
+                    setCompleted([0]);
+                    setContent(defaultData)
+                }
+                else {
+                    let chapters = data.map((d, i) => 'Chapter ' + (i + 1));
+                    setSteps(chapters);
+
+                    let completeStatus = data.map((d, i) => d.video != null ? 1 : 0);
+                    setCompleted(completeStatus)
+                    setContent(res.data[0])
+                    setTitle(res.data[0].content)
+                    setIsPreview(res.data[0].isPreview.localeCompare("true") === 0)
+                }
+                // setContent()
+
+                setCourseData(res.data)
+            }).catch(e => {
+                console.log(e)
+            })
+        }
+
+
+        const init = async() => {
+            await initDetailData()
+        }
+
+        init();
+    }, [])
 
     const handleNext = () => {
         //chuyển đến bài giảng tiếp theo or tạo thêm bài giảng mới
         if (activeStep === steps.length - 1) {
-            setsteps(prevArray => [...prevArray, 'Chương ' + (steps.length + 1)]);
+            setSteps(prevArray => [...prevArray, 'Chương ' + (steps.length + 1)]);
             setCompleted(prevArray => [...prevArray, 0])
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
 
@@ -82,7 +143,7 @@ export default function UploadVideo() {
             // activeStep === steps.length - 1
             ) {
             setActiveStep((prevActiveStep) => prevActiveStep - 1);
-            setsteps(steps.filter((value, i) => i !== activeStep));
+            setSteps(steps.filter((value, i) => i !== activeStep));
         }
         else {
             console.log('Không thể xóa')
@@ -92,6 +153,7 @@ export default function UploadVideo() {
     };
     const handleStep = (step) => () => {
         setActiveStep(step);
+        // setTitle(courseData[step].content)
     };
     return (
         <div className={classes.root}>
@@ -108,7 +170,7 @@ export default function UploadVideo() {
                         </Button>
                     </Grid>
                     <Grid item >
-                        <Button variant="contained" color="primary" onClick={handleNext} size='large'>
+                        <Button variant="contained" color="primary" onClick={handleNext} size='large' disabled={activeStep === courseData.length}>
                             {activeStep === steps.length - 1 ? 'Thêm' : 'Sau'}
                         </Button>
                     </Grid>
@@ -144,7 +206,7 @@ export default function UploadVideo() {
                     }
                     <VideoContent id={activeStep} completed={completed[activeStep]}
                         onSubmit={onSubmit} setSelectedFile={setVideoFile}
-                        content={content} isPreview={isPreview}
+                        content={content} isPreview={isPreview} setIsPreview={setIsPreview} title={title} setTitle={setTitle} 
                     />
                 </div>
             </div>

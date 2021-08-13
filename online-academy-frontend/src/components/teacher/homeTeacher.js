@@ -123,11 +123,11 @@ export default function HomeTeacher() {
             }
         },
     ];
-    return (
-        <div>
-            <HeaderTeacher />
-            {console.log(courseList)}
-            <Grid item xs={12} style={{ height: 400 }} >
+
+    const handleGrid = () => {
+        if (courseList.length !== 0) {
+            return(
+                <Grid item xs={12} style={{ height: 400 }} >
                 <DataGrid
                     rows={courseList}
                     columns={columns}
@@ -138,6 +138,16 @@ export default function HomeTeacher() {
                     }
                 />
             </Grid>
+            )
+        }
+    }
+    return (
+        <div>
+            <HeaderTeacher />
+            {console.log(courseList)}
+            {
+                handleGrid()
+            }
             <div style={{ display: "flex" }}>
                 <Button onClick={handleUpCourse} variant="contained" color="primary"
                     style={{ marginLeft: "auto", marginTop: '2%' }}
