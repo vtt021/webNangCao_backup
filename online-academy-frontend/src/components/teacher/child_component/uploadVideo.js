@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -9,6 +9,8 @@ import Grid from '@material-ui/core/Grid';
 import AlertDialog from '../common/alert';
 import VideoContent from './videoContent';
 import { Link } from '@material-ui/core';
+import StepButton from '@material-ui/core/StepButton';
+
 import PlayerControl from '../../detail_page/component/videoPlayer';
 export default function UploadVideo() {
     const classes = useStyles();
@@ -36,15 +38,17 @@ export default function UploadVideo() {
         }
 
     };
+    useEffect(() => {
+        //Nếu được thì reset form ở đây sẽ logic hơn :v
+    }, [activeStep]);
 
     const handleNext = () => {
         //chuyển đến bài giảng tiếp theo or tạo thêm bài giảng mới
-        //Nếu được thì reset form ở đây sẽ logic hơn :v
         if (activeStep === steps.length - 1) {
             setsteps(prevArray => [...prevArray, 'Chương ' + (steps.length + 1)]);
             setCompleted(prevArray => [...prevArray, 0])
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
-            
+
         }
         else {
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -74,17 +78,21 @@ export default function UploadVideo() {
     };
     const handleRemove = () => {
 
-        if (activeStep === steps.length - 1) {
+        if (    steps.length >1
+            // activeStep === steps.length - 1
+            ) {
             setActiveStep((prevActiveStep) => prevActiveStep - 1);
             setsteps(steps.filter((value, i) => i !== activeStep));
         }
         else {
-            console.log('khong phai chuong cuoi')
+            console.log('Không thể xóa')
             handleClickOpen()
 
         }
     };
-
+    const handleStep = (step) => () => {
+        setActiveStep(step);
+    };
     return (
         <div className={classes.root}>
             <AlertDialog open={open} handleClose={handleClose} />
@@ -114,18 +122,25 @@ export default function UploadVideo() {
                 </Grid>
             </Grid>
 
-            <Stepper activeStep={activeStep} alternativeLabel>
+            <Stepper activeStep={activeStep} alternativeLabel nonLinear >
                 {steps.map((label, index) => (
                     <Step key={label} completed={completed[index]}>
-                        <StepLabel>{label}</StepLabel>
+                        <StepButton onClick={handleStep(index)} completed={completed[index]}>
+                            {'Chương ' + (index +1)}
+                        </StepButton>
                     </Step>
                 ))}
             </Stepper>
             <div>
                 <div>
+                    {
+                        <Typography  variant='h5' style={{ paddingBottom: '1%'}}>
+                            {steps[activeStep]}
+                        </Typography>
+                    }
                     {completed[activeStep] === 1 && (
                         <Link align='left'
-                            rel="noopener noreferrer" target="_blank" variant='h4'
+                            rel="noopener noreferrer" target="_blank" variant='h5'
                             href={'http://localhost:3001/api/files/download?fileName=' + oldVideo}
                         >
                             Video hiện tại
