@@ -1,40 +1,56 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import axios from 'axios';
+import bcrypt from 'bcryptjs';
 import { useForm } from "react-hook-form";
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
+import Refreshtoken from "../../refreshToken";
 
+const saltRounds = 10;
 
 export default function UpdatePass() {
     const classes = useStyles();
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
 
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem("auth")))
+
+    useEffect(() => {
+        setUser(JSON.parse(localStorage.getItem("auth")))
+    }, [localStorage.getItem("auth")])
+
     const onSubmit = async (data) => {
+        await Refreshtoken();
+        console.log(data);
+
+        // data.currentPass = bcrypt.hashSync(data.newPass, saltRounds);
+        // data.newPass = bcrypt.hashSync(data.newPass, saltRounds);
+        // data.confirmPass = bcrypt.hashSync(data.confirmPass, saltRounds);
+        // console.log(data.currentPass);
+        // console.log(data.newPass);
+        // console.log(data.confirmPass);
         if (watch("verifyPassword") != watch("newPassword")) {
             //Không làm gì cả
-            console.log('Mật khẩu nhập chưa đúng')
-        }
-        else {
-            console.log(data)
+            console.log('Xác nhận mật khẩu không khớp')
+            return;
         }
 
-        // await axios.post("http://localhost:3001/api/users", {
-        //     password: data.password,
-        //     username: data.username
-        // }).then(res => {
-        //     window.location.replace("/verify-otp/" + data.email)
+        let accessToken = JSON.parse(localStorage.getItem("auth")).accessToken;
+        console.log(accessToken);
 
-        // })
-        //     .catch(error => console.log(error));
+        //TODO: Gọi popup đổi pass thành công & thất bại 
+
+        await axios.put("http://localhost:3001/api/users/password", data, {
+            headers: {
+                'x-access-token': user.accessToken
+            }
+        }).then(res => {
+
+
+        }).catch(error => console.log(error));
     }
 
     return (
@@ -52,25 +68,25 @@ export default function UpdatePass() {
                                 variant="filled"
                                 required
                                 fullWidth
-                                name="password"
+                                name="currentPass"
                                 label="Mật khẩu cũ"
                                 type="password"
-                                id="password"
-                                {...register("password", { required: true, minLength: 1 })}
+                                id="currentPass"
+                                {...register("currentPass", { required: true, minLength: 1 })}
                             />
                         </Grid>
-                        {errors.password && <span className='errors'>*Chưa nhập mật khẩu</span>}
+                        {errors.currentPass && <span className='errors'>*Chưa nhập mật khẩu</span>}
 
                         <Grid item xs={12}>
                             <TextField
                                 variant="filled"
                                 required
                                 fullWidth
-                                name="newPassword"
+                                name="newPass"
                                 label="Mật khẩu mới"
                                 type="password"
-                                id="newPassword"
-                                {...register("newPassword", { required: true, minLength: 6 })}
+                                id="newPass"
+                                {...register("newPass", { required: true, minLength: 6 })}
 
                             />
                         </Grid>
@@ -80,15 +96,15 @@ export default function UpdatePass() {
                                 variant="filled"
                                 required
                                 fullWidth
-                                name="verifyPassword"
+                                name="confirmPass"
                                 label="Xác nhận mật khẩu mới"
                                 type="password"
-                                id="verifyPassword"
-                                {...register("verifyPassword", { required: true})}
+                                id="confirmPass"
+                                {...register("confirmPass", { required: true })}
 
                             />
                         </Grid>
-                        {(errors.verifyPassword || watch("verifyPassword") != watch("newPassword")) && <span className='errors'>*Mật khẩu không trùng khớp</span>}
+                        {(errors.confirmPass || watch("confirmPass") != watch("newPass")) && <span className='errors'>*Mật khẩu không trùng khớp</span>}
                     </Grid>
                     <Button
                         type="submit"

@@ -140,6 +140,17 @@ module.exports = {
         await newUser.save();
     },
 
+    async addTeacher(user) {
+        const newUser = new User;
+        newUser.username = user.username;
+        newUser.password = user.password;
+        newUser.email = user.email;
+        newUser.favorite = [];
+        newUser.role = 1;
+        newUser.isUnlocked = true;
+        await newUser.save();
+    },
+
     async update(id, user) {
         delete user.password;
         delete user.id;

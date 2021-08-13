@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React,{useState} from "react";
 import axios from 'axios';
 import { useForm } from "react-hook-form";
 import Avatar from '@material-ui/core/Avatar';
@@ -12,63 +12,44 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import Refreshtoken from '../../../refreshToken';
+import './CreateTeacher.css';
+import AlertDialog from '../common/Alert';
 
-
-export default function UpdateInfo() {
+export default function CreateTeacher() {
     const classes = useStyles();
-    const inputRef = React.useRef();
-    const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm();
-    //Gọi API lấy tên với email của tài khoản nha
-    const [user, setUser] = useState(JSON.parse(localStorage.getItem("auth")))
-    const [userData, setUserData] = useState(null);
-
-    useEffect(() => {
-        setUser(JSON.parse(localStorage.getItem("auth")))
-    }, [localStorage.getItem("auth")])
-
-    const onSubmit = async (data) => {
-        console.log(data)
-        await axios.put('http://localhost:3001/api/users', {
-            password: data.password,
-            email: data.email,
-            username: data.username
-        }, {
-            headers: {
-                'x-access-token': user.accessToken
+    const { register, handleSubmit, formState: { errors } } = useForm();
+    const [auth,setAuth] = useState(JSON.parse(localStorage.getItem("auth")))
+    const [open, setOpen] = useState(false);
+    const onSubmit = async (value) => {
+            Refreshtoken()
+            const body = {
+                email: value.email,
+                password: "123456",
+                username: value.username
             }
-        }).then(res => {
-            console.log("Success")
-        }).catch(e => {
-            console.log(e);
-        });
+            await axios.post("http://localhost:3001/api/users/teacher-acc", body,{
+                headers: {
+                    'x-access-token': auth.accessToken
+                },
+               
+            }).then(res => {
+                window.location.replace("/admin/users")
+
+            })
+                .catch(error => setOpen(true));
     }
 
-    useEffect(() => {
-        const init = async () => {
-            await axios.get('http://localhost:3001/api/users/id?id=' + user.id)
-                .then(res => {
-                    let data = res.data;
-                    console.log(data);
-                    setUserData(data);
-
-
-
-
-                }).catch(e => {
-                    console.log(e);
-                })
-        }
-        init();
-    }, [])
-
-    const handleUI = () => {
-        if (userData === null) {
-            return;
-        }
-        return (
+    return (
+        <Container component="main" maxWidth="xs">
+            <CssBaseline />
+            <AlertDialog close={()=>{setOpen(false)}} isOpened={open} value={"Email này đã tồn tại"}/>
             <div className={classes.paper}>
+                <Avatar className={classes.avatar}>
+                    <LockOutlinedIcon />
+                </Avatar>
                 <Typography component="h1" variant="h5">
-                    Cập nhật thông tin
+                    Tạo tài khoản giáo viên
                 </Typography>
                 <form className={classes.form} noValidate onSubmit={handleSubmit(onSubmit)}>
                     <Grid container spacing={2}>
@@ -76,7 +57,6 @@ export default function UpdateInfo() {
                         {/* Tên đăng nhập */}
                         <Grid item xs={12}>
                             <TextField
-                                defaultValue={userData.username}
                                 autoComplete="fname"
                                 name="username"
                                 variant="filled"
@@ -93,7 +73,6 @@ export default function UpdateInfo() {
                         {/* Email */}
                         <Grid item xs={12}>
                             <TextField
-                                defaultValue={userData.email}
                                 variant="filled"
                                 required
                                 fullWidth
@@ -102,64 +81,47 @@ export default function UpdateInfo() {
                                 name="email"
                                 autoComplete="email"
                                 type="email"
-                                onChange={(event) => setValue('email', event.target.value)}
-
                                 {...register("email", { required: true, pattern: /^\S+@\S+$/i })}
                             />
                         </Grid>
                         {errors.email && <span className='errors'>*Email chưa đúng định dạng </span>}
-                        <Grid item xs={12} >
-                            <div style={{ display: "flex" }}>
-                                <Typography variant='h6' style={{ marginRight: "auto", paddingBottom: '1%' }}>
-                                    Nhập mật khẩu để xác nhận
-                                </Typography>
-                            </div>
-
-                            <TextField
-                                variant="filled"
-                                required
-                                fullWidth
-                                name="password"
-                                label="Mật khẩu"
-                                type="password"
-                                id="password"
-                                autoComplete="current-password"
-                                {...register("password", { required: true, minLength: 1 })}
-                            />
-                        </Grid>
-                        {errors.password && <span className='errors'>*Chưa nhập mật khẩu</span>}
                     </Grid>
                     <Button
                         type="submit"
+                        fullWidth
                         variant="contained"
                         color="primary"
                         className={classes.submit}
                     >
-                        Cập nhật
+                        Đăng ký
                     </Button>
                 </form>
             </div>
-        )
-    }
-
+            <Box mt={5}>
+                <Copyright />
+            </Box>
+        </Container>
+    );
+}
+function Copyright() {
     return (
-        <div maxWidth="xs">
-            <CssBaseline />
-            {
-                handleUI()
-            }
-        </div>
+        <Typography variant="body2" color="textSecondary" align="center">
+            {'Copyright © '}
+            <Link color="inherit" href="https://material-ui.com/">
+                Your Website
+            </Link>{' '}
+            {new Date().getFullYear()}
+            {'.'}
+        </Typography>
     );
 }
 
-
 const useStyles = makeStyles((theme) => ({
     paper: {
+        marginTop: theme.spacing(8),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        paddingLeft: '5%',
-        paddingRight: '5%',
     },
     avatar: {
         margin: theme.spacing(1),

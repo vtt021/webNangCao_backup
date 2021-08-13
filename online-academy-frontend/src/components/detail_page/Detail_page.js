@@ -17,6 +17,7 @@ import { convertToRaw } from 'draft-js';
 import Refreshtoken from '../../refreshToken';
 import Rating from '@material-ui/lab/Rating';
 import { TextField, Button } from '@material-ui/core';
+import AlertDialog from '../admin/common/Alert';
 export default function DetailPage(props) {
     const classes = useStyles();
 
@@ -31,9 +32,22 @@ export default function DetailPage(props) {
     const handleChangeRatingContent = (event) => {
         setRatingContent(event.target.value);
     };
-    const handleRating = () => {
-        console.log(ratingValue)
-        console.log(ratingContent)
+    const handleRating = async () => {
+        Refreshtoken()
+        const body = {
+            courseId: id,
+            rate: ratingValue,
+            rateContent: ratingContent
+        }
+        await axios.post("http://localhost:3001/api/register-courses/rate",body,{
+                headers: {
+                    'x-access-token': user.accessToken
+                },
+            }).then(res => {
+                window.location.reload()
+
+            })
+                .catch(error => console.log(body));
     }
     /**
      * TODO: 
@@ -50,7 +64,10 @@ export default function DetailPage(props) {
     const [feedbackStatus, setFeedbackStatus] = useState(0); //0 --> Phân hệ khách hoặc chưa mua, 1 --> User, chưa đánh giá, 2 --> User, đã đánh giá
     const [isBought, setIsBought] = useState(false);    //Khóa học đã được mua
     const [isFavorite, setIsFavorite] = useState(false); //Khóa học đã được user yêu thích
-
+    const [openLike, setOpenLike] = useState(false);
+    const [openError, setOpenError] = useState(false);
+    const [openSuccess, setOpenSuccess] = useState(false);
+    const [openBuy, setOpenBuy] = useState(false);
     const [listFeedback, setListFeedback] = useState([]);   //Danh sách các feedback
 
     useEffect(() => {
@@ -75,7 +92,7 @@ export default function DetailPage(props) {
         console.log(event.target.checked); //True: Yêu thích - False: Không
         console.log(user)
         if (user == null) {
-            //TODO: Popup "Bạn cần có tài khoản để thích khóa học này"
+            setOpenLike(true)
             return;
         }
 
@@ -94,6 +111,10 @@ export default function DetailPage(props) {
     }
 
     const handleBuyCourse = async () => {
+        if(!user){
+            setOpenBuy(true)
+            return
+        }
         await Refreshtoken();
 
         await axios.post("http://localhost:3001/api/register-courses", {
@@ -103,11 +124,11 @@ export default function DetailPage(props) {
                 'x-access-token': user.accessToken
             }
         }).then(res => {
-            //TODO: Popup đăng ký khóa học thành công
+            setOpenSuccess(true)
 
             setIsBought(true);
         }).catch(e => {
-            //TODO: Popup lỗi
+            setOpenError(true)
         })
     }
 
@@ -250,6 +271,10 @@ export default function DetailPage(props) {
         if (courseDetail._id != null && courseDetail.subCategoryId != null) {
             return (
                 <div className={classes.root}>
+                    <AlertDialog close={()=>{setOpenLike(false)}} isOpened={openLike} value={"Bạn phải có tài khoản mới thể thích khóa học này"}/>
+                    <AlertDialog close={()=>{setOpenSuccess(false)}} isOpened={openSuccess} value={"Đăng ký khóa học thành công"}/>
+                    <AlertDialog close={()=>{setOpenError(false)}} isOpened={openError} value={"Đăng ký khóa học không thành công"}/>
+                    <AlertDialog close={()=>{setOpenBuy(false)}} isOpened={openBuy} value={"Bạn phải đăng nhập mới có thể mua khóa học này"}/>
                     <CourseInfo courseInfo={courseDetail} isBought={isBought} isFavorite={isFavorite}
                         handleChangeLove={handleChangeLove} handleBuyCourse={handleBuyCourse} />
                     <Grid container spacing={3} className={classes.container}>

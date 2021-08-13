@@ -21,45 +21,24 @@ import Select from '@material-ui/core/Select';
 import { FormControl, MenuItem } from '@material-ui/core';
 import { getDate } from 'date-fns';
 import { formatDateTime } from '../../../utils/helpers';
-import Deleteaction from './DeleteAction';
-import Tag from './UserStatus';
-import  Button from '@material-ui/core/Button';
 import Refreshtoken from '../../../refreshToken';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
+import Deleteaction from './DeleteAction';
 let stt = 0;
 const columns = [
     { id: 'stt', label: '#', minWidth: 10 },
-    { id: 'name', label: 'Tên', minWidth: 150 },
-    { id: 'email', label: 'email', minWidth: 70 },
-    { id: 'usersRole', label: 'Phân hệ', minWidth: 100 },
-    { id: 'last', label: 'Cập nhật lần cuối', minWidth: 150 },
-    { id: 'tag', label: 'Trạng thái', minWidth: 150,align: 'center' },
+    { id: 'name', label: 'Tên', minWidth: 200 },
+    { id: 'category', label: 'Lĩnh Vực', minWidth: 70 },
+    { id: 'teacher', label: 'Giáo viên', minWidth: 100 },
+    { id: 'price', label: 'Giá', minWidth: 100 },
     { id: 'deleted', label: '', minWidth: 50 ,align: 'center'},
 ];
 
-function createData(_id,name, email, role,isUnLock,isDelete, lastUpdated) {
+function createData(_id,name, category, teacher,isDeleted, price) {
     stt += 1;
     let id = _id;
-    let usersRole;
-    if(role===0){
-        usersRole="Học viên"
-    }else if(role === 1){
-        usersRole="Giáo viên"
-    }else{
-        usersRole="Quản trị viên"
-    }
-    let tag;
-    if (isDelete) {
-        tag = <Tag content="Đã xóa" backGroundColor="#999999" textColor="white" />
-    }else if(isUnLock){
-        tag = <Tag content="Đang hoạt động" backGroundColor="#2980b9" textColor="white" />;
-    }else{
-        tag = <Tag content="Đang chờ xác thực" backGroundColor="red" textColor="white" />;
-    }
 
-    let last = formatDateTime(new Date(lastUpdated)).toLocaleString()
-    let deleted = (<Deleteaction isDeleted={isDelete} id = {_id}/>)
-    return { stt, name, email, usersRole, last,tag ,deleted};
+    let deleted = (<Deleteaction isDeleted={isDeleted} id = {_id}/>)
+    return { stt, name, category, teacher, price,deleted};
 }
 
 const StyledTableCell = withStyles(theme => ({
@@ -155,7 +134,7 @@ TablePaginationActions.propTypes = {
     rowsPerPage: PropTypes.number.isRequired,
 };
 
-export default function AdminUser() {
+export default function AdminCourses() {
     const [auth,setAuth] = useState(JSON.parse(localStorage.getItem("auth")))
     useEffect(()=>{
         setAuth(JSON.parse(localStorage.getItem("auth")))
@@ -177,15 +156,15 @@ export default function AdminUser() {
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
-    const [users, setUser] = useState([]);
-    const getUsers = async() => {
-        await axios.get('http://localhost:3001/api/users',{
+    const [courses, setCourses] = useState([]);
+    const getCourses = async() => {
+        await axios.get('http://localhost:3001/api/courses',{
             headers:{
                 "x-access-token":auth.accessToken
             }
         })
         .then(res => {
-            setUser(res.data);
+            setCourses(res.data);
         })
     }
 
@@ -194,20 +173,20 @@ export default function AdminUser() {
         setAuth(JSON.parse(localStorage.getItem("auth")))
         
         const init = async() => {
-            await getUsers();
+            await getCourses();
         }
 
         init();
-    
+        console.log(courses)
     }, []);
     useEffect(()=>{
         stt = 0;
-        const temp = users.map((user=>{
-            return createData(user._id,user.username,user.email,user.role,user.isUnlocked,user.isDeleted,user.lastUpdated)
+        const temp = courses.map((course=>{
+            return createData(course._id,course.courseName,course.categoryName,course.teacherName,course.isDeleted,course.price)
         }));
         setData(temp);
         setRows(temp.slice());
-    },[users])
+    },[courses])
 
     const filterData = (value) => {
         if (value) {
@@ -227,16 +206,6 @@ export default function AdminUser() {
     
     return (
         <Paper className={classes.root}>
-             <Button
-        variant="contained"
-        color="primary"
-        style={{marginRight:'2%'}}
-        onClick={()=>{window.location.replace("admin/create-teacher")}}
-        className={classes.button}
-        endIcon={<AddCircleIcon/>}
-      >
-        Thêm
-      </Button>
             <TextField
                 label="Search"
                 id="outlined-size-normal"

@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 
-import { Paper, Typography, List, ListItem, ListItemAvatar, ListItemText } from '@material-ui/core';
-import { Container, } from 'react-bootstrap'
+import { Typography } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
-import { useForm } from "react-hook-form";
 import Link from '@material-ui/core/Link';
 import ImageUploadCard from '../child_component/uploadImage';
 import UpdateContent from './updateContent';
-import Footer from '../../common/footer/footer';
 import HeaderTeacher from '../child_component/headerTeacher';
+import Notification from '../common/Notification';
 
 export default function UpdateCourse(props) {
     const classes = useStyles();
 
+    const [isOpened, setOpen] = useState(false);
+
     const id = props.match.params.id
-    const [selectedFile, setSelectedFile] = useState(null); //Nhớ set cái hình cũ ở đây luôn nha
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem("auth")))
+
     const [courseInfo, setCourseInfo] = useState(null); //gọi API để lấy thông tin cũ của khóa học
     const [courseImage, setCourseImage] = useState(null);
     const [thumbnailImage, setThumbnailImage] = useState(null);
@@ -27,6 +27,26 @@ export default function UpdateCourse(props) {
 
     const [listCategories, setListCategories] = useState([{ id: 1, categoryName: 'Tất cả lĩnh vực' }])
     const [listSubCategory, setListSub] = useState([{ id: 1, categoryName: 'Tất cả lĩnh vực phụ' }])
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+    const handleOpen = () => {
+        setOpen(true);
+    };
+
+    const dataURLtoFile = (dataurl, filename) => {
+        const arr = dataurl.split(',')
+        const mime = arr[0].match(/:(.*?);/)[1]
+        const bstr = atob(arr[1])
+        let n = bstr.length
+        const u8arr = new Uint8Array(n)
+        while (n) {
+            u8arr[n - 1] = bstr.charCodeAt(n - 1)
+            n -= 1 // to make eslint happy
+        }
+        return new File([u8arr], filename, { type: mime })
+    }
 
     const initData = async () => {
         let info = await axios.get('http://localhost:3001/api/courses/id?id=' + id)
@@ -64,17 +84,6 @@ export default function UpdateCourse(props) {
             .catch(error => console.log(error));
     }
 
-    const loadImage = async (filename) => {
-        let data = axios.get(`http://localhost:3001/api/files/send?fileName=${filename}`)
-            .then(res => {
-                let data = res.data;
-                let buff = btoa(unescape(encodeURIComponent(data)))
-
-                console.log(buff);
-                setCourseImage(buff);
-            })
-    }
-
     useEffect(() => {
         // const init = async () => {
 
@@ -106,68 +115,147 @@ export default function UpdateCourse(props) {
         init();
     }, [])
 
-    const onSubmit = data => {
-        console.log(data) //Dữ liệu khóa học người dùng nhập vào
-        console.log(courseImage)
+    const onSubmit = async data => {
+        console.log(data)
+
+        if (courseImage !== null) {
+            let formData = new FormData();
+            console.log(courseImage.fileName)
+            let a = dataURLtoFile(courseImage[0], courseImageName);
+
+            // console.log(selectedFile[0]);
+            console.log(courseImageName);
+            formData.append("file", a, courseImageName)
+            console.log(courseInfo)
+            formData.append("courseId", id);
+
+
+            // console.log(selectedFile)
+
+            await axios.post('http://localhost:3001/api/courses/course-image', formData, {
+                headers: {
+                    'x-access-token': user.accessToken,
+                    'Content-Type': `multipart/form-data; boundary=${formData._boundary}`
+                }
+            }).then(res => {
+                console.log("Upload success!")
+                return true;
+            }).catch(e => {
+                console.log(e)
+                return false;
+            })
+        }
+
+        if (thumbnailImage != null) {
+            let thumbnailFormData = new FormData();
+            console.log(thumbnailImage.fileName)
+            let a = dataURLtoFile(thumbnailImage[0], thumbnailImageName);
+
+            // console.log(selectedFile[0]);
+            console.log(thumbnailImageName);
+            thumbnailFormData.append("file", a, thumbnailImageName)
+            thumbnailFormData.append("courseId", id);
+
+
+            await axios.post('http://localhost:3001/api/courses/thumbnail-image', thumbnailFormData, {
+                headers: {
+                    'x-access-token': user.accessToken,
+                    'Content-Type': `multipart/form-data; boundary=${thumbnailFormData._boundary}`
+                }
+            }).then(res => {
+                setOpen(true)
+                return true;
+            }).catch(e => {
+                console.log(e)
+                return false;
+            })
+        }
+
+        await axios.put('http://localhost:3001/api/courses', {
+            courseData: data,
+            courseId: id
+        }, {
+            headers: {
+                'x-access-token': user.accessToken
+            }
+        }).then(res => {
+            handleOpen()
+            
+        }).catch(e => {
+            console.log(e);
+        })
+    }
+
+    const handleUI = () => {
+        if (courseInfo != null) {
+            return (
+                <Grid container spacing={3} className={classes.container}>
+                    <Grid item xs={12}>
+                        <h2>
+                            Cập nhật thông tin khóa học
+                        </h2>
+                    </Grid>
+                    {/* ảnh cố định*/}
+                    <Grid item xs={2} />
+                    <Grid item xs={4}>
+                        <Typography variant='h5' align='left'>
+                            Ảnh bìa hiện tại
+                        </Typography>
+                        <img src={'http://localhost:3001/api/files/send?fileName=' + courseInfo.imageCourse}
+                            alt="Ảnh bìa" className={classes.photo}
+                        />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <Typography variant='h5' align='left'>
+                            Ảnh minh họa hiện tại
+                        </Typography>
+                        <img src={'http://localhost:3001/api/files/send?fileName=' + courseInfo.imageThumbnail}
+                            alt="Ảnh bìa" className={classes.photo}
+                        />
+                    </Grid>
+                    <Grid item xs={2} />
+
+                    {/* Load ảnh */}
+                    <Grid item xs={2} />
+                    <Grid item xs={4}>
+                        <Typography variant='h5' align='left'>
+                            Ảnh bìa mới
+                        </Typography>
+                        <ImageUploadCard id='1' selectedFile={courseImage} setSelectedFile={setCourseImage} setFileName={setCourseImageName} />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <Typography variant='h5' align='left'>
+                            Ảnh minh họa mới
+                        </Typography>
+                        <ImageUploadCard id='2' selectedFile={thumbnailImage} setSelectedFile={setThumbnailImage} setFileName={setThumbnailImageName} />
+                    </Grid>
+                    <Grid item xs={2} />
+
+
+                    {/* Nội dung */}
+                    <Grid item xs={2} />
+                    <Grid item xs={8}>
+                        <UpdateContent onSubmit={onSubmit} courseInfo={courseInfo}
+                            listCategories={listCategories} listSubCategory={listSubCategory}
+                            setListCategories={setListCategories} setListSub={setListSub} />
+                    </Grid>
+                    <Grid item xs={2} />
+                </Grid>
+            )
+        }
+        else {
+            return;
+        }
     }
 
     return (
         <div fluid>
-
             <HeaderTeacher />
-            <Grid container spacing={3} className={classes.container}>
-                <Grid item xs={12}>
-                    <h2>
-                        Cập nhật thông tin khóa học
-                    </h2>
-                </Grid>
-                {/* ảnh cố định*/}
-                <Grid item xs={2} />
-                <Grid item xs={4}>
-                    <Typography variant='h5' align='left'>
-                        Ảnh bìa cũ:
-                    </Typography>
-                    <img src='http://localhost:3001/api/files/send?fileName=course3.png'
-                        alt="Ảnh bìa" className={classes.photo}
-                    />
-                </Grid>
-                <Grid item xs={4}>
-                    <Typography variant='h5' align='left'>
-                        Ảnh minh họa cũ:
-                    </Typography>
-                    <img src='http://localhost:3001/api/files/send?fileName=course3.png'
-                        alt="Ảnh bìa" className={classes.photo}
-                    />
-                </Grid>
-                <Grid item xs={2} />
-
-                {/* Load ảnh */}
-                <Grid item xs={2} />
-                <Grid item xs={4}>
-                    <Typography variant='h5' align='left'>
-                        Ảnh bìa mới:
-                    </Typography>
-                    <ImageUploadCard id='1' selectedFile={courseImage} setSelectedFile={setCourseImage} setFileName={setCourseImageName} />
-                </Grid>
-                <Grid item xs={4}>
-                    <Typography variant='h5' align='left'>
-                        Ảnh minh họa mới:
-                    </Typography>
-                    <ImageUploadCard id='2' selectedFile={thumbnailImage} setSelectedFile={setThumbnailImage} setFileName={setThumbnailImageName} />
-                </Grid>
-                <Grid item xs={2} />
-
-
-                {/* Nội dung */}
-                <Grid item xs={2} />
-                <Grid item xs={8}>
-                    <UpdateContent onSubmit={onSubmit} courseInfo={courseInfo}
-                        listCategories={listCategories} listSubCategory={listSubCategory}
-                        setListCategories={setListCategories} setListSub={setListSub} />
-                </Grid>
-                <Grid item xs={2} />
-            </Grid>
-            <Footer />
+            <Notification close={()=>{setOpen(false)}} isOpened={isOpened} value={"Cập nhật thành công"}/>
+            {
+                handleUI()
+            }
+            {/* <Footer /> */}
         </div>
     )
 }

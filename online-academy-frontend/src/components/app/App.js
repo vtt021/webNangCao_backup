@@ -18,6 +18,9 @@ import UploadCourse from '../teacher/uploadCourse';
 import UploadVideo from '../teacher/child_component/uploadVideo';
 import UpdateContent from '../teacher/update/updateCourse';
 import PersonalManagement from '../student/personalManagement';
+import AdminSubCategory from '../admin/sub-category/AdminSubCategory';
+import AdminCourses from '../admin/courses/AdminCourses';
+import CreateTeacher from '../admin/user/UpdateAction';
 // import css
 
 function App() {
@@ -25,9 +28,13 @@ function App() {
         <Router>
             <div className="App">
                 <Route exact path="/" component={Home} />
+
                 <Route exact path="/admin" component={AdminHome}/>
                 <Route exact path="/admin/categories" component={AdminCategory}/>
+                <Route exact path="/admin/sub-categories" component={AdminSubCategory}/>
                 <Route exact path="/admin/users" component={AdminUser}/>
+                <Route exact path="/admin/courses" component={AdminCourses}/>
+                <Route exact path="/admin/create-teacher" component={CreateTeacher}/>
                 <Route exact path="/teacher" component={HomeTeacher}/>
                 <Route exact path="/teacher/updateCourse/:id?" component={UpdateContent}/>
 

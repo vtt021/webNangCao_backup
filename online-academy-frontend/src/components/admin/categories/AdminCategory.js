@@ -18,26 +18,40 @@ import LastPageIcon from '@material-ui/icons/LastPage';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
-import { FormControl, MenuItem } from '@material-ui/core';
+import { Button, FormControl, MenuItem } from '@material-ui/core';
 import { getDate } from 'date-fns';
 import Refreshtoken from '../../../refreshToken';
 import CategoryAction from './CategoryAction';
 import { formatDateTime } from '../../../utils/helpers';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Tag from '../user/UserStatus';
 
 let stt = 0;
 const columns = [
     { id: 'stt', label: '#', minWidth: 10 },
     { id: 'name', label: 'Tên', minWidth: 100 },
     { id: 'last', label: 'Cập nhật lần cuối', minWidth: 100 },
-    { id: 'actions', label: 'Hành động',align:'center', minWidth: 300 },
+    { id: 'tag', label: 'Trạng thái', minWidth: 100 ,align: 'center'},
+    { id: 'actions', label: 'Hành động',align:'center', minWidth: 300,align: 'center' },
 
 ];
 
-function createData(id,name, lastUpdated) {
+function createData(id,name, lastUpdated,isDeleted) {
     stt += 1;
     var last = formatDateTime(new Date(lastUpdated)).toLocaleString()
-    let actions = (<CategoryAction id ={id}/>)
-    return { stt,id, name, last,actions };
+    let actions = (<CategoryAction isDeleted={isDeleted} id ={id}/>)
+    let tag;
+    if (isDeleted) {
+        tag = <Tag content="Đã xóa" backGroundColor="#999999" textColor="white" />
+    }else{
+        tag = <Tag content="Đang hoạt động" backGroundColor="#2980b9" textColor="white" />;
+    }
+    return { stt,id, name, last,tag,actions };
 }
 
 const StyledTableCell = withStyles(theme => ({
@@ -138,6 +152,8 @@ TablePaginationActions.propTypes = {
 export default function AdminCategory() {
     const [data,setData] = useState([]);
     const [user,setUser] = useState(JSON.parse(localStorage.getItem("auth")))
+    const [newName, setNewName] = useState("")
+    const [open, setOpen] = useState(false);
     useEffect(()=>{
         setUser(JSON.parse(localStorage.getItem("auth")))
     },[localStorage.getItem("auth")])
@@ -153,6 +169,13 @@ export default function AdminCategory() {
     const [rowsPerPage, _] = useState(5);
     const [rows, setRows] = useState(data)
     
+    const handleClose = () => {
+        setOpen(false);
+    };
+    const handleOpen = () => {
+        setOpen(true);
+    };
+
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -181,16 +204,37 @@ export default function AdminCategory() {
     useEffect(()=>{
         stt = 0;
         const temp = categories.map((category=>{
-            return createData(category._id,category.categoryName,category.lastUpdated)
-        }));
+            if(!category.isDeleted){
+                return createData(category._id,category.categoryName,category.lastUpdated,category.isDeleted)
+        }}));
         setData(temp);
         setRows(temp.slice());
     },[categories])
 
+    const handledAddCategory = async ()=>{
+        Refreshtoken()
+        if (newName != "") {
+            const data = {
+                categoryName: newName
+            }
+            console.log(data)
+            await axios.post('http://localhost:3001/api/categories/', data, {
+                headers: {
+                    'x-access-token': user.accessToken
+                },
+            })
+                .then(res => {
+                    window.location.reload()
+                }).catch(e => {
+                    console.log(e);
+                })
+        }
+    }
+
     const searchData = (value) => {
         if (value) {
             const filtered = data.filter(d => {
-                if (d.name.search(new RegExp(value, "i")) >= 0){
+                if (d.name.search(new RegExp(value.replace('\\',''), "i")) >= 0){
                     setPage(0);
                     return d;
                 }
@@ -202,6 +246,41 @@ export default function AdminCategory() {
     }
     return (
         <Paper className={classes.root}>
+            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title">Thêm lĩnh vực</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Hãy nhập tên lĩnh vực này.
+                    </DialogContentText>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="name"
+                        label="Tên"
+                        fullWidth
+                        onChange={(e) => { setNewName(e.target.value) }}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                        Hủy
+                    </Button>
+                    <Button onClick={handledAddCategory} color="primary">
+                        Thêm
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Button
+        variant="contained"
+        color="primary"
+        style={{marginRight:'2%'}}
+        onClick={handleOpen}
+        className={classes.button}
+        endIcon={<AddCircleIcon/>}
+      >
+        Thêm
+      </Button>
+            
             <TextField
                 label="Search"
                 id="outlined-size-normal"

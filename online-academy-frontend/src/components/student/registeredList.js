@@ -10,21 +10,23 @@ import PagingRegisteredList from './child_component/pagingList';
 export default function RegistedList(props) {
     const classes = useStyles();
 
-    const [categoryName, setName] = useState("")
-    const getName = async () => {
-        await axios.get("http://localhost:3001/api/categories/id?id=60ef0789f83a7030481c3932").then(res => {
-            const listCategories = res.data;
-            setName(res.data.categoryName)
-            console.log(res.data)
-        })
-            .catch(error => console.log(error));
-    }
-    useEffect(() => {
-        const init = async () => {
-            await getName()
-        }
-        init()
-    }, []);
+    // const [categoryName, setName] = useState("")
+
+
+    // const getName = async () => {
+    //     await axios.get("http://localhost:3001/api/categories/id?id=60ef0789f83a7030481c3932").then(res => {
+    //         const listCategories = res.data;
+    //         // setName(res.data.categoryName)
+    //         console.log(res.data)
+    //     })
+    //         .catch(error => console.log(error));
+    // }
+    // useEffect(() => {
+    //     const init = async () => {
+    //         await getName()
+    //     }
+    //     init()
+    // }, []);
     return (
         <div className={classes.root}>
             <Grid container spacing={2}>
