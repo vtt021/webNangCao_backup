@@ -51,6 +51,10 @@ export default function UploadVideo(props) {
         "content": ""
     }
 
+    useEffect(() => {
+        console.log("completed", completed)
+    }, completed)
+
     const dataURLtoFile = (dataurl, filename) => {
         const arr = dataurl.split(',')
         const mime = arr[0].match(/:(.*?);/)[1]
@@ -258,8 +262,8 @@ export default function UploadVideo(props) {
     const handleClickOpenConfirm = () => {
         setOpenConfirm(true);
     };
-    const handleConfirm = () => {
-        handleRemove()
+    const handleConfirm = async () => {
+        await handleRemove()
         handleCloseConfirm()
     };
     
@@ -270,9 +274,47 @@ export default function UploadVideo(props) {
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
-    const handleRemove = () => {
+
+    const handleRemoveCallApi = async () => {
+        console.log(content._id)
+
+        if (content._id == null && content._id.localeCompare("") === 0) {
+            return false;
+        }
+
+        await axios.delete("http://localhost:3001/api/course-contents", {
+            headers: {
+                'x-access-token': user.accessToken
+            },
+            data: {
+                contentId: content._id
+            }
+        }).then(res => {
+            console.log("Delete success!")
+            return true;
+        }).catch(e => {
+            console.log(e);
+            return false;
+        })
+    }
+
+    const handleRemove = async () => {
         //DONE: Gọi 1 cái popup xác nhận xóa chương
+        await Refreshtoken();
+
+        console.log("activeStep", activeStep)
+        console.log("step", steps.length)
+        let ret = await handleRemoveCallApi();
+        if (ret === false) {
+            return;
+        }
+
         if (steps.length > 1) {
+
+            if (ret === false) {
+                return;
+            }
+
             let k = activeStep;
             let newStep = [];
             for(let i = 1; i <= steps.length - 1; i++) {
@@ -292,7 +334,7 @@ export default function UploadVideo(props) {
                 setSteps(newStep);
             }
 
-            setCompleted(courseData.filter((value, i) => i !== k));
+            setCompleted(completed.filter((value, i) => i !== k));
             setCourseData(courseData.filter((value, i) => i !== k));
         }
         else {
@@ -313,7 +355,7 @@ export default function UploadVideo(props) {
     return (
         <div className={classes.root}>
             <AlertDialog open={open} handleClose={handleClose} value='Không thể xóa' />
-            <ConfirmDialog open={openConfirm} handleClose={handleCloseConfirm} handleConfirm={handleConfirm} value='Bạn muốn xóa chương này' />
+            <ConfirmDialog open={openConfirm} handleClose={handleCloseConfirm} handleConfirm={handleConfirm} value='Bạn muốn xóa chương này? Không thể hồi phục lại sau khi xóa!' />
             <HeaderTeacher/>
             <Grid container spacing={2} alignItems='flex-start' justify='center'>
                 <Grid container item xs={12} justify='center' spacing={2}>
@@ -328,7 +370,7 @@ export default function UploadVideo(props) {
                         </Button>
                     </Grid>
                     <Grid item >
-                        <Button variant="contained" color="primary" onClick={handleNext} size='large' disabled={activeStep === courseData.length || (courseData.length === 1 && completed[0] === 0)}>
+                        <Button variant="contained" color="primary" onClick={handleNext} size='large' disabled={activeStep === courseData.length || (courseData.length === 1 && courseData[0].content.localeCompare("") === 0)}>
                             {activeStep === steps.length - 1 ? 'Thêm' : 'Sau'}
                         </Button>
                     </Grid>
