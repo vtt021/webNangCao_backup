@@ -6,18 +6,25 @@ import { Button } from '@material-ui/core';
 export default function PlayerControl(props) {
 
     const componentRef = React.useRef();
-    window.addEventListener('beforeunload', (event) => {
+    const handleKeyDown = (event) => {
         // Cancel the event as stated by the standard.
-         event.preventDefault();
+        event.preventDefault();
         // // Chrome requires returnValue to be set.
-         var dialogText = 'Rời khỏi trang';
+        var dialogText = 'Rời khỏi trang';
         event.returnValue = dialogText;
-        
         if (componentRef.current) {
             const { player } = componentRef.current.getState();
             console.log(player.currentTime); // thời điểm hiện tại của video
         }
-      });
+    }
+    useEffect(() => {
+        window.addEventListener('beforeunload', handleKeyDown);
+
+        // cleanup this component
+        return () => {
+            //window.removeEventListener('beforeunload', handleKeyDown);
+        };
+    }, []);
     return (
         <div>
             <Player
