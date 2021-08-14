@@ -48,7 +48,7 @@ export default function ControlledAccordions(props) {
                                     <Grid container className={classes.root} >
                                         <Grid item xs={12}>
                                             <Link align='left'
-                                                rel="noopener noreferrer" href={'/video/' + content._id} target="_blank"
+                                                rel="noopener noreferrer" href={'/video/' + content._id}
                                             >
                                                 Xem bài giảng
                                             </Link>
