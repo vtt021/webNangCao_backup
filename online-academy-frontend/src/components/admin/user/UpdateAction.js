@@ -13,13 +13,14 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Refreshtoken from '../../../refreshToken';
-import './SignUp.css';
-
+import './CreateTeacher.css';
+import AlertDialog from '../common/Alert';
 
 export default function CreateTeacher() {
     const classes = useStyles();
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const { register, handleSubmit, formState: { errors } } = useForm();
     const [auth,setAuth] = useState(JSON.parse(localStorage.getItem("auth")))
+    const [open, setOpen] = useState(false);
     const onSubmit = async (value) => {
             Refreshtoken()
             const body = {
@@ -36,12 +37,13 @@ export default function CreateTeacher() {
                 window.location.replace("/admin/users")
 
             })
-                .catch(error => console.log(error));
+                .catch(error => setOpen(true));
     }
 
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
+            <AlertDialog close={()=>{setOpen(false)}} isOpened={open} value={"Email này đã tồn tại"}/>
             <div className={classes.paper}>
                 <Avatar className={classes.avatar}>
                     <LockOutlinedIcon />

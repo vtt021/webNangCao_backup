@@ -375,7 +375,7 @@ router.post('/rate', userAuthMdw, async (req, res) => {
 
             const course = await courseModel.getCourseById(courseId);
 
-            let totalRating = course["totalRating"] + star;
+            let totalRating = course["totalRating"] + rate;
             let ratingCount = course["ratingCount"] + 1;
             let rating = totalRating / ratingCount;
 
