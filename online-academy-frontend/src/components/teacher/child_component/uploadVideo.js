@@ -13,11 +13,14 @@ import StepButton from '@material-ui/core/StepButton';
 
 import PlayerControl from '../../detail_page/component/videoPlayer';
 import axios from 'axios';
+import Refreshtoken from '../../../refreshToken';
 export default function UploadVideo(props) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const courseId = props.match.params.id
 
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem("auth")))
+    
     const [courseData, setCourseData] = useState([]);
 
     const [activeStep, setActiveStep] = useState(0);
@@ -29,7 +32,13 @@ export default function UploadVideo(props) {
     const [content, setContent] = useState(); // Thông tin 1 video
     const [isPreview, setIsPreview] = useState(false); // input checkbox 
 
+    const [fileName, setFileName] = useState("");
+
     const [title, setTitle] = useState("")
+
+    useEffect(() => {
+        setUser(JSON.parse(localStorage.getItem("auth")))
+    }, [localStorage.getItem("auth")])
 
     const defaultData = {
         "video": "",
@@ -37,6 +46,19 @@ export default function UploadVideo(props) {
         "_id": "",
         "courseId": "",
         "content": ""
+    }
+
+    const dataURLtoFile = (dataurl, filename) => {
+        const arr = dataurl.split(',')
+        const mime = arr[0].match(/:(.*?);/)[1]
+        const bstr = atob(arr[1])
+        let n = bstr.length
+        const u8arr = new Uint8Array(n)
+        while (n) {
+            u8arr[n - 1] = bstr.charCodeAt(n - 1)
+            n -= 1 // to make eslint happy
+        }
+        return new File([u8arr], filename, { type: mime })
     }
 
     const handleSave = () => {
@@ -54,20 +76,18 @@ export default function UploadVideo(props) {
 
     useEffect(() => {
         //Nếu được thì reset form ở đây sẽ logic hơn :v
-        console.log("abc")
         setContent(courseData[activeStep] || defaultData)
         setTitle(courseData[activeStep] != null ? courseData[activeStep].content : defaultData.content)
         setOldVideo(courseData[activeStep] != null ? courseData[activeStep].video : defaultData.video)
-        console.log(courseData[activeStep] != null ? courseData[activeStep].isPreview : "đcm")
-        setIsPreview(courseData[activeStep] != null ? courseData[activeStep].isPreview.localeCompare("true") === 0 : defaultData.isPreview)
-        setVideoFile()
+        setIsPreview(courseData[activeStep] != null ? courseData[activeStep].isPreview.localeCompare("true") === 0 : false)
+        setVideoFile(null)
 
     }, [activeStep]);
 
     useEffect(() => {
         const initDetailData = async () => {
-            await axios.get('http://localhost:3001/api/course-contents/course?courseId=60f1a3d20b04b858a41f1e13')
-            // await axios.get('http://localhost:3001/api/course-contents/course?courseId=' + courseId)
+            // await axios.get('http://localhost:3001/api/course-contents/course?courseId=60f1a3d20b04b858a41f1e13')
+            await axios.get('http://localhost:3001/api/course-contents/course?courseId=' + courseId)
             .then(res => {
                 let data = res.data;
                 console.log(data);
@@ -78,7 +98,7 @@ export default function UploadVideo(props) {
                     setContent(defaultData)
                 }
                 else {
-                    let chapters = data.map((d, i) => 'Chapter ' + (i + 1));
+                    let chapters = data.map((d, i) => 'Chương ' + (i + 1));
                     setSteps(chapters);
 
                     let completeStatus = data.map((d, i) => d.video != null ? 1 : 0);
@@ -87,8 +107,6 @@ export default function UploadVideo(props) {
                     setTitle(res.data[0].content)
                     setIsPreview(res.data[0].isPreview.localeCompare("true") === 0)
                 }
-                // setContent()
-
                 setCourseData(res.data)
             }).catch(e => {
                 console.log(e)
@@ -116,12 +134,112 @@ export default function UploadVideo(props) {
 
         }
     };
+
+    const setupUploadVideo = async (ret) => {
+        console.log("ret", ret);
+        
+        console.log("videoFile", videoFile);
+        if (videoFile != null) {
+            let formData = new FormData();
+            // console.log(videoFile.fileName)
+            let a = dataURLtoFile(videoFile[0], fileName);
+
+            console.log("a", a)
+            console.log("fileName", fileName)
+            // console.log(selectedFile[0]);
+            // console.log(oldVideo);
+            formData.append("file", a, fileName)
+            formData.append("contentId", ret);
+
+
+            // console.log(selectedFile)
+
+            let result2 = await axios.post('http://localhost:3001/api/course-contents/video', formData, {
+                headers: {
+                    'x-access-token': user.accessToken,
+                    'Content-Type': `multipart/form-data; boundary=${formData._boundary}`
+                }
+            }).then(res => {
+                console.log("Upload success!")
+                return true;
+            }).catch(e => {
+                console.log(e)
+                return false;
+            })
+        }
+    }
+
+    const setupUploadChapter = async () => {
+        let ret = await axios.post('http://localhost:3001/api/course-contents', {
+            courseId: courseId,
+            content: title,
+            isPreview: isPreview
+        }, {
+            headers: {
+                'x-access-token': user.accessToken
+            }
+        }).then(res => {
+            console.log("Success!")
+            return res.data;
+        }).catch(e => {
+            console.log(e)
+            return null;
+        })
+
+        return ret;
+    }
+
+    const setupUpdateChapter = async () => {
+        let ret = await axios.put('http://localhost:3001/api/course-contents', {
+            contentId: courseData[activeStep]['_id'],
+            contentData: {
+                isPreview: isPreview,
+                content: title
+            }
+        }, {
+            headers: {
+                'x-access-token': user.accessToken
+            }
+        }).then(res => {
+            console.log("Success!")
+            return res.data;
+        }).catch(e => {
+            console.log(e)
+            return null;
+        })
+
+        return ret;
+    }
+
+
+
     const onSubmit = async data => {
         //Còn không thì cứ reset khi lưu 
-        handleSave();
+        // handleSave();
         console.log(activeStep)
-        console.log(data)
+        // console.log(data)
         console.log(videoFile)
+        console.log(courseData[activeStep])
+        console.log(courseId);
+
+        await Refreshtoken();
+
+        if (courseData[activeStep] == null) {
+            //Call API thêm chương
+            console.log("Add chapter")
+            let a = await setupUploadChapter()
+            console.log(a);
+            let b = await setupUploadVideo(a.contentId);
+
+        }
+        else {
+            //Call API cập nhật chương
+            let t = await setupUpdateChapter();
+
+            await setupUploadVideo(courseData[activeStep]['_id'])
+        }
+
+
         //console.log(videoFile[activeStep])
     }
 
@@ -138,17 +256,40 @@ export default function UploadVideo(props) {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
     const handleRemove = () => {
+        //TODO: Gọi 1 cái popup xác nhận xóa chương
 
-        if (    steps.length >1
-            // activeStep === steps.length - 1
-            ) {
-            setActiveStep((prevActiveStep) => prevActiveStep - 1);
-            setSteps(steps.filter((value, i) => i !== activeStep));
+        if (steps.length > 1) {
+            let k = activeStep;
+            let newStep = [];
+            for(let i = 1; i <= steps.length - 1; i++) {
+                newStep.push('Chương ' + i)
+            }
+            if (k === 0) {
+                setActiveStep(0);
+                setContent(courseData[1]);
+                setTitle(courseData[1].content)
+                setOldVideo(courseData[1].video)
+                setIsPreview(courseData[1].isPreview.localeCompare("true") === 0)
+                setVideoFile(null);
+                setSteps(newStep);
+            }
+            else {
+                setActiveStep(activeStep - 1);
+                setSteps(newStep);
+            }
+
+            setCompleted(courseData.filter((value, i) => i !== k));
+            setCourseData(courseData.filter((value, i) => i !== k));
         }
         else {
-            console.log('Không thể xóa')
-            handleClickOpen()
-
+            console.log(steps.length);
+            setCourseData([defaultData])
+            setContent(defaultData)
+            setTitle("Chương 1")
+            setOldVideo(null)
+            setIsPreview(false)
+            setVideoFile(null)
+            setCompleted([0])
         }
     };
     const handleStep = (step) => () => {
@@ -170,7 +311,7 @@ export default function UploadVideo(props) {
                         </Button>
                     </Grid>
                     <Grid item >
-                        <Button variant="contained" color="primary" onClick={handleNext} size='large' disabled={activeStep === courseData.length}>
+                        <Button variant="contained" color="primary" onClick={handleNext} size='large' disabled={activeStep === courseData.length || (courseData.length === 1 && completed[0] === 0)}>
                             {activeStep === steps.length - 1 ? 'Thêm' : 'Sau'}
                         </Button>
                     </Grid>
@@ -210,7 +351,7 @@ export default function UploadVideo(props) {
                     )
                     }
                     <VideoContent id={activeStep} completed={completed[activeStep]}
-                        onSubmit={onSubmit} setSelectedFile={setVideoFile}
+                        onSubmit={onSubmit} setSelectedFile={setVideoFile} setFileName={setFileName}
                         content={content} isPreview={isPreview} setIsPreview={setIsPreview} title={title} setTitle={setTitle} 
                     />
                 </div>

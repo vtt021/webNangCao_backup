@@ -78,7 +78,7 @@ export default function UploadCourse(props) {
 
                 // console.log(selectedFile)
 
-                let result1 = axios.post('http://localhost:3001/api/courses/course-image', formData, {
+                let result1 = await axios.post('http://localhost:3001/api/courses/course-image', formData, {
                     headers: {
                         'x-access-token': user.accessToken,
                         'Content-Type': `multipart/form-data; boundary=${formData._boundary}`

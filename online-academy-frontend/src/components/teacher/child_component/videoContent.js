@@ -34,6 +34,7 @@ export default function VideoContent(props) {
         //console.log(file); // Would see a path?
 
         props.setSelectedFile(event.target.files[0]);
+        props.setFileName(a);
         console.log('xong r ne')
     };
 
@@ -144,7 +145,7 @@ export default function VideoContent(props) {
             <Grid container xs={12} justify='flex-start'>
                 <Grid item xs={2} />
                 <Grid item xs={8} justify='flex-start'>
-                    <form className={classes.form} noValidate onSubmit={handleSubmit(props.onSubmit)}>
+                    <form className={classes.form} noValidate>
                         {
                             handleUI()
                         }
@@ -156,6 +157,7 @@ export default function VideoContent(props) {
                                     variant="contained"
                                     color="primary"
                                     className={classes.submit}
+                                    onClick={handleSubmit(props.onSubmit)}
                                 >
                                     Lưu
                                 </Button>
