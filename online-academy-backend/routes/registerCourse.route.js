@@ -124,6 +124,34 @@ router.get('/detail', userAuthMdw,  async(req, res) => {
     }
 })
 
+router.get('/progress', userAuthMdw, async(req, res) => {
+    try {
+        const userId = req.accessTokenPayload.id;
+        const courseId = req.query.courseId;
+
+        if (courseId === undefined) {
+            return res.status(400).json({
+                message: 'Invalid courseId'
+            })
+        }
+        const registration = await registerCourseModel.getRegistration(userId, courseId);
+        if (registration == undefined) {
+            return res.status(400).json({
+                message: 'User has not registered this'
+            })
+        }
+        else {
+            return res.status(200).json(registration['progress']);
+        }
+    }
+    catch (e) {
+        console.log(e.stack);
+        res.status(500).json({
+            message: e.message
+        })
+    }
+})
+
 router.get('/detail_ad',  async(req, res) => {
     try {
         const userId = req.query.userId;

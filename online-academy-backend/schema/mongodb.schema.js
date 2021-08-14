@@ -169,7 +169,6 @@ let CourseContentSchema = mongoose.Schema({
     video: {
         type: String,
         default: null,
-        min: 1,
         max: 255
     },
     isPreview: {

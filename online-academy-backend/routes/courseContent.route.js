@@ -98,7 +98,7 @@ router.post('/', teacherAuthMdw, async (req, res) => {
         const teacherId = req.accessTokenPayload.id;
 
         const course = await courseModel.getCourseById(courseId);
-        console.log(course);
+        console.log("course", course);
         console.log(teacherId);
 
         if (course === undefined || course.teacherId !== teacherId) {
@@ -110,7 +110,7 @@ router.post('/', teacherAuthMdw, async (req, res) => {
         const contentId = await courseContentModel.add(req.body);
         return res.status(201).json({
             message: 'OK',
-            contentId: contentId[0]
+            contentId: contentId
         });
     }
     catch (e) {
@@ -149,8 +149,9 @@ router.post('/', adminAuthMdw, async (req, res) => {
 
 })
 
-router.post('/video', teacherAuthMdw, upload.uploadVideoMdw, async (req, res) => {
+router.post('/video', teacherAuthMdw, async (req, res) => {
     try {
+        await upload.uploadVideoMdw(req, res);
         const file = req.file;
         const teacherId = req.accessTokenPayload.id;
 
@@ -198,8 +199,9 @@ router.post('/video', teacherAuthMdw, upload.uploadVideoMdw, async (req, res) =>
     }
 })
 
-router.post('/video/admin', adminAuthMdw, upload.uploadVideoMdw, async (req, res) => {
+router.post('/video/admin', adminAuthMdw, async (req, res) => {
     try {
+        await upload.uploadVideoMdw(req, res);
         const file = req.file;
         const contentId = req.body.contentId;
 

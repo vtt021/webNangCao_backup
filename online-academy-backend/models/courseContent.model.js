@@ -43,11 +43,12 @@ module.exports = {
         let content = new CourseContent;
         content.courseId = courseContent.courseId;
         content.content = courseContent.content;
-        content.video = courseContent.video;
+        // content.video = courseContent.video;
         content.isPreview = courseContent.isPreview;
 
         // return db(TABLE_NAME).insert(courseContent);
-        await content.save();
+        let a = await content.save();
+        return a['_id']
     },
 
     async uploadVideoContent(id, video) {
