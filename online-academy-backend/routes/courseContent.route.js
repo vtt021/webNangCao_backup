@@ -337,13 +337,13 @@ router.delete('/', teacherAuthMdw, async (req, res) => {
         let courseId = content.courseId;
         const course = await courseModel.getCourseById(courseId);
         if (course === undefined) {
-            upload.deleteFile(file.filename)
+            // upload.deleteFile(file.filename)
             res.status(500).json({
                 message: 'Incorrect courseId'
             })
         }
         if (course.teacherId !== teacherId) {
-            upload.deleteFile(file.filename)
+            // upload.deleteFile(file.filename)
             res.status(400).json({
                 message: 'Wrong teacher'
             })
@@ -377,7 +377,7 @@ router.delete('/admin', adminAuthMdw, async (req, res) => {
         let courseId = content.courseId;
         const course = await courseModel.getCourseById(courseId);
         if (course === undefined) {
-            upload.deleteFile(file.filename)
+            // upload.deleteFile(file.filename)
             res.status(500).json({
                 message: 'Incorrect courseId'
             })
