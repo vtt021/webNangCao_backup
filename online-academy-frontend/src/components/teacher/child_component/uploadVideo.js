@@ -11,12 +11,15 @@ import VideoContent from './videoContent';
 import { Link } from '@material-ui/core';
 import StepButton from '@material-ui/core/StepButton';
 
-import PlayerControl from '../../detail_page/component/videoPlayer';
 import axios from 'axios';
 import Refreshtoken from '../../../refreshToken';
+import ConfirmDialog from '../common/confirmDialog';
+import HeaderTeacher from './headerTeacher';
+
 export default function UploadVideo(props) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
+    const [openConfirm, setOpenConfirm] = React.useState(false);
     const courseId = props.match.params.id
 
     const [user, setUser] = useState(JSON.parse(localStorage.getItem("auth")))
@@ -252,12 +255,23 @@ export default function UploadVideo(props) {
         setOpen(false);
     };
 
+    const handleClickOpenConfirm = () => {
+        setOpenConfirm(true);
+    };
+    const handleConfirm = () => {
+        handleRemove()
+        handleCloseConfirm()
+    };
+    
+    const handleCloseConfirm = () => {
+        setOpenConfirm(false);
+    };
+
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
     const handleRemove = () => {
-        //TODO: Gọi 1 cái popup xác nhận xóa chương
-
+        //DONE: Gọi 1 cái popup xác nhận xóa chương
         if (steps.length > 1) {
             let k = activeStep;
             let newStep = [];
@@ -299,6 +313,8 @@ export default function UploadVideo(props) {
     return (
         <div className={classes.root}>
             <AlertDialog open={open} handleClose={handleClose} value='Không thể xóa' />
+            <ConfirmDialog open={openConfirm} handleClose={handleCloseConfirm} handleConfirm={handleConfirm} value='Bạn muốn xóa chương này' />
+            <HeaderTeacher/>
             <Grid container spacing={2} alignItems='flex-start' justify='center'>
                 <Grid container item xs={12} justify='center' spacing={2}>
                     <Grid item>
@@ -306,6 +322,7 @@ export default function UploadVideo(props) {
                             disabled={activeStep === 0}
                             onClick={handleBack}
                             className={classes.backButton}
+                            size='large'
                         >
                             Trước
                         </Button>
@@ -318,7 +335,7 @@ export default function UploadVideo(props) {
                 </Grid>
                 <Grid container item xs={12} justify='center' spacing={2}>
                     <Grid item>
-                        <Button variant="contained" color="primary" onClick={handleRemove}>
+                        <Button variant="contained" color="primary" onClick={handleClickOpenConfirm} size='large'>
                             Xóa
                         </Button>
                     </Grid>
@@ -341,18 +358,10 @@ export default function UploadVideo(props) {
                             {steps[activeStep]}
                         </Typography>
                     }
-                    {completed[activeStep] === 1 && (
-                        <Link align='left'
-                            rel="noopener noreferrer" target="_blank" variant='h5'
-                            href={'http://localhost:3001/api/files/download?fileName=' + oldVideo}
-                        >
-                            Video hiện tại
-                        </Link>
-                    )
-                    }
                     <VideoContent id={activeStep} completed={completed[activeStep]}
                         onSubmit={onSubmit} setSelectedFile={setVideoFile} setFileName={setFileName}
                         content={content} isPreview={isPreview} setIsPreview={setIsPreview} title={title} setTitle={setTitle} 
+                        oldVideo={oldVideo}
                     />
                 </div>
             </div>

@@ -10,6 +10,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { Link } from '@material-ui/core';
 export default function VideoContent(props) {
     const classes = useStyles();
     const { register, handleSubmit, watch, setValue, getValues, formState: { errors } } = useForm();
@@ -67,7 +68,7 @@ export default function VideoContent(props) {
 
     }, []);
 
-  
+
 
     const handleUI = () => {
         if (props.content == null) {
@@ -97,10 +98,21 @@ export default function VideoContent(props) {
 
                 {/* File video */}
 
-                <Grid item xs={12}>
-                    <Typography variant='h5' align='left'>
-                        Tải lên video
+                <Grid container item xs={12}>
+                    <Typography variant='h5' align='left' style={{ paddingRight: '3%' }}>
+                        {'Tải lên video: '}
                     </Typography>
+                    {
+                        props.completed != false && (
+                            <Link align='left'
+                                rel="noopener noreferrer" target="_blank" variant='h6'
+                                href={'http://localhost:3001/api/files/download?fileName=' + props.oldVideo}
+                            >
+                                Video hiện tại
+                            </Link>
+                        )
+                    }
+
                 </Grid>
 
                 <Grid item xs={12} justify='flex-start'>
