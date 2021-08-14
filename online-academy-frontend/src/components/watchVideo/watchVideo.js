@@ -10,13 +10,48 @@ import userImage from '../common/images/potato.jpg'
 import Header from '../common/header/header';
 import Footer from '../common/footer/footer';
 import PlayerControl from '../detail_page/component/videoPlayer';
+import Refreshtoken from '../../refreshToken';
 export default function WatchVideoPage(props) {
     const classes = useStyles();
 
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem("auth")))
+    
     const id = props.match.params.id
     const [courseDetail, setCoursesDetail] = useState({});
-
+    const [listProgress,setListProgress] = useState([]);
     const [content, setContent] = useState({});
+    const [startTime,setStartTime] = useState(0)
+    const getProgress = async ()=>{
+        await Refreshtoken()
+        await axios.get("http://localhost:3001/api/register-courses/progress?courseId=" + content.courseId,{
+            headers:{
+                'x-access-token': user.accessToken
+            }
+        }).then(res => {
+            setListProgress(res.data)
+            console.log(res.data)
+        }).catch(error => console.log(error));
+    }
+
+    const getLastTime = ()=>{
+        if(listProgress===null){
+            setStartTime(0);
+            return
+        }
+
+        const index = listProgress.findIndex((progress)=>{
+            return progress.contentId === id
+        })
+
+        if(index==-1){
+            setStartTime(0);
+            return
+        }
+
+        setStartTime(listProgress[index].currentTime)
+
+    }
+
     const getContent = async () => {
         await axios.get("http://localhost:3001/api/course-contents/id?contentId=" + id).then(res => {
             setContent(res.data)
@@ -30,6 +65,10 @@ export default function WatchVideoPage(props) {
         }).catch(error => console.log(error))
     }
 
+    useEffect(() => {
+        setUser(JSON.parse(localStorage.getItem("auth")))
+    }, [localStorage.getItem("auth")])
+
     useEffect(async () => {
         const init = async () => {
             await getContent()
@@ -37,12 +76,23 @@ export default function WatchVideoPage(props) {
         init()
     }, []);
 
-    useEffect(() => {
+    useEffect(async () => {
+        const init = async () => {
+            await getProgress()
+        }
+        init()
+    }, [content]);
+
+    useEffect(async () => {
         const init = async () => {
             await getCourseDetail()
         }
         init()
     }, [content]);
+
+    useEffect(async () => {
+        getLastTime();
+    }, [listProgress]);
     return (
         <div fluid>
             <Header />
@@ -54,7 +104,9 @@ export default function WatchVideoPage(props) {
                 </Grid>
                 <Grid item xs={8} className={classes.videoContainer}>
                     <PlayerControl src={'http://localhost:3001/api/files/send?fileName=' + content.video} 
-                        startTime={'15'}
+                        startTime={startTime}
+                        contentId={id}
+                        courseId={content.courseId}
                     />
                 </Grid>
                 <Grid item xs={4}>
