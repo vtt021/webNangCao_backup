@@ -6,6 +6,7 @@ import { DataGrid } from "@material-ui/data-grid";
 import HeaderTeacher from './child_component/headerTeacher';
 import { Button, Container, Grid } from '@material-ui/core';
 import Rating from '@material-ui/lab/Rating';
+import { Link } from '@material-ui/core';
 
 export default function HomeTeacher() {
     const classes = useStyles();
@@ -51,6 +52,14 @@ export default function HomeTeacher() {
             headerName: 'Tên khóa học',
             flex: 2,
             editable: false,
+            renderCell: (cellValues) => {
+                return (
+                    <Link href={'/teacher/preview/' + cellValues.row.id} onClick={{}} color="inherit">
+                        {cellValues.row.courseName}
+                    </Link>
+
+                );
+            }
         },
         {
             field: 'rating',

@@ -23,6 +23,9 @@ import { getDate } from 'date-fns';
 import { formatDateTime } from '../../../utils/helpers';
 import Refreshtoken from '../../../refreshToken';
 import Deleteaction from './DeleteAction';
+import AdminHeader from '../common/AdminHeader'
+import LeftNavi from '../common/LeftNavi';
+import { Grid } from '@material-ui/core';
 let stt = 0;
 const columns = [
     { id: 'stt', label: '#', minWidth: 10 },
@@ -30,15 +33,15 @@ const columns = [
     { id: 'category', label: 'Lĩnh Vực', minWidth: 70 },
     { id: 'teacher', label: 'Giáo viên', minWidth: 100 },
     { id: 'price', label: 'Giá', minWidth: 100 },
-    { id: 'deleted', label: '', minWidth: 50 ,align: 'center'},
+    { id: 'deleted', label: '', minWidth: 50, align: 'center' },
 ];
 
-function createData(_id,name, category, teacher,isDeleted, price) {
+function createData(_id, name, category, teacher, isDeleted, price) {
     stt += 1;
     let id = _id;
 
-    let deleted = (<Deleteaction isDeleted={isDeleted} id = {_id}/>)
-    return { stt, name, category, teacher, price,deleted};
+    let deleted = (<Deleteaction isDeleted={isDeleted} id={_id} />)
+    return { stt, name, category, teacher, price, deleted };
 }
 
 const StyledTableCell = withStyles(theme => ({
@@ -48,21 +51,6 @@ const StyledTableCell = withStyles(theme => ({
     },
 }))(TableCell);
 
-const useStyles = makeStyles({
-    root: {
-        margin: '5% 2% 10% 2%',
-    },
-    container: {
-        maxWidth: '100%',
-    },
-});
-
-const useStyles1 = makeStyles(theme => ({
-    root: {
-        flexShrink: 0,
-        marginLeft: theme.spacing(2.5),
-    },
-}));
 
 function TablePaginationActions(props) {
     const classes = useStyles1();
@@ -135,19 +123,18 @@ TablePaginationActions.propTypes = {
 };
 
 export default function AdminCourses() {
-    const [auth,setAuth] = useState(JSON.parse(localStorage.getItem("auth")))
-    useEffect(()=>{
+    const [auth, setAuth] = useState(JSON.parse(localStorage.getItem("auth")))
+    useEffect(() => {
         setAuth(JSON.parse(localStorage.getItem("auth")))
-    },[localStorage.getItem("auth")])
+    }, [localStorage.getItem("auth")])
 
     useEffect(() => {
-        if (auth===null||auth.role != 2) 
-        {
+        if (auth === null || auth.role != 2) {
             window.location.replace("/")
         }
     }, [auth])
-    const [data,setData] = useState([]);
-    
+    const [data, setData] = useState([]);
+
     const classes = useStyles();
     const [page, setPage] = useState(0);
     const [rowsPerPage, _] = useState(5);
@@ -157,109 +144,141 @@ export default function AdminCourses() {
         setPage(newPage);
     };
     const [courses, setCourses] = useState([]);
-    const getCourses = async() => {
-        await axios.get('http://localhost:3001/api/courses',{
-            headers:{
-                "x-access-token":await Refreshtoken()
+    const getCourses = async () => {
+        await axios.get('http://localhost:3001/api/courses', {
+            headers: {
+                "x-access-token": await Refreshtoken()
             }
         })
-        .then(res => {
-            setCourses(res.data);
-        })
+            .then(res => {
+                setCourses(res.data);
+            })
     }
 
     useEffect(() => {
         Refreshtoken()
         setAuth(JSON.parse(localStorage.getItem("auth")))
-        
-        const init = async() => {
+
+        const init = async () => {
             await getCourses();
         }
 
         init();
         console.log(courses)
     }, []);
-    useEffect(()=>{
+    useEffect(() => {
         stt = 0;
-        const temp = courses.map((course=>{
-            return createData(course._id,course.courseName,course.categoryName,course.teacherName,course.isDeleted,course.price)
+        const temp = courses.map((course => {
+            return createData(course._id, course.courseName, course.categoryName, course.teacherName, course.isDeleted, course.price)
         }));
         setData(temp);
         setRows(temp.slice());
-    },[courses])
+    }, [courses])
 
     const filterData = (value) => {
         if (value) {
             const filtered = data.filter(d => {
-                if (d.name.search(new RegExp(value, "i")) >= 0
-                    || d.email.search(new RegExp(value, "i")) >= 0){
-                        setPage(0);
-                        return d;
+                if (new String(d.name).search(new RegExp(value, "i")) >= 0
+                    || new String(d.category).search(new RegExp(value, "i")) >= 0
+                    || new String(d.teacher).search(new RegExp(value, "i")) >= 0) {
+                    setPage(0);
+                    return d;
                 }
             });
             setRows(filtered)
         } else {
-            
-                setRows(data)
-            }
-        }
-    
-    return (
-        <Paper className={classes.root}>
-            <TextField
-                label="Search"
-                id="outlined-size-normal"
-                placeholder="Search"
-                variant="outlined"
-                style={{ paddingBottom: '1%', width: '80%' }}
-                onChange={(e) => {
-                    filterData(e.target.value)}}
-            />
 
-            <TableContainer className={classes.container}>
-                <Table stickyHeader aria-label="sticky table">
-                    <TableHead>
-                        <TableRow>
-                            {columns.map((column) => (
-                                <StyledTableCell
-                                    key={column.id}
-                                    align={column.align}
-                                    style={{ width: column.minWidth }}
-                                >
-                                    {column.label}
-                                </StyledTableCell>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                            return (
-                                <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                                    {columns.map((column) => {
-                                        const value = row[column.id];
+            setRows(data)
+        }
+    }
+
+    return (
+        <td style={{ display: 'flex', direction: 'column', justifyContent: 'space-evenly', flexDirection: 'column' }}>
+            <AdminHeader />
+            <Grid container >
+                <Grid item xs={2}>
+                    <LeftNavi selected='3' />
+                </Grid>
+                <Grid item xs={10}
+                    style={{ display: 'flex', justifyContent: 'center', align: 'center', width: '100%', flexDirection: 'column' }}>
+                    <div className={classes.root}>
+                        <TextField
+                            label="Search"
+                            id="outlined-size-normal"
+                            placeholder="Search"
+                            variant="standard"
+                            style={{ paddingBottom: '1%', width: '80%' }}
+                            onChange={(e) => {
+                                filterData(e.target.value)
+                            }}
+                        />
+
+                        <TableContainer className={classes.container}>
+                            <Table stickyHeader aria-label="sticky table">
+                                <TableHead>
+                                    <TableRow>
+                                        {columns.map((column) => (
+                                            <StyledTableCell
+                                                key={column.id}
+                                                align={column.align}
+                                                style={{ width: column.minWidth }}
+                                            >
+                                                {column.label}
+                                            </StyledTableCell>
+                                        ))}
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                                         return (
-                                            <TableCell key={column.id} align={column.align}>
-                                                {column.format && typeof value === 'number' ? column.format(value) : value}
-                                            </TableCell>
+                                            <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                                {columns.map((column) => {
+                                                    const value = row[column.id];
+                                                    return (
+                                                        <TableCell key={column.id} align={column.align}>
+                                                            {column.format && typeof value === 'number' ? column.format(value) : value}
+                                                        </TableCell>
+                                                    );
+                                                })}
+                                            </TableRow>
                                         );
                                     })}
-                                </TableRow>
-                            );
-                        })}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <TablePagination
-                colSpan={3}
-                rowsPerPageOptions={[10]}
-                component="div"
-                labelRowsPerPage=""
-                count={rows.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onChangePage={handleChangePage}
-                ActionsComponent={TablePaginationActions}
-            />
-        </Paper>
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                        <TablePagination
+                            colSpan={3}
+                            rowsPerPageOptions={[10]}
+                            component="div"
+                            labelRowsPerPage=""
+                            count={rows.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onChangePage={handleChangePage}
+                            ActionsComponent={TablePaginationActions}
+                        />
+                    </div>
+
+
+                </Grid>
+            </Grid>
+
+        </td>
     );
 }
+
+const useStyles = makeStyles({
+    root: {
+        margin: '0% 2% 10% 2%',
+    },
+    container: {
+        maxWidth: '100%',
+    },
+});
+
+const useStyles1 = makeStyles(theme => ({
+    root: {
+        flexShrink: 0,
+        marginLeft: theme.spacing(2.5),
+    },
+}));

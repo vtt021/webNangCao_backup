@@ -21,6 +21,8 @@ import PersonalManagement from '../student/personalManagement';
 import AdminSubCategory from '../admin/sub-category/AdminSubCategory';
 import AdminCourses from '../admin/courses/AdminCourses';
 import CreateTeacher from '../admin/user/UpdateAction';
+import TeacherManagement from '../teacher/teacherInfo/managementTeacher';
+import PreviewDetailPage from '../teacher/previewCourse';
 // import css
 
 function App() {
@@ -29,13 +31,15 @@ function App() {
             <div className="App">
                 <Route exact path="/" component={Home} />
 
-                <Route exact path="/admin" component={AdminHome}/>
+                <Route exact path="/admin" component={AdminCategory}/>
                 <Route exact path="/admin/categories" component={AdminCategory}/>
                 <Route exact path="/admin/sub-categories" component={AdminSubCategory}/>
                 <Route exact path="/admin/users" component={AdminUser}/>
                 <Route exact path="/admin/courses" component={AdminCourses}/>
                 <Route exact path="/admin/create-teacher" component={CreateTeacher}/>
                 <Route exact path="/teacher" component={HomeTeacher}/>
+                <Route exact path="/teacher/profile" component={TeacherManagement} />
+                <Route exact path="/teacher/preview/:id" component={PreviewDetailPage}/>
                 <Route exact path="/teacher/updateCourse/:id?" component={UpdateContent}/>
 
                 <Route exact path="/teacher/uploadCourse" component={UploadCourse} />

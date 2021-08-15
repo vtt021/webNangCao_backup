@@ -51,10 +51,9 @@ export default function PlayerControl(props) {
 
         // cleanup this component
         return () => {
-            //window.removeEventListener('beforeunload', handleKeyDown);
+            window.removeEventListener('beforeunload', handleKeyDown);
         };
     }, []);
-
     return (
         <div>
             <Player
