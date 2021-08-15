@@ -42,7 +42,7 @@ export default function PagingRegisteredList(props) {
 
         await axios.get(path, {
             headers: {
-                'x-access-token': user.accessToken
+                'x-access-token': await Refreshtoken()
             }
         }).then(res => {
             const listCourse = res.data;

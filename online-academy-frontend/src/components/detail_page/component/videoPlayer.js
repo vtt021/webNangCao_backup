@@ -21,7 +21,7 @@ export default function PlayerControl(props) {
         await Refreshtoken()
         await axios.post("http://localhost:3001/api/register-courses/progress",body,{
             headers: {
-                'x-access-token': user.accessToken
+                'x-access-token': await Refreshtoken()
             },
         }).then(res => {
             

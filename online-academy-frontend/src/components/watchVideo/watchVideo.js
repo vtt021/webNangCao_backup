@@ -27,7 +27,7 @@ export default function WatchVideoPage(props) {
             await Refreshtoken()
             await axios.get("http://localhost:3001/api/register-courses/progress?courseId=" + content.courseId, {
                 headers: {
-                    'x-access-token': user.accessToken
+                    'x-access-token': await Refreshtoken()
                 }
             }).then(res => {
                 setListProgress(res.data)

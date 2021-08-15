@@ -11,6 +11,7 @@ import Link from '@material-ui/core/Link';
 import ImageUploadCard from './child_component/uploadImage';
 import UploadContent from './child_component/uploadContent';
 import Notification from './common/Notification';
+import Refreshtoken from '../../refreshToken';
 export default function UploadCourse(props) {
     const classes = useStyles();
     const [isOpened, setOpen] = useState(false);
@@ -51,7 +52,7 @@ export default function UploadCourse(props) {
 
         let ret = await axios.post('http://localhost:3001/api/courses', data, {
             headers: {
-                'x-access-token': user.accessToken
+                'x-access-token': await Refreshtoken
             }
         }).then(res => {
             handleOpen()
@@ -80,7 +81,7 @@ export default function UploadCourse(props) {
 
                 let result1 = await axios.post('http://localhost:3001/api/courses/course-image', formData, {
                     headers: {
-                        'x-access-token': user.accessToken,
+                        'x-access-token': await Refreshtoken(),
                         'Content-Type': `multipart/form-data; boundary=${formData._boundary}`
                     }
                 }).then(res => {
@@ -107,7 +108,7 @@ export default function UploadCourse(props) {
 
                 let result2 = axios.post('http://localhost:3001/api/courses/thumbnail-image', thumbnailFormData, {
                     headers: {
-                        'x-access-token': user.accessToken,
+                        'x-access-token': await Refreshtoken(),
                         'Content-Type': `multipart/form-data; boundary=${thumbnailFormData._boundary}`
                     }
                 }).then(res => {

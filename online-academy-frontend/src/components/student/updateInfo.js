@@ -12,6 +12,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import Refreshtoken from "../../refreshToken";
 
 
 export default function UpdateInfo() {
@@ -34,7 +35,7 @@ export default function UpdateInfo() {
             username: data.username
         }, {
             headers: {
-                'x-access-token': user.accessToken
+                'x-access-token': await Refreshtoken()
             }
         }).then(res => {
             console.log("Success")

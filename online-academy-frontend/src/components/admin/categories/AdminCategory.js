@@ -183,7 +183,7 @@ export default function AdminCategory() {
     const getCategory = async() => {
         await axios.get('http://localhost:3001/api/categories/admin',{
             headers:{
-                "x-access-token":user.accessToken
+                "x-access-token":await Refreshtoken()
             }
         })
         .then(res => {
@@ -192,9 +192,9 @@ export default function AdminCategory() {
         })
     }
     useEffect(() => {
-        Refreshtoken()
-        setUser(JSON.parse(localStorage.getItem("auth")))
         const init = async() => {
+            //await Refreshtoken()
+           
             await getCategory();
         }
 
@@ -212,7 +212,7 @@ export default function AdminCategory() {
     },[categories])
 
     const handledAddCategory = async ()=>{
-        Refreshtoken()
+        await Refreshtoken()
         if (newName != "") {
             const data = {
                 categoryName: newName
@@ -220,7 +220,7 @@ export default function AdminCategory() {
             console.log(data)
             await axios.post('http://localhost:3001/api/categories/', data, {
                 headers: {
-                    'x-access-token': user.accessToken
+                    'x-access-token': await Refreshtoken()
                 },
             })
                 .then(res => {

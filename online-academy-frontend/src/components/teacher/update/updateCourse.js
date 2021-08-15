@@ -9,6 +9,7 @@ import ImageUploadCard from '../child_component/uploadImage';
 import UpdateContent from './updateContent';
 import HeaderTeacher from '../child_component/headerTeacher';
 import Notification from '../common/Notification';
+import Refreshtoken from '../../../refreshToken';
 
 export default function UpdateCourse(props) {
     const classes = useStyles();
@@ -134,7 +135,7 @@ export default function UpdateCourse(props) {
 
             await axios.post('http://localhost:3001/api/courses/course-image', formData, {
                 headers: {
-                    'x-access-token': user.accessToken,
+                    'x-access-token': await Refreshtoken(),
                     'Content-Type': `multipart/form-data; boundary=${formData._boundary}`
                 }
             }).then(res => {
@@ -159,7 +160,7 @@ export default function UpdateCourse(props) {
 
             await axios.post('http://localhost:3001/api/courses/thumbnail-image', thumbnailFormData, {
                 headers: {
-                    'x-access-token': user.accessToken,
+                    'x-access-token': await Refreshtoken(),
                     'Content-Type': `multipart/form-data; boundary=${thumbnailFormData._boundary}`
                 }
             }).then(res => {
@@ -176,7 +177,7 @@ export default function UpdateCourse(props) {
             courseId: id
         }, {
             headers: {
-                'x-access-token': user.accessToken
+                'x-access-token': await Refreshtoken()
             }
         }).then(res => {
             handleOpen()

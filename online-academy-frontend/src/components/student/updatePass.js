@@ -45,7 +45,7 @@ export default function UpdatePass() {
 
         await axios.put("http://localhost:3001/api/users/password", data, {
             headers: {
-                'x-access-token': user.accessToken
+                'x-access-token': await Refreshtoken()
             }
         }).then(res => {
 

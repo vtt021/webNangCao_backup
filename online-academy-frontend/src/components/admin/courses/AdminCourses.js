@@ -160,7 +160,7 @@ export default function AdminCourses() {
     const getCourses = async() => {
         await axios.get('http://localhost:3001/api/courses',{
             headers:{
-                "x-access-token":auth.accessToken
+                "x-access-token":await Refreshtoken()
             }
         })
         .then(res => {
