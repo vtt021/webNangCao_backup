@@ -6,7 +6,7 @@ const userModel = require('../models/user.model');
 
 
 const router = express.Router();
-var timeExpired = 1500;
+var timeExpired = 600;
 
 router.post('/', async (req, res, next) => {
     try {

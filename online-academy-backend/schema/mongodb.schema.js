@@ -120,14 +120,12 @@ let CourseSchema = mongoose.Schema({
     detailShort: {
         type: String,
         require: true,
-        minLength: 1,
-        maxLength: 100
+        minLength: 1
     },
     detailLong: {
         type: String,
         require: true,
-        minLength: 1,
-        maxLength: 300
+        minLength: 1
     },
     isCompleted: {
         type: Boolean,
