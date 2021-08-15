@@ -46,7 +46,7 @@ export default function CategoryAction(props) {
             console.log(data)
             await axios.put('http://localhost:3001/api/categories/', data, {
                 headers: {
-                    'x-access-token': auth.accessToken
+                    'x-access-token': await Refreshtoken()
                 },
 
             })
@@ -70,7 +70,7 @@ export default function CategoryAction(props) {
         console.log(data)
         await axios.delete('http://localhost:3001/api/categories/', {
             headers: {
-                'x-access-token': auth.accessToken
+                'x-access-token': await Refreshtoken()
             },
             data: data
         })

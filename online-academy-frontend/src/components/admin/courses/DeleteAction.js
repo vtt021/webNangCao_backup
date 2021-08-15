@@ -19,14 +19,13 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
-const handleDellteCourse= async (admin,id)=>{
-    Refreshtoken()
+const handleDellteCourse= async (id)=>{
     const data = {
         courseId: id
     }
     await axios.delete('http://localhost:3001/api/courses/admin',{
         headers: {
-            'x-access-token': admin
+            'x-access-token': await Refreshtoken()
         },
         data: data
     })
@@ -89,7 +88,7 @@ export default function Deleteaction(props) {
             </DialogContentText>
         </DialogContent>
         <DialogActions>
-            <Button onClick={()=>{handleDellteCourse(auth.accessToken,props.id) }} color="primary" autoFocus>
+            <Button onClick={()=>{handleDellteCourse(props.id) }} color="primary" autoFocus>
                 Đồng ý
             </Button>
             <Button onClick={handleClose} color="primary" autoFocus>

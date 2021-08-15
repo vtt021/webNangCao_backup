@@ -20,7 +20,7 @@ const handleDellteUser= async (admin,id)=>{
     }
     await axios.delete('http://localhost:3001/api/users/',{
         headers: {
-            'x-access-token': admin
+            'x-access-token': await Refreshtoken()
         },
         data: data
     })

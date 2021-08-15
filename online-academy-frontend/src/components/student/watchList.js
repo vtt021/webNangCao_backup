@@ -23,7 +23,7 @@ export default function WatchList(props) {
         
             await axios.get('http://localhost:3001/api/users/favorite', {
                 headers: {
-                    'x-access-token': user.accessToken
+                    'x-access-token': await Refreshtoken()
                 }
             }).then(res => {
                 console.log(res.data);
@@ -52,7 +52,7 @@ export default function WatchList(props) {
             courseId: cellValues.id
         }, {
             headers: {
-                'x-access-token': user.accessToken
+                'x-access-token': await Refreshtoken()
             }
         }).then(res => {
             //Nếu api trả về false --> Đã bỏ khỏi danh sách --> Gỡ khỏi danh sách client

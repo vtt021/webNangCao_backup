@@ -30,7 +30,7 @@ export default function CreateTeacher() {
             }
             await axios.post("http://localhost:3001/api/users/teacher-acc", body,{
                 headers: {
-                    'x-access-token': auth.accessToken
+                    'x-access-token': await Refreshtoken()
                 },
                
             }).then(res => {

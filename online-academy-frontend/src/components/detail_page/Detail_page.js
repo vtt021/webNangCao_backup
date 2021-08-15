@@ -41,7 +41,7 @@ export default function DetailPage(props) {
         }
         await axios.post("http://localhost:3001/api/register-courses/rate",body,{
                 headers: {
-                    'x-access-token': user.accessToken
+                    'x-access-token': await Refreshtoken()
                 },
             }).then(res => {
                 window.location.reload()
@@ -100,7 +100,7 @@ export default function DetailPage(props) {
             courseId: courseDetail._id
         }, {
             headers: {
-                'x-access-token': user.accessToken
+                'x-access-token': await Refreshtoken()
             }
         }).then(res => {
             console.log(res.data);
@@ -121,7 +121,7 @@ export default function DetailPage(props) {
             courseId: id
         }, {
             headers: {
-                'x-access-token': user.accessToken
+                'x-access-token': await Refreshtoken()
             }
         }).then(res => {
             setOpenSuccess(true)
@@ -137,7 +137,7 @@ export default function DetailPage(props) {
             if (user != null) {
                 await axios.get('http://localhost:3001/api/register-courses/detail?courseId=' + id, {
                     headers: {
-                        'x-access-token': user.accessToken
+                        'x-access-token': await Refreshtoken()
                     }
                 }).then(res => {
                     console.log(res.data);
@@ -167,7 +167,7 @@ export default function DetailPage(props) {
             if (user != null) {
                 await axios.get('http://localhost:3001/api/users/favorite-course?courseId=' + id, {
                     headers: {
-                        'x-access-token': user.accessToken
+                        'x-access-token': await Refreshtoken()
                     }
                 }).then(res => {
                     console.log(res.data)

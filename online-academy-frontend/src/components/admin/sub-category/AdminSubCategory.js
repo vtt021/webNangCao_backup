@@ -190,7 +190,7 @@ export default function AdminSubCategory() {
     const getSubCategory = async() => {
         await axios.get('http://localhost:3001/api/sub-categories/admin',{
             headers:{
-                "x-access-token":user.accessToken
+                "x-access-token":await Refreshtoken()
             }
         })
         .then(res => {
@@ -214,7 +214,7 @@ export default function AdminSubCategory() {
             }
             await axios.post('http://localhost:3001/api/sub-categories/', data, {
                 headers: {
-                    'x-access-token': user.accessToken
+                    'x-access-token': await Refreshtoken()
                 },
             })
                 .then(res => {
@@ -321,7 +321,7 @@ export default function AdminSubCategory() {
                 label="Search"
                 id="outlined-size-normal"
                 placeholder="Search"
-                variant="outlined"
+                variant="standard"
                 style={{ paddingBottom: '1%', width: '80%' }}
                 onChange={(e) => {
                     searchData(e.target.value)}}

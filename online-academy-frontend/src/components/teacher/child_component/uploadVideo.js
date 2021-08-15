@@ -163,7 +163,7 @@ export default function UploadVideo(props) {
 
             let result2 = await axios.post('http://localhost:3001/api/course-contents/video', formData, {
                 headers: {
-                    'x-access-token': user.accessToken,
+                    'x-access-token': await Refreshtoken(),
                     'Content-Type': `multipart/form-data; boundary=${formData._boundary}`
                 }
             }).then(res => {
@@ -183,7 +183,7 @@ export default function UploadVideo(props) {
             isPreview: isPreview
         }, {
             headers: {
-                'x-access-token': user.accessToken
+                'x-access-token': await Refreshtoken()
             }
         }).then(res => {
             console.log("Success!")
@@ -205,7 +205,7 @@ export default function UploadVideo(props) {
             }
         }, {
             headers: {
-                'x-access-token': user.accessToken
+                'x-access-token': await Refreshtoken()
             }
         }).then(res => {
             console.log("Success!")
@@ -284,7 +284,7 @@ export default function UploadVideo(props) {
 
         await axios.delete("http://localhost:3001/api/course-contents", {
             headers: {
-                'x-access-token': user.accessToken
+                'x-access-token': await Refreshtoken()
             },
             data: {
                 contentId: content._id
