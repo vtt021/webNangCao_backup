@@ -8,6 +8,7 @@ const router = express.Router();
 const registerCourseDetailModel = require('../models/registerCourseDetail.model');
 const courseModel = require('../models/course.model');
 const { Course } = require('../schema/mongodb.schema');
+const courseContentModel = require('../models/courseContent.model');
 
 
 router.get('/', adminAuthMdw, async (req, res) => {
@@ -401,16 +402,27 @@ router.post('/rate', userAuthMdw, async (req, res) => {
 router.post('/progress', userAuthMdw, async (req, res) => {
     try {
         const userId = req.accessTokenPayload.id;
-        const courseId = req.body.courseId;
+        // const courseId = req.body.courseId;
         const contentId = req.body.contentId;
         const currentTime = req.body.currentTime;
 
         
-        if (courseId === undefined || !Number.isInteger(currentTime) || contentId === undefined ) {
+        if (/*courseId === undefined ||*/ !Number.isInteger(currentTime) || contentId === undefined ) {
             return res.status(400).json({
                 message: 'Invalid data'
             })
         }
+
+        let content = await courseContentModel.getContentsByContentId(contentId);
+        if (content === undefined) {
+            console.log("Invalid content id")
+            return res.status(400).json({
+                message: 'Invalid content id'
+            })
+        }
+
+        let courseId = content['courseId']
+
         const registration = await registerCourseModel.getRegistration(userId, courseId);
 
         if (registration === undefined) {
