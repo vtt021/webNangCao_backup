@@ -1,4 +1,3 @@
-const db = require('../utils/db');
 const courseContentModel = require('./courseContent.model');
 const subCategoryModel = require('./subCategory.model');
 const userModel = require('./user.model');
@@ -27,7 +26,6 @@ const mainPageData = [
 
 module.exports = {
     async getAll() {
-        // const courses = await db(TABLE_NAME).where({ isDeleted: false });
         const courses = await Course.find({}).exec();
         let users = await userModel.getAllUsernameWithId();
 
@@ -48,9 +46,9 @@ module.exports = {
 
         console.log(cateMapping)
 
-        
 
-        
+
+
 
 
         let newCourses = [];
@@ -86,21 +84,25 @@ module.exports = {
     },
 
     async getTeacherCourses(teacherId) {
-        const courses = await Course.find({'teacherId': teacherId}).exec();
+        const courses = await Course.find({ 'teacherId': teacherId }).exec();
         return courses;
     },
 
     async getArrayCourses(courseIds) {
-        const courses = await Course.find({'_id': {
-            $in: courseIds
-        }}, ['_id', 'courseName']).exec();
+        const courses = await Course.find({
+            '_id': {
+                $in: courseIds
+            }
+        }, ['_id', 'courseName']).exec();
         return courses;
     },
 
     async getArrayDetailedCourses(courseIds) {
-        const courses = await Course.find({'_id': {
-            $in: courseIds
-        }}).exec();
+        const courses = await Course.find({
+            '_id': {
+                $in: courseIds
+            }
+        }).exec();
 
         let users = await userModel.getAllUsernameWithId();
 
@@ -131,15 +133,23 @@ module.exports = {
         return newCourses;
     },
 
-    async getTopHotCourses(limit) {
-        // const courses = await db.select(mainPageData)
-        //     .from(TABLE_NAME)
-        //     .where({ isDeleted: false })
-        //     .orderByRaw('(viewCount + studentCount * 5 + ratingCount * rating * 10) desc');
-
-        // if (limit !== undefined) {
-        //     courses = courses.limit(limit);
+    /**
+     * Cập nhật hot point, mỗi lần update -3% điểm hot point, tối thiểu 1
+     */
+    async resetHotpoint() {
+        console.log("Updating")
+        let courses = await Course.find({ isDeleted: false }).exec();
+        courses.forEach(async c => {
+            c['hotPoint'] = Math.floor(c['hotPoint'] * 0.97);
+            await c.save().then(() => {
+                console.log("Update hot point success")
+            });
+        })
+        // for(let i = 0; i < courses.length; i++) {
         // }
+    },
+
+    async getTopHotCourses(limit) {
         let users = await userModel.getAllUsernameWithId();
 
 
@@ -196,8 +206,8 @@ module.exports = {
         // console.log(categoryId);
         // let allSub = await subCategoryModel.getSubcategoryInCategory
 
-        
-        let courses = await Course.find({ 
+
+        let courses = await Course.find({
             isDeleted: false,
             subCategoryId: subCateInCate,
             _id: {
@@ -278,11 +288,6 @@ module.exports = {
     async getTopWatchCourses(limit) {
         let users = await userModel.getAllUsernameWithId();
 
-        // const courses = await db.select(mainPageData)
-        //     .from(TABLE_NAME)
-        //     .where({ isDeleted: false })
-        //     .orderBy('viewCount', 'desc')
-        //     .limit(limit)
         const courses = await Course.find({ isDeleted: false }, mainPageData, {
             skip: 0,
             limit: parseInt(limit),
@@ -454,10 +459,6 @@ module.exports = {
     },
 
     async getCourseById(id) {
-        // const course = await db.select(mainPageData).from(TABLE_NAME).where({
-        //     id: id,
-        //     isDeleted: false
-        // });
         let users = await userModel.getAllUsernameWithId();
 
         const courses = await Course.find({ _id: id, isDeleted: false }).exec();
@@ -517,15 +518,6 @@ module.exports = {
         let offset = limit * (page - 1);
         let users = await userModel.getAllUsernameWithId();
 
-        // const courses = await db.select(mainPageData)
-        //     .from(TABLE_NAME)
-        //     .where({
-        //         isDeleted: false,
-        //         subCategoryId: subCategoryId
-        //     })
-        //     .limit(limit)
-        //     .offset(offset);
-
         const courses = await Course.find({ subCategoryId: subCategoryId, isDeleted: false }, mainPageData, {
             skip: offset,
             limit: parseInt(limit),
@@ -563,21 +555,6 @@ module.exports = {
         return newCourses;
     },
 
-    // async getCourseDetail(id) {
-    //     const course = await db.select(mainPageData)
-    //         .from(TABLE_NAME)
-    //         .where({
-    //             isDeleted: false
-    //         });
-
-    //     if (course !== null) {
-    //         const detail = await courseContentModel.getContentsByCourseId(id);
-    //         course.detail = detail;
-    //     }
-
-    //     return course;
-    // },
-
     async search(queryString, page, limit, ratingDesc, priceAsc) {
         if ((page === undefined && limit !== undefined) || (page !== undefined && limit === undefined)) {
             throw new Error('page and limit must be both defined or undefined')
@@ -587,25 +564,6 @@ module.exports = {
         console.log("queryString = " + queryString);
 
         let users = await userModel.getAllUsernameWithId();
-
-
-        // const countCourse = await db(TABLE_NAME).count()
-        //     .whereRaw('match(courseName) against(\'' + queryString + '\' in boolean mode) and isDeleted = false');
-
-        // const courses = await db.select(mainPageData).from(TABLE_NAME)
-        //     .whereRaw('match(courseName) against(\'' + queryString + '\' in boolean mode) and isDelete = false')
-        //     .orderBy([
-        //         {
-        //             column: 'rating',
-        //             order: ratingDesc == true ? 'desc' : 'asc'
-        //         },
-        //         {
-        //             column: 'price',
-        //             order: priceAsc == true ? 'asc' : 'desc'
-        //         }
-        //     ])
-        //     .limit(limit)
-        //     .offset(offset)
 
         const courses = await Course.find({
             $text: {
@@ -660,11 +618,10 @@ module.exports = {
             }
         }
 
-        
+
     },
 
     async add(course) {
-        // return db(TABLE_NAME).insert(course).returning('*');
         let newCourse = new Course;
         newCourse.courseName = course.courseName
         newCourse.subCategoryId = course.subCategoryId
@@ -676,20 +633,11 @@ module.exports = {
         let a = await newCourse.save();
         return a['_id']
 
-        
+
     },
 
     async uploadThumbnailImage(id, filename) {
-        // let lastUpdated = new Date();
 
-
-        // return db(TABLE_NAME).where({
-        //     id: id,
-        //     isDeleted: false
-        // }).update({
-        //     imageThumbnail: filename,
-        //     lastUpdated: lastUpdated
-        // })
         await Course.find({ isDeleted: false, _id: id }).updateMany({
             lastUpdated: new Date(),
             imageThumbnail: filename
@@ -705,23 +653,12 @@ module.exports = {
 
     async update(id, course) {
         course.lastUpdated = new Date();
-        // return db(TABLE_NAME).where({
-        //     id: id,
-        //     isDeleted: false
-        // }).update(course);
+
 
         await Course.find({ isDeleted: false, _id: id }).updateMany(course).exec();
     },
 
     async delete(id) {
-        // return db(TABLE_NAME).where({
-        //     id: id,
-        //     isDeleted: false
-        // }).update({
-        //     isDeleted: true,
-        //     lastUpdated: new Date()
-        // });
-
         await Course.find({ isDeleted: false, _id: id }).updateMany({ isDeleted: true }).exec()
     },
 }

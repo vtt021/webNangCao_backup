@@ -1,4 +1,3 @@
-const db = require('../utils/db');
 const TABLE_NAME = 'sub_category'
 
 const {SubCategory, Category} = require('../schema/mongodb.schema');
@@ -7,7 +6,6 @@ const contentData = '_id subCategoryName'
 
 module.exports = {
     async getAll() {
-        // const subCategories = await db(TABLE_NAME).where({ isDeleted: false });
 
         const subCategories = await SubCategory.find({}).exec();
         return subCategories;
@@ -24,16 +22,10 @@ module.exports = {
     },
 
     async getSubcategoryInCategory(categoryId) {
-        // const subCategories = await db(TABLE_NAME).where({ isDeleted: false, categoryId: categoryId });
 
         console.log(categoryId)
         const subCategories = await SubCategory.find({ isDeleted: false, categoryId: categoryId }).exec();
 
-        // subCategories.forEach(element => {
-        //     delete element["isDeleted"];
-        //     delete element["lastUpdated"];
-        // });
-        // console.log()
         return subCategories;
     },
 
@@ -51,7 +43,6 @@ module.exports = {
     },
 
     async add(subCategory) {
-        // return db(TABLE_NAME).insert(subCategory);
         let newSub = new SubCategory;
         let cate = await Category.find({_id: subCategory.categoryId, isDeleted: false});
 
@@ -78,20 +69,9 @@ module.exports = {
         // }
 
         await SubCategory.find({_id: id}).updateMany(subCategory).exec(); 
-        // return db(TABLE_NAME).where({
-        //     id: id,
-        //     isDeleted: false
-        // }).update(subCategory);
     },
 
     async delete(id) {
-        // return db(TABLE_NAME).where({
-        //     id: id,
-        //     isDeleted: false
-        // }).update({
-        //     isDeleted: true,
-        //     lastUpdated: new Date()
-        // });
         await SubCategory.where({_id: id}).updateMany({isDeleted: true}).exec();
     },
 }

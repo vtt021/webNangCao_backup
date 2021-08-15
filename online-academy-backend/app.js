@@ -2,7 +2,10 @@ require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
-const mongoose = require('mongoose')
+const cron = require('node-cron');
+
+const mongoose = require('mongoose');
+const courseModel = require('./models/course.model');
 mongoose.set('useCreateIndex', true);
 
 // const auth = require('./middlewares/auth.mdw');
@@ -64,4 +67,10 @@ app.use('/', (req, res, next) => {
     res.json({
         message: 'Hello'
     });
+})
+
+
+//Cập nhật 12 tiếng 1 lần lúc 0 và 12 giờ
+cron.schedule('* 0,12 * * *', async () => {
+    await courseModel.resetHotpoint()
 })

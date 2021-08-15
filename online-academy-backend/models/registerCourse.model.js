@@ -1,4 +1,3 @@
-const db = require('../utils/db');
 const TABLE_NAME = 'register_course'
 
 const { CourseContent, RegisterCourse } = require('../schema/mongodb.schema');
@@ -20,13 +19,11 @@ const contentData = [
 
 module.exports = {
     async getAll() {
-        // const registration = await db(TABLE_NAME);
         const registration = await RegisterCourse.find({}).exec();
         return registration;
     },
 
     async getAllIds() {
-        // const registration = await db(TABLE_NAME);
         const registration = await RegisterCourse.find({}, ['userId', 'courseId']).exec();
         return registration;
     },
@@ -85,10 +82,7 @@ module.exports = {
     },
 
     async getRegisterUsersByCourseId(courseId) {
-        // const registration = await db(TABLE_NAME).select(contentData).from(TABLE_NAME).where({
-        //     courseId: courseId,
-        //     isDeleted: false
-        // });
+
 
         let users = await userModel.getAllUsernameWithId();
         console.log(users);
@@ -146,11 +140,7 @@ module.exports = {
     async getRegistration(userId, courseId) {
         console.log(userId);
         console.log(courseId);
-        // const registration = await db(TABLE_NAME).select(contentData).from(TABLE_NAME).where({
-        //     userId: userId,
-        //     courseId: courseId,
-        //     isDeleted: false
-        // });
+
 
         const registration = await RegisterCourse.find({ courseId: courseId, userId: userId }).exec();
         console.log(registration)
@@ -159,26 +149,14 @@ module.exports = {
     },
 
     async getRegistrationById(id) {
-        // console.log(userId);
-        // console.log(courseId);
-        // const registration = await db(TABLE_NAME).select(contentData).from(TABLE_NAME).where({
-        //     userId: userId,
-        //     courseId: courseId,
-        //     isDeleted: false
-        // });
+
 
         const registration = await RegisterCourse.find({ _id: id}).exec();
         return registration[0];
     },
 
     async changeFavoriteStatus(userId, courseId, isFavorite) {
-        // return db(TABLE_NAME).where({
-        //     courseId: courseId,
-        //     userId: userId,
-        // }).update({
-        //     isFavorite: isFavorite,
-        //     lastUpdated: new Date()
-        // });
+
 
         await RegisterCourse.find({ courseId: courseId, userId: userId }).updateMany({ isFavorite: isFavorite }).exec();
     },
@@ -198,15 +176,7 @@ module.exports = {
         await newRegister.save();
     },
 
-    // async markUndeleted(courseId, userId) {
-    //     return db(TABLE_NAME).where({
-    //         courseId: courseId,
-    //         userId: userId,
-    //     }).update({
-    //         isDeleted: true,
-    //         lastUpdated: new Date()
-    //     });
-    // },
+
 
     async updateProgress(courseId, userId, contentId, time) {
         const registration = await RegisterCourse.find({ courseId: courseId, userId: userId }).exec();
@@ -234,15 +204,7 @@ module.exports = {
 
 
     async addRate(courseId, userId, rating, rateContent) {
-        // return db(TABLE_NAME).where({
-        //     courseId: courseId,
-        //     userId: userId,
-        //     isDeleted: false
-        // }).update({
-        //     rate: rating,
-        //     rateContent: rateContent,
-        //     lastUpdated: new Date()
-        // })
+
 
         await RegisterCourse.find({ courseId: courseId, userId: userId }).updateMany({
             rating: rating,
@@ -258,12 +220,6 @@ module.exports = {
     },
 
     async update(courseId, userId, courseContent) {
-        // courseContent.lastUpdated = new Date();
-        // return db(TABLE_NAME).where({
-        //     courseId: courseId,
-        //     userId: userId,
-        //     isDeleted: false
-        // }).update(courseContent);
         await RegisterCourse.find({ courseId: courseId, userId: userId }).updateMany(courseContent);
     },
 
@@ -272,14 +228,7 @@ module.exports = {
     },
 
     async delete(courseId, userId) {
-        // return db(TABLE_NAME).where({
-        //     courseId: courseId,
-        //     userId: userId,
-        //     isDeleted: false
-        // }).update({
-        //     isDeleted: true,
-        //     lastUpdated: new Date()
-        // });
+
 
         await RegisterCourse.find({ courseId: courseId, userId: userId }).deleteMany();
 

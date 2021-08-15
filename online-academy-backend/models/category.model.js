@@ -1,4 +1,3 @@
-const db = require('../utils/db');
 const TABLE_NAME = 'category'
 
 const {Category} = require('../schema/mongodb.schema');
@@ -19,6 +18,8 @@ module.exports = {
         const category = await Category.find({_id: id, isDeleted: false}, ['_id', 'categoryName']).exec();
         return category[0];
     },
+
+   
 
     async add(category) {
         let newCategory = new Category;

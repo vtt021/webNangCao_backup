@@ -1,5 +1,4 @@
 const authConstant = require('../utils/auth.constant');
-const db = require('../utils/db');
 const { User } = require('../schema/mongodb.schema')
 const mongoose = require('mongoose');
 
