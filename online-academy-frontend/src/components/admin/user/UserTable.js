@@ -173,7 +173,7 @@ export default function AdminUser() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, _] = useState(5);
     const [rows, setRows] = useState(data)
-
+    const [role, setRole] = useState("Tất cả")
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -209,21 +209,21 @@ export default function AdminUser() {
         setRows(temp.slice());
     },[users])
 
-    const filterData = (value) => {
-        if (value) {
+    const handleRoleChange = (event) => {
+        setRole(event.target.value);
+        if (event.target.value != 'Tất cả') {
             const filtered = data.filter(d => {
-                if (d.name.search(new RegExp(value, "i")) >= 0
-                    || d.email.search(new RegExp(value, "i")) >= 0){
-                        setPage(0);
-                        return d;
+                if (new String(d.usersRole).search(new RegExp(event.target.value, "i")) >= 0) {
+                    setPage(0)
+                    return d;
                 }
             });
             setRows(filtered)
         } else {
-            
-                setRows(data)
-            }
+            setRows(data)
         }
+
+    };
     
     return (
         <Paper className={classes.root}>
@@ -237,15 +237,22 @@ export default function AdminUser() {
       >
         Thêm
       </Button>
-            <TextField
-                label="Search"
-                id="outlined-size-normal"
-                placeholder="Search"
-                variant="outlined"
-                style={{ paddingBottom: '1%', width: '80%' }}
-                onChange={(e) => {
-                    filterData(e.target.value)}}
-            />
+      <FormControl  style={{ width: '20%', paddingLeft: '2%' }} className={classes.formControl}>
+            <InputLabel style={{ width: '50%', paddingLeft: '13%' }} id ="demo-simple-select-outlined-label">Phân hệ</InputLabel>
+                <Select
+                    labelId="demo-simple-select-outlined-label"
+                    id="demo-simple-select-outlined"
+                    value={role}
+                    onChange={handleRoleChange}
+                    displayEmpty
+                    className={classes.selectEmpty}>
+
+                    <MenuItem value="Tất cả"> Tất cả</MenuItem>
+                    <MenuItem value="Học viên">Học viên</MenuItem>
+                    <MenuItem value="Quản trị viên">Quản trị viên</MenuItem>
+                    <MenuItem value="Giáo viên">Giáo viên</MenuItem>
+                </Select>
+            </FormControl>
 
             <TableContainer className={classes.container}>
                 <Table stickyHeader aria-label="sticky table">

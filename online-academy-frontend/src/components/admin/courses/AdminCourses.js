@@ -191,8 +191,9 @@ export default function AdminCourses() {
     const filterData = (value) => {
         if (value) {
             const filtered = data.filter(d => {
-                if (d.name.search(new RegExp(value, "i")) >= 0
-                    || d.email.search(new RegExp(value, "i")) >= 0){
+                if (new String(d.name).search(new RegExp(value, "i")) >= 0
+                    || new String(d.category).search(new RegExp(value, "i")) >= 0
+                    || new String(d.teacher).search(new RegExp(value, "i")) >= 0){
                         setPage(0);
                         return d;
                 }
@@ -210,7 +211,7 @@ export default function AdminCourses() {
                 label="Search"
                 id="outlined-size-normal"
                 placeholder="Search"
-                variant="outlined"
+                variant="standard"
                 style={{ paddingBottom: '1%', width: '80%' }}
                 onChange={(e) => {
                     filterData(e.target.value)}}

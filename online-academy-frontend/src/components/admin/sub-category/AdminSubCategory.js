@@ -321,7 +321,7 @@ export default function AdminSubCategory() {
                 label="Search"
                 id="outlined-size-normal"
                 placeholder="Search"
-                variant="outlined"
+                variant="standard"
                 style={{ paddingBottom: '1%', width: '80%' }}
                 onChange={(e) => {
                     searchData(e.target.value)}}
