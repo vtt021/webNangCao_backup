@@ -50,8 +50,7 @@ export default function Header() {
     const handleUserClose = () => {
         setUserAnchorEl(null);
     };
-    const handleProfile = () => 
-    {
+    const handleProfile = () => {
         window.location.href = '/profile'
     }
     const handleUserLogout = () => {
@@ -63,18 +62,6 @@ export default function Header() {
         window.location.href = '/login'
     };
 
-    const onChangeSearchText = (event) => {
-        console.log(event.target.value);
-        setSearchText(event.target.value);
-    };
-    const handleSeachClick = (event) => {
-        if (searchText) {
-            window.location.href = '/search/' + searchText;
-        }
-        else {
-            console.log('chưa nhập gì hết');
-        }
-    };
 
     useEffect(() => {
         if (user)
@@ -130,7 +117,6 @@ export default function Header() {
                                 open={userOpen}
                                 onClose={handleUserClose}
                             >
-                                <MenuItem onClick={handleProfile}>Quản lý cá nhân</MenuItem>
                                 <MenuItem onClick={handleUserLogout}>Đăng xuất</MenuItem>
                             </Menu>
                         </div>

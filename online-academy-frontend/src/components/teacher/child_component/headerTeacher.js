@@ -99,6 +99,7 @@ export default function HeaderTeacher() {
                                 onClose={handleUserClose}
                             >
                                 <MenuItem onClick={() => window.location.href = '/teacher'}>Trang chủ</MenuItem>
+                                <MenuItem onClick={() => window.location.href = '/teacher/profile'}>Cập nhật thông tin</MenuItem>
                                 <MenuItem onClick={handleUserLogout}>Đăng xuất</MenuItem>
                             </Menu>
                         </div>
@@ -112,7 +113,7 @@ export default function HeaderTeacher() {
 const useStyles = makeStyles((theme) => ({
     grow: {
         flexGrow: 1,
-        paddingBottom: '3%'
+        paddingBottom: '1%'
     },
     menuButton: {
         marginRight: theme.spacing(2),

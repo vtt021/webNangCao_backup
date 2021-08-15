@@ -23,9 +23,12 @@ import { getDate } from 'date-fns';
 import { formatDateTime } from '../../../utils/helpers';
 import Deleteaction from './DeleteAction';
 import Tag from './UserStatus';
-import  Button from '@material-ui/core/Button';
+import Button from '@material-ui/core/Button';
 import Refreshtoken from '../../../refreshToken';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import AdminHeader from '../common/AdminHeader'
+import LeftNavi from '../common/LeftNavi';
+import { Grid } from '@material-ui/core';
 let stt = 0;
 const columns = [
     { id: 'stt', label: '#', minWidth: 10 },
@@ -33,33 +36,33 @@ const columns = [
     { id: 'email', label: 'email', minWidth: 70 },
     { id: 'usersRole', label: 'Phân hệ', minWidth: 100 },
     { id: 'last', label: 'Cập nhật lần cuối', minWidth: 150 },
-    { id: 'tag', label: 'Trạng thái', minWidth: 150,align: 'center' },
-    { id: 'deleted', label: '', minWidth: 50 ,align: 'center'},
+    { id: 'tag', label: 'Trạng thái', minWidth: 150, align: 'center' },
+    { id: 'deleted', label: '', minWidth: 50, align: 'center' },
 ];
 
-function createData(_id,name, email, role,isUnLock,isDelete, lastUpdated) {
+function createData(_id, name, email, role, isUnLock, isDelete, lastUpdated) {
     stt += 1;
     let id = _id;
     let usersRole;
-    if(role===0){
-        usersRole="Học viên"
-    }else if(role === 1){
-        usersRole="Giáo viên"
-    }else{
-        usersRole="Quản trị viên"
+    if (role === 0) {
+        usersRole = "Học viên"
+    } else if (role === 1) {
+        usersRole = "Giáo viên"
+    } else {
+        usersRole = "Quản trị viên"
     }
     let tag;
     if (isDelete) {
         tag = <Tag content="Đã xóa" backGroundColor="#999999" textColor="white" />
-    }else if(isUnLock){
+    } else if (isUnLock) {
         tag = <Tag content="Đang hoạt động" backGroundColor="#2980b9" textColor="white" />;
-    }else{
+    } else {
         tag = <Tag content="Đang chờ xác thực" backGroundColor="red" textColor="white" />;
     }
 
     let last = formatDateTime(new Date(lastUpdated)).toLocaleString()
-    let deleted = (<Deleteaction isDeleted={isDelete} id = {_id}/>)
-    return { stt, name, email, usersRole, last,tag ,deleted};
+    let deleted = (<Deleteaction isDeleted={isDelete} id={_id} />)
+    return { stt, name, email, usersRole, last, tag, deleted };
 }
 
 const StyledTableCell = withStyles(theme => ({
@@ -69,21 +72,7 @@ const StyledTableCell = withStyles(theme => ({
     },
 }))(TableCell);
 
-const useStyles = makeStyles({
-    root: {
-        margin: '5% 2% 10% 2%',
-    },
-    container: {
-        maxWidth: '100%',
-    },
-});
 
-const useStyles1 = makeStyles(theme => ({
-    root: {
-        flexShrink: 0,
-        marginLeft: theme.spacing(2.5),
-    },
-}));
 
 function TablePaginationActions(props) {
     const classes = useStyles1();
@@ -156,19 +145,18 @@ TablePaginationActions.propTypes = {
 };
 
 export default function AdminUser() {
-    const [auth,setAuth] = useState(JSON.parse(localStorage.getItem("auth")))
-    useEffect(()=>{
+    const [auth, setAuth] = useState(JSON.parse(localStorage.getItem("auth")))
+    useEffect(() => {
         setAuth(JSON.parse(localStorage.getItem("auth")))
-    },[localStorage.getItem("auth")])
+    }, [localStorage.getItem("auth")])
 
     useEffect(() => {
-        if (auth===null||auth.role != 2) 
-        {
+        if (auth === null || auth.role != 2) {
             window.location.replace("/")
         }
     }, [auth])
-    const [data,setData] = useState([]);
-    
+    const [data, setData] = useState([]);
+
     const classes = useStyles();
     const [page, setPage] = useState(0);
     const [rowsPerPage, _] = useState(5);
@@ -178,36 +166,36 @@ export default function AdminUser() {
         setPage(newPage);
     };
     const [users, setUser] = useState([]);
-    const getUsers = async() => {
-        await axios.get('http://localhost:3001/api/users',{
-            headers:{
-                "x-access-token":await Refreshtoken()
+    const getUsers = async () => {
+        await axios.get('http://localhost:3001/api/users', {
+            headers: {
+                "x-access-token": await Refreshtoken()
             }
         })
-        .then(res => {
-            setUser(res.data);
-        })
+            .then(res => {
+                setUser(res.data);
+            })
     }
 
     useEffect(() => {
         Refreshtoken()
         setAuth(JSON.parse(localStorage.getItem("auth")))
-        
-        const init = async() => {
+
+        const init = async () => {
             await getUsers();
         }
 
         init();
-    
+
     }, []);
-    useEffect(()=>{
+    useEffect(() => {
         stt = 0;
-        const temp = users.map((user=>{
-            return createData(user._id,user.username,user.email,user.role,user.isUnlocked,user.isDeleted,user.lastUpdated)
+        const temp = users.map((user => {
+            return createData(user._id, user.username, user.email, user.role, user.isUnlocked, user.isDeleted, user.lastUpdated)
         }));
         setData(temp);
         setRows(temp.slice());
-    },[users])
+    }, [users])
 
     const handleRoleChange = (event) => {
         setRole(event.target.value);
@@ -224,80 +212,119 @@ export default function AdminUser() {
         }
 
     };
-    
+
     return (
-        <Paper className={classes.root}>
-             <Button
-        variant="contained"
-        color="primary"
-        style={{marginRight:'2%'}}
-        onClick={()=>{window.location.replace("admin/create-teacher")}}
-        className={classes.button}
-        endIcon={<AddCircleIcon/>}
-      >
-        Thêm
-      </Button>
-      <FormControl  style={{ width: '20%', paddingLeft: '2%' }} className={classes.formControl}>
-            <InputLabel style={{ width: '50%', paddingLeft: '13%' }} id ="demo-simple-select-outlined-label">Phân hệ</InputLabel>
-                <Select
-                    labelId="demo-simple-select-outlined-label"
-                    id="demo-simple-select-outlined"
-                    value={role}
-                    onChange={handleRoleChange}
-                    displayEmpty
-                    className={classes.selectEmpty}>
+        <td style={{ display: 'flex', direction: 'column', justifyContent: 'space-evenly', flexDirection: 'column' }}>
+            <AdminHeader />
+            <Grid container >
+                <Grid item xs={2}>
+                    <LeftNavi selected='2' />
+                </Grid>
+                <Grid item xs={10}
+                    style={{ display: 'flex', justifyContent: 'center', align: 'center', width: '100%', flexDirection: 'column' }}>
+                    <div className={classes.root}>
+                        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                            <FormControl style={{ width: '20%', paddingLeft: '2%' }} className={classes.formControl}>
+                                <InputLabel style={{ width: '50%', paddingLeft: '13%' }} 
+                                id="demo-simple-select-outlined-label">Phân hệ</InputLabel>
 
-                    <MenuItem value="Tất cả"> Tất cả</MenuItem>
-                    <MenuItem value="Học viên">Học viên</MenuItem>
-                    <MenuItem value="Quản trị viên">Quản trị viên</MenuItem>
-                    <MenuItem value="Giáo viên">Giáo viên</MenuItem>
-                </Select>
-            </FormControl>
+                                <Select
+                                    labelId="demo-simple-select-outlined-label"
+                                    id="demo-simple-select-outlined"
+                                    value={role}
+                                    onChange={handleRoleChange}
+                                    displayEmpty
+                                    style={{ marginLeft: "auto", marginBottom: '3%', width: '100%' }}
+                                    className={classes.selectEmpty}>
 
-            <TableContainer className={classes.container}>
-                <Table stickyHeader aria-label="sticky table">
-                    <TableHead>
-                        <TableRow>
-                            {columns.map((column) => (
-                                <StyledTableCell
-                                    key={column.id}
-                                    align={column.align}
-                                    style={{ width: column.minWidth }}
-                                >
-                                    {column.label}
-                                </StyledTableCell>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                            return (
-                                <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                                    {columns.map((column) => {
-                                        const value = row[column.id];
+                                    <MenuItem value="Tất cả"> Tất cả</MenuItem>
+                                    <MenuItem value="Học viên">Học viên</MenuItem>
+                                    <MenuItem value="Quản trị viên">Quản trị viên</MenuItem>
+                                    <MenuItem value="Giáo viên">Giáo viên</MenuItem>
+                                </Select>
+
+
+                            </FormControl>
+                        </div>
+                        <TableContainer className={classes.container}>
+                            <Table stickyHeader aria-label="sticky table">
+                                <TableHead>
+                                    <TableRow>
+                                        {columns.map((column) => (
+                                            <StyledTableCell
+                                                key={column.id}
+                                                align={column.align}
+                                                style={{ width: column.minWidth }}
+                                            >
+                                                {column.label}
+                                            </StyledTableCell>
+                                        ))}
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                                         return (
-                                            <TableCell key={column.id} align={column.align}>
-                                                {column.format && typeof value === 'number' ? column.format(value) : value}
-                                            </TableCell>
+                                            <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                                {columns.map((column) => {
+                                                    const value = row[column.id];
+                                                    return (
+                                                        <TableCell key={column.id} align={column.align}>
+                                                            {column.format && typeof value === 'number' ? column.format(value) : value}
+                                                        </TableCell>
+                                                    );
+                                                })}
+                                            </TableRow>
                                         );
                                     })}
-                                </TableRow>
-                            );
-                        })}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <TablePagination
-                colSpan={3}
-                rowsPerPageOptions={[10]}
-                component="div"
-                labelRowsPerPage=""
-                count={rows.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onChangePage={handleChangePage}
-                ActionsComponent={TablePaginationActions}
-            />
-        </Paper>
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                        <TablePagination
+                            colSpan={3}
+                            rowsPerPageOptions={[10]}
+                            component="div"
+                            labelRowsPerPage=""
+                            count={rows.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onChangePage={handleChangePage}
+                            ActionsComponent={TablePaginationActions}
+                        />
+                        <div style={{ display: 'flex' }}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                style={{ marginRight: '2%' }}
+                                onClick={() => { window.location.replace('/admin/create-teacher') }}
+                                className={classes.button}
+                                endIcon={<AddCircleIcon />}
+                                style={{ marginLeft: "auto", marginTop: '2%' }}
+                            >
+                                Thêm tài khoản giáo viên 
+                            </Button>
+                        </div>
+
+                    </div>
+
+                </Grid>
+            </Grid>
+
+        </td>
+
     );
 }
+const useStyles = makeStyles({
+    root: {
+        margin: '1% 2% 10% 2%',
+    },
+    container: {
+        maxWidth: '100%',
+    },
+});
+
+const useStyles1 = makeStyles(theme => ({
+    root: {
+        flexShrink: 0,
+        marginLeft: theme.spacing(2.5),
+    },
+}));
