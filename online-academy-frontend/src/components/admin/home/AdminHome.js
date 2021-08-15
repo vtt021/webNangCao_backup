@@ -1,6 +1,7 @@
 import React,{useEffect,useState} from 'react'
 import Button from '@material-ui/core/Button';
 import Header from '../../common/header/header';
+import AdminHeader from '../common/AdminHeader';
 export default function AdminHome(props) {
     const [auth, setAuth] = useState({"role":2})
 
@@ -17,6 +18,7 @@ export default function AdminHome(props) {
     return (
         <td style={{ display: 'flex',direction: 'column', justifyContent: 'space-evenly',flexDirection:'column' }}>
             <Header />
+            <AdminHeader/>
             <Button href="/admin/categories" variant='contained' color='secondary'>Categories</Button>
             <Button href="/admin/sub-categories" variant='contained' color='inherit'>Sub Categories</Button>
             <Button href="/admin/users" variant='contained' color='primary'>Users</Button>
