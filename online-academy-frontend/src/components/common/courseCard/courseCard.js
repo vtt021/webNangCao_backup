@@ -37,9 +37,27 @@ export default function CourseCard(props) {
         console.log(id);
         window.location.href = "/detail/" + id
     };
+    const classtifyCard = () => {
+        //console.log(props.courseInfo)
+        if (props.courseInfo.isCompleted === false) {
+            return classes.notCompleteCard
+        }
+        else if (props.courseInfo.hotPoint > 50) {
+            return classes.hotCard
+        }
+        else if (props.courseInfo.price === 0) {
+            return classes.freeCard;
+        }
+        else if (props.courseInfo.salePrice !== '0') {
+            return classes.saleCard;
+        }
+        else {
+            return classes.card;
+        }
+    }
     return (
         <div className={classes.container}>
-            <Card className={classes.card}>
+            <Card className={classtifyCard()}>
                 <CardActionArea onClick={handleDetailPage(props.courseInfo._id)}>
                     <CardHeader
 
@@ -89,13 +107,16 @@ export default function CourseCard(props) {
                         {props.courseInfo.salePrice != 0 && props.courseInfo.salePrice && ( // Có giảm giá
                             <container>
                                 <Typography gutterBottom variant="h6" align='justify' className={classes.price}>
-                                    {props.courseInfo.salePrice === '0'
+                                    {
+                                        'Học phí: ' + props.courseInfo.salePrice
+                                    }
+                                    {/* {props.courseInfo.salePrice !== '0'
                                         ? 'Học phí: ' + props.courseInfo.salePrice
                                         : 'Miễn phí'
-                                    }
+                                    } */}
                                 </Typography>
                                 {
-                                    props.courseInfo.salePrice === props.courseInfo.price
+                                    props.courseInfo.salePrice !== props.courseInfo.price
                                         ? <Typography gutterBottom variant="subtitle2" align='justify' className={classes.oldPrice} >
                                             {
                                                 '( Học phí gốc: ' + props.courseInfo.price + ' )'
@@ -139,6 +160,50 @@ const useStyles = makeStyles(() => ({
         width: 370,
         minHeight: 475,
         background: '#F9F9F9',
+
+    },
+    notCompleteCard: {
+        width: 370,
+        minHeight: 475,
+        background: '#F9F9F9',
+        border: '3px solid',
+        borderTopColor: '#CF0000',
+        borderBottomColor: '#CF0000',
+        borderLeftColor: '#CF0000',
+        borderRightColor: '#CF0000',
+
+    },
+    hotCard: {
+        width: 370,
+        minHeight: 475,
+        background: '#F9F9F9',
+        border: '3px solid',
+        borderTopColor: '#FF4848',
+        borderBottomColor: '#FF4848',
+        borderLeftColor: '#FF4848',
+        borderRightColor: '#FF4848',
+    },
+    saleCard: {
+        width: 370,
+        minHeight: 475,
+        background: '#F9F9F9',
+        border: '3px solid',
+        borderTopColor: '#FFD371',
+        borderBottomColor: '#FFD371',
+        borderLeftColor: '#FFD371',
+        borderRightColor: '#FFD371',
+
+    },
+    freeCard: {
+        width: 370,
+        minHeight: 475,
+        background: '#F9F9F9',
+        border: '3px solid',
+        borderTopColor: '#C2FFD9',
+        borderBottomColor: '#C2FFD9',
+        borderLeftColor: '#C2FFD9',
+        borderRightColor: '#C2FFD9',
+
 
     },
     cardHeader: {
