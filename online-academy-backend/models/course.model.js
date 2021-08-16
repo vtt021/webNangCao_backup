@@ -20,7 +20,10 @@ const mainPageData = [
     'price',
     'salePrice',
     '_id',
-    'studentCount'
+    'studentCount',
+    'hotPoint',
+    // 'lastUpdated',
+    'createdDate'
 ];
 
 
@@ -72,6 +75,8 @@ module.exports = {
             data['imageCourse'] = courses[i]['imageCourse']
             data['price'] = courses[i]['price']
             data['salePrice'] = courses[i]['salePrice']
+            data['hotPoint'] = courses[i]['hotPoint']
+            data['createdDate'] = courses[i]['createdDate']
             data['categoryName'] = cateMapping[subCateMapping[courses[i]['subCategoryId']]]
             newCourses.push(data)
         }
@@ -127,6 +132,8 @@ module.exports = {
             data['imageThumbnail'] = courses[i]['imageThumbnail']
             data['imageCourse'] = courses[i]['imageCourse']
             data['price'] = courses[i]['price']
+            data['hotPoint'] = courses[i]['hotPoint']
+            data['createdDate'] = courses[i]['createdDate']
             data['salePrice'] = courses[i]['salePrice']
             newCourses.push(data)
         }
@@ -181,6 +188,8 @@ module.exports = {
             data['imageThumbnail'] = courses[i]['imageThumbnail']
             data['imageCourse'] = courses[i]['imageCourse']
             data['price'] = courses[i]['price']
+            data['hotPoint'] = courses[i]['hotPoint']
+            data['createdDate'] = courses[i]['createdDate']
             data['salePrice'] = courses[i]['salePrice']
             newCourses.push(data)
         }
@@ -242,6 +251,8 @@ module.exports = {
             data['imageCourse'] = courses[i]['imageCourse']
             data['price'] = courses[i]['price']
             data['salePrice'] = courses[i]['salePrice']
+            data['hotPoint'] = courses[i]['hotPoint']
+            data['createdDate'] = courses[i]['createdDate']
             data['studentCount'] = courses[i]['studentCount']
             newCourses.push(data)
         }
@@ -278,6 +289,8 @@ module.exports = {
             data['ratingCount'] = courses[i]['ratingCount']
             data['imageThumbnail'] = courses[i]['imageThumbnail']
             data['imageCourse'] = courses[i]['imageCourse']
+            data['hotPoint'] = courses[i]['hotPoint']
+            data['createdDate'] = courses[i]['createdDate']
             data['price'] = courses[i]['price']
             data['salePrice'] = courses[i]['salePrice']
             newCourses.push(data)
@@ -315,6 +328,8 @@ module.exports = {
             data['ratingCount'] = courses[i]['ratingCount']
             data['imageThumbnail'] = courses[i]['imageThumbnail']
             data['imageCourse'] = courses[i]['imageCourse']
+            data['hotPoint'] = courses[i]['hotPoint']
+            data['createdDate'] = courses[i]['createdDate']
             data['price'] = courses[i]['price']
             data['salePrice'] = courses[i]['salePrice']
             newCourses.push(data)
@@ -385,6 +400,8 @@ module.exports = {
             data['detailLong'] = courses[i]['detailLong']
             data['isCompleted'] = courses[i]['isCompleted']
             data['totalRating'] = courses[i]['totalRating']
+            data['hotPoint'] = courses[i]['hotPoint']
+            data['createdDate'] = courses[i]['createdDate']
             data['studentCount'] = courses[i]['studentCount']
             newCourses.push(data)
         }
@@ -452,6 +469,8 @@ module.exports = {
             data['imageThumbnail'] = courses[i]['imageThumbnail']
             data['imageCourse'] = courses[i]['imageCourse']
             data['price'] = courses[i]['price']
+            data['hotPoint'] = courses[i]['hotPoint']
+            data['createdDate'] = courses[i]['createdDate']
             data['salePrice'] = courses[i]['salePrice']
             newCourses.push(data)
         }
@@ -487,6 +506,8 @@ module.exports = {
                 data['salePrice'] = courses[i]['salePrice']
                 data['detailShort'] = courses[i]['detailShort']
                 data['detailLong'] = courses[i]['detailLong']
+                data['hotPoint'] = courses[i]['hotPoint']
+                data['createdDate'] = courses[i]['createdDate']
                 data['isCompleted'] = courses[i]['isCompleted']
                 data['totalRating'] = courses[i]['totalRating']
                 data['studentCount'] = courses[i]['studentCount']
@@ -548,6 +569,8 @@ module.exports = {
             data['ratingCount'] = courses[i]['ratingCount']
             data['imageThumbnail'] = courses[i]['imageThumbnail']
             data['imageCourse'] = courses[i]['imageCourse']
+            data['hotPoint'] = courses[i]['hotPoint']
+            data['createdDate'] = courses[i]['createdDate']
             data['price'] = courses[i]['price']
             data['salePrice'] = courses[i]['salePrice']
             newCourses.push(data)
@@ -599,6 +622,8 @@ module.exports = {
             data['ratingCount'] = courses[i]['ratingCount']
             data['imageThumbnail'] = courses[i]['imageThumbnail']
             data['imageCourse'] = courses[i]['imageCourse']
+            data['hotPoint'] = courses[i]['hotPoint']
+            data['createdDate'] = courses[i]['createdDate']
             data['price'] = courses[i]['price']
             data['salePrice'] = courses[i]['salePrice']
             newCourses.push(data)
@@ -627,6 +652,7 @@ module.exports = {
         newCourse.subCategoryId = course.subCategoryId
         newCourse.teacherId = course.teacherId
         newCourse.price = course.price
+        newCourse.salePrice = course.price
         newCourse.detailShort = course.detailShort
         newCourse.detailLong = course.detailLong
 
