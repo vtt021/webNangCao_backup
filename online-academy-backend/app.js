@@ -71,6 +71,6 @@ app.use('/', (req, res, next) => {
 
 
 //Cập nhật 12 tiếng 1 lần lúc 0 và 12 giờ
-// cron.schedule('0 0,12 * * *', async () => {
-//     await courseModel.resetHotpoint()
-// })
+cron.schedule('0 0,12 * * *', async () => {
+    await courseModel.resetHotpoint()
+})

@@ -28,11 +28,11 @@ export default function UpdateInfoTeacher() {
     }, [localStorage.getItem("auth")])
 
     const onSubmit = async (data) => {
-        console.log(data)
+        // console.log(data)
         await axios.put('http://localhost:3001/api/users', {
-            password: data.password,
-            email: data.email,
-            username: data.username
+            password: password,
+            email: email,
+            username: username
         }, {
             headers: {
                 'x-access-token': await Refreshtoken()
@@ -44,6 +44,10 @@ export default function UpdateInfoTeacher() {
         });
     }
 
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("")
+
     useEffect(() => {
         const init = async () => {
             await axios.get('http://localhost:3001/api/users/id?id=' + user.id)
@@ -51,6 +55,10 @@ export default function UpdateInfoTeacher() {
                     let data = res.data;
                     console.log(data);
                     setUserData(data);
+
+                    setUsername(data.username);
+                    setEmail(data.email);
+                    
 
 
 
@@ -77,7 +85,8 @@ export default function UpdateInfoTeacher() {
                         {/* Tên đăng nhập */}
                         <Grid item xs={12}>
                             <TextField
-                                defaultValue={userData.username}
+                                // defaultValue={userData.username}
+                                value={username}
                                 autoComplete="fname"
                                 name="username"
                                 variant="filled"
@@ -85,6 +94,7 @@ export default function UpdateInfoTeacher() {
                                 fullWidth
                                 id="username"
                                 label="Họ và tên người dùng"
+                                onChangeCapture={(e) => setUsername(e.target.value)}
                                 autoFocus
                                 {...register("username", { required: true })}
                             />
@@ -94,7 +104,9 @@ export default function UpdateInfoTeacher() {
                         {/* Email */}
                         <Grid item xs={12}>
                             <TextField
-                                defaultValue={userData.email}
+                                defaultValue={email}
+                                value={email}
+                                onChangeCapture={(e) => setEmail(e.target.value)}
                                 variant="filled"
                                 required
                                 fullWidth
@@ -108,7 +120,7 @@ export default function UpdateInfoTeacher() {
                                 {...register("email", { required: true, pattern: /^\S+@\S+$/i })}
                             />
                         </Grid>
-                        {errors.email && <span className='errors'>*Email chưa đúng định dạng </span>}
+                        {(errors.email || email == null) && <span className='errors'>*Email chưa đúng định dạng </span>}
                         <Grid item xs={12} >
                             <div style={{ display: "flex" }}>
                                 <Typography variant='h6' style={{ marginRight: "auto", paddingBottom: '1%' }}>
@@ -124,6 +136,7 @@ export default function UpdateInfoTeacher() {
                                 label="Mật khẩu"
                                 type="password"
                                 id="password"
+                                onChangeCapture={(e) => setPassword(e.target.value)}
                                 autoComplete="current-password"
                                 {...register("password", { required: true, minLength: 1 })}
                             />

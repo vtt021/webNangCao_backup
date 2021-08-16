@@ -36,6 +36,8 @@ export default function UpdateContent(props) {
     const [currentCategory, setCurrentCategory] = useState(null);
     // Set defaut SubCategory từ database (id của sub: props.courseInfo.subCategoryId)
     const [currentSubCategory, setCurrentSubCategory] = useState(null);
+    const [prices, setPrices] = useState(0);
+    const [salePrices, setSalePrices] = useState(0);
 
     const handleChangeCategory = (event) => {
         setCurrentCategory(event.target.value);
@@ -68,6 +70,11 @@ export default function UpdateContent(props) {
                 htmlStr.contentBlocks,
                 htmlStr.entityMap
             );
+
+            setPrices(props.courseInfo.price)
+            setSalePrices(props.courseInfo.salePrice)
+            setValue("price", props.courseInfo.price)
+            setValue("salePrice", props.courseInfo.salePrice)
 
             setEditorState(EditorState.createWithContent(newState));
             setTimeout(() => {
@@ -140,8 +147,8 @@ export default function UpdateContent(props) {
                                 label="Lĩnh vực"
                                 fullWidth
                                 // defaultValue=
-                                value={currentCategory}
-                                onChange={handleChangeCategory}
+                                value={currentCategory}  
+                                onChangeCapture={handleChangeCategory}
                                 SelectProps={{
                                     native: true,
                                 }}
@@ -173,7 +180,7 @@ export default function UpdateContent(props) {
                                 fullWidth
                                 defaultValue={props.courseInfo.subCategoryId}
                                 value={currentSubCategory}
-                                onChange={handleChangeSubCategory}
+                                onChangeCapture={handleChangeSubCategory}
                                 SelectProps={{
                                     native: true,
                                 }}
@@ -224,25 +231,39 @@ export default function UpdateContent(props) {
                                 fullWidth
                                 id="price"
                                 label="Học phí"
-                                defaultValue={props.courseInfo.price}
+                                defaultValue={prices}
+                                value={prices}
+                                onChangeCapture={(e) => {
+                                    setPrices(e.target.value)
+                                    setValue("price", Number.parseInt(e.target.value))
+                                }}
                                 {...register("price", { required: true, min: 0 })}
                             />
                         </Grid>
-                        {errors.price && <span className='errors'>*Chưa có học phí</span>}
+                        {errors.price && <span className='errors'>*Chưa có học phí hoặc giá không hợp lệ</span>}
 
                         {/* Giảm giá */}
                         <Grid item xs={12}>
                             <TextField
                                 name="salePrice"
+                                placeholder="Nếu không giảm giá thì để trống"
                                 variant="filled"
                                 type='number'
                                 fullWidth
                                 id="salePrice"
                                 label="Học phí giảm giá"
-                                defaultValue={props.courseInfo.salePrice ? props.courseInfo.salePrice : '0'}
+                                value={salePrices}
+                                defaultValue={salePrices}
+                                onChangeCapture={(e) => {
+                                    setSalePrices(e.target.value)
+                                    setValue("salePrice", Number.parseInt(e.target.value) || prices)
+                                }}
                                 {...register("salePrice", { min: 0 })}
                             />
                         </Grid>
+                        {errors.salePrice && <span className='errors'>*Học phí giảm giá không hợp lệ</span>}
+                        {prices < salePrices && <span className='errors'>*Học phí giảm giá phải nhỏ hơn hoặc bằng học phí gốc</span>}
+
 
                         {/* Mô tả chi tiết (wysiwyg)*/}
                         <Grid
@@ -286,7 +307,7 @@ export default function UpdateContent(props) {
                         </Grid>
                         {errors.detailLong && <span className='errors'>*Chưa có mô tả</span>}
 
-                        <Grid container item xs={12} alignItems='center'>
+                        {/* <Grid container item xs={12} alignItems='center'>
                             <Typography variant='h5' align='left' className={classes.textAlign}>
                                 Đã hoàn thiện:
                             </Typography>
@@ -299,7 +320,7 @@ export default function UpdateContent(props) {
                                 {...register("isCompleted", {})}
                             />
 
-                        </Grid>
+                        </Grid> */}
 
                     </Grid>
 
