@@ -9,7 +9,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Refreshtoken from "../../../refreshToken";
-
+import AlertDialog from "../../admin/common/Alert";
 const saltRounds = 10;
 
 export default function UpdatePassTeacher() {
@@ -17,7 +17,8 @@ export default function UpdatePassTeacher() {
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
 
     const [user, setUser] = useState(JSON.parse(localStorage.getItem("auth")))
-
+    const [isOpened, setOpen] = useState(false);
+    const [isOpened2, setOpen2] = useState(false);
     useEffect(() => {
         setUser(JSON.parse(localStorage.getItem("auth")))
     }, [localStorage.getItem("auth")])
@@ -41,21 +42,27 @@ export default function UpdatePassTeacher() {
         let accessToken = JSON.parse(localStorage.getItem("auth")).accessToken;
         console.log(accessToken);
 
-        //TODO: Gọi popup đổi pass thành công & thất bại 
 
         await axios.put("http://localhost:3001/api/users/password", data, {
             headers: {
                 'x-access-token': await Refreshtoken()
             }
         }).then(res => {
+            setOpen(true)
 
 
-        }).catch(error => console.log(error));
+
+        }).catch(error => {
+            console.log(error)
+            setOpen2(true)
+        });
     }
 
     return (
         <div maxWidth="xs">
             <CssBaseline />
+            <AlertDialog close={() => { setOpen(false) }} isOpened={isOpened} value={"Đổi mật khẩu thành công"} />
+            <AlertDialog close={() => { setOpen2(false) }} isOpened={isOpened2} value={"Đổi mật khẩu thất bại"} />
             <div className={classes.paper}>
                 <Typography component="h1" variant="h5">
                     Đổi mật khẩu

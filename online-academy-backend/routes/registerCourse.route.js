@@ -465,7 +465,6 @@ router.delete('/', userAuthMdw, async (req, res) => {
             })
         }
         else {
-            //TODO: Delete all register course detail
             await registerCourseDetailModel.removeContent(courseId, userId);
 
             await registerCourseModel.delete(courseId, userId);
@@ -501,7 +500,6 @@ router.delete('/admin', userAuthMdw, async (req, res) => {
             })
         }
         else {
-            //TODO: Delete all register course detail
             await registerCourseDetailModel.removeContent(courseId, userId);
 
             await registerCourseModel.unregistered(courseId, userId);

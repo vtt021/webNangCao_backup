@@ -13,7 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Refreshtoken from "../../refreshToken";
-
+import AlertDialog from "../admin/common/Alert";
 
 export default function UpdateInfo() {
     const classes = useStyles();
@@ -22,6 +22,8 @@ export default function UpdateInfo() {
     //Gọi API lấy tên với email của tài khoản nha
     const [user, setUser] = useState(JSON.parse(localStorage.getItem("auth")))
     const [userData, setUserData] = useState(null);
+    const [isOpened, setOpen] = useState(false);
+    const [isOpened2, setOpen2] = useState(false);
 
     useEffect(() => {
         setUser(JSON.parse(localStorage.getItem("auth")))
@@ -39,10 +41,10 @@ export default function UpdateInfo() {
             }
         }).then(res => {
             console.log("Success")
-            //TODO: Popup báo thành công
+            setOpen(true)
         }).catch(e => {
             console.log(e);
-            //TODO: Popup báo thất bại
+            setOpen2(true)
         });
     }
 
@@ -64,7 +66,7 @@ export default function UpdateInfo() {
 
                     setValue("username", data.username)
                     setValue("email", data.email)
-                    
+
 
 
                 }).catch(e => {
@@ -80,6 +82,8 @@ export default function UpdateInfo() {
         }
         return (
             <div className={classes.paper}>
+                <AlertDialog close={() => { setOpen(false) }} isOpened={isOpened} value={"Cập nhật thành công"} />
+                <AlertDialog close={() => { setOpen2(false) }} isOpened={isOpened2} value={"Cập nhật không thành công"} />
                 <Typography component="h1" variant="h5">
                     Cập nhật thông tin
                 </Typography>

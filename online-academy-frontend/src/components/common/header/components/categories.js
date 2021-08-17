@@ -47,7 +47,6 @@ export default function Category() {
         window.location.href ="/categories/" + categoryId + '/'+ event.target.id
     };
 
-    //TODO: GỌI API ĐỂ TẠO ITEMS SUBCATEGORY TƯƠNG ỨNG
     const renderItems = (listCategories) => {
         return (listCategories.map((category) => (
             <NestedMenuItem

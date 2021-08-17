@@ -64,7 +64,6 @@ export default function PagingCard(props) {
         }
     }
 
-    //TODO: LẤY DANH SÁCH KHÓA HỌC TUỲ VÀO YÊU CẦU => TRUYỀN VÀO ITEMS ĐỂ HIỂN THỊ
     const getCourseItems = () => {
         let url = "http://localhost:3001/api/courses/"
         if (props.search) {

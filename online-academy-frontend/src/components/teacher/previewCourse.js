@@ -48,15 +48,7 @@ export default function PreviewDetailPage(props) {
             })
                 .catch(error => console.log(body));
     }
-    /**
-     * TODO: 
-     * - DONE Setup 1 chỗ cho phép user đánh giá (nếu user chưa đánh giá trước đó), 
-     *  nếu đã đánh giá rồi thì nên hiện 1 dòng bạn đã đánh giá khóa học này (xem biến feedbackStatus)
-     * - DONE Render danh sách user đã đánh giá (có thể phân trang hoặc không)
-     * - Làm giùm em 3 cái popup trong phần này (Chú có thể Ctrl + F xong gõ popup)
-     * -DONE - Phần UI học phí trong này đang lỗi giá tiền, chú check lại giúp em
-     * 
-     *  */
+
 
 
 

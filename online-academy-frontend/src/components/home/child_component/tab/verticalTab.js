@@ -79,9 +79,7 @@ export default function VerticalTabs(props) {
                 ))) 
             }
             </Tabs>
-            { //TODO: TRUYỀN THAM SỐ VÀO MultiCarousel ĐỂ LẤY DỮ LIỆU PHÙ HỢP THEO 
-                //1. Theo category.id 
-                //2. Loại hiển thị (Mới nhất, Xem nhiều nhất, Đăng ký nhiều nhất) => cái này được truyền vào từ horizonalTab
+            { 
                 listCategories && (listCategories.map((category, i) => (
                     <TabPanel value={value} index={i}>
                         <MultiCarousel />

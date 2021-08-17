@@ -46,7 +46,6 @@ export default function MultiCarousel(props) {
         else {
         }
     }
-    //TODO: LẤY DANH SÁCH KHÓA HỌC THEO categoryId rồi để vào items nha
     useEffect(() => {
         const init = async () =>{
             getCourseItems()

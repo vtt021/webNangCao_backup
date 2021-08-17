@@ -8,9 +8,9 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 export default function Notification(props) {
   const [open, setOpen] = React.useState(props.isOpened);
-useEffect(()=>{
+  useEffect(() => {
     setOpen(props.isOpened)
-},[props.isOpened])
+  }, [props.isOpened])
 
   const handleClose = () => {
     setOpen(false);

@@ -311,7 +311,6 @@ export default function UploadVideo(props) {
     }
 
     const handleRemove = async () => {
-        //DONE: Gọi 1 cái popup xác nhận xóa chương
         await Refreshtoken();
 
         console.log("activeStep", activeStep)

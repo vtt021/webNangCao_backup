@@ -46,9 +46,6 @@ export default function CourseCard(props) {
                 </Typography>)
             )
         }
-        else if (props.courseInfo.price === 0) {
-            return
-        }
         else if (props.courseInfo.salePrice !== '0' && props.courseInfo.salePrice !== props.courseInfo.price) {
             return (
                 (<Typography noWrap align='left' variant="overline" style={{ color: '#FF7600' }} >
