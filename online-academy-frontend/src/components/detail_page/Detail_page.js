@@ -286,7 +286,8 @@ export default function DetailPage(props) {
                                 </div>
                             </Paper>
                             <Typography variant="h4" gutterBottom className={classes.underline}>
-                                Đề cương khóa học
+                                Đề cương khóa học: 
+                                {courseDetail.isCompleted.value }
                             </Typography>
                             <Accordions courseId={id} isBought={isBought} />
                             <Typography variant="h4" gutterBottom className={classes.underline} >

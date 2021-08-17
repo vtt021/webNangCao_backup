@@ -37,19 +37,37 @@ export default function CourseCard(props) {
         console.log(id);
         window.location.href = "/detail/" + id
     };
-    const classtifyCard = () => {
+    const classtifyText = () => {
         //console.log(props.courseInfo)
         if (props.courseInfo.isCompleted === false) {
-            return classes.notCompleteCard
-        }
-        else if (props.courseInfo.hotPoint > 50) {
-            return classes.hotCard
+            return (
+                (<Typography noWrap align='left' variant="overline" style={{ color: '#CF0000' }}>
+                    {'Chưa hoàn thiện'}
+                </Typography>)
+            )
         }
         else if (props.courseInfo.price === 0) {
-            return classes.freeCard;
+            return
         }
-        else if (props.courseInfo.salePrice !== '0') {
-            return classes.saleCard;
+        else if (props.courseInfo.salePrice !== '0' && props.courseInfo.salePrice !== props.courseInfo.price) {
+            return (
+                (<Typography noWrap align='left' variant="overline" style={{ color: '#FF7600' }} >
+                    {'Giảm giá'}
+                </Typography>)
+            )
+        }
+        else if (props.courseInfo.hotPoint > 200) {
+            return (
+                (<Typography noWrap align='left' variant="overline" style={{ color: '#FF4848' }}>
+                    {'Nổi bật'}
+                </Typography>)
+            )
+        }
+    }
+    const classtifyCard = () => {
+        //console.log(props.courseInfo)
+        if (props.courseInfo.hotPoint > 200) {
+            return classes.hotCard
         }
         else {
             return classes.card;
@@ -135,13 +153,20 @@ export default function CourseCard(props) {
                                 {'(' + props.courseInfo.ratingCount + ' đánh giá)'}
                             </Typography>
                         </Grid>
-                        <Grid container justify="flex-end" alignItems='flex-end'>
-                            {props.courseInfo.subCategoryId &&
-                                (<Typography noWrap align='left' variant="overline">
-                                    {subCategoryName}
-                                </Typography>)
-                            }
+                        <Grid container style={{ display: 'flex', justifyContent: "space-between" }} >
+                            <Grid item justify='flex-start'>
+                                {classtifyText()
+                                }
+                            </Grid>
+                            <Grid item justify='flex-end'>
+                                {props.courseInfo.subCategoryId &&
+                                    (<Typography noWrap align='left' variant="overline">
+                                        {subCategoryName}
+                                    </Typography>)
+                                }
+                            </Grid>
                         </Grid>
+
 
                     </CardContent>
                 </CardActionArea>
@@ -188,10 +213,10 @@ const useStyles = makeStyles(() => ({
         minHeight: 475,
         background: '#F9F9F9',
         border: '3px solid',
-        borderTopColor: '#FFD371',
-        borderBottomColor: '#FFD371',
-        borderLeftColor: '#FFD371',
-        borderRightColor: '#FFD371',
+        borderTopColor: '#FF7600',
+        borderBottomColor: '#FF7600',
+        borderLeftColor: '#FF7600',
+        borderRightColor: '#FF7600',
 
     },
     freeCard: {
