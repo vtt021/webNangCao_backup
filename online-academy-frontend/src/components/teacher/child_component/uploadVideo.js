@@ -28,7 +28,7 @@ export default function UploadVideo(props) {
 
     const [activeStep, setActiveStep] = useState(0);
     const [steps, setSteps] = useState(['Chương 1', 'Chương 2']); // Tên các chương đã có sẵn, gọi từ Database
-    const [completed, setCompleted] = React.useState([1, 0]); // Kiểm tra có video cũ chưa
+    const [completed, setCompleted] = React.useState([1, 1]); // Kiểm tra có video cũ chưa
 
     const [oldVideo, setOldVideo] = useState('');
     const [videoFile, setVideoFile] = useState(); // input của video để lưu
@@ -40,6 +40,7 @@ export default function UploadVideo(props) {
     const [title, setTitle] = useState("")
 
     const [isCompleted, setIsCompleted] = useState(false)
+    const [isCompleteEnabled, setIsCompletedEnabled] = useState(false)
 
     useEffect(() => {
         setUser(JSON.parse(localStorage.getItem("auth")))
@@ -55,7 +56,9 @@ export default function UploadVideo(props) {
 
     useEffect(() => {
         console.log("completed", completed)
-    }, completed)
+        setIsCompletedEnabled(checkFullyVideo())
+
+    }, [completed])
 
     const dataURLtoFile = (dataurl, filename) => {
         const arr = dataurl.split(',')
@@ -117,6 +120,10 @@ export default function UploadVideo(props) {
                         setIsPreview(res.data[0].isPreview.localeCompare("true") === 0)
                     }
                     setCourseData(res.data)
+
+                    // console.log("Check fully video", checkFullyVideo())
+                    setIsCompletedEnabled(checkFullyVideo())
+                    
                 }).catch(e => {
                     console.log(e)
                 })
@@ -124,11 +131,11 @@ export default function UploadVideo(props) {
 
         const initCompleted = async () => {
             await axios.get('http://localhost:3001/api/courses/id?id=' + courseId)
-            .then(res => {
-                let data = res.data;
-                setIsCompleted(data.isCompleted)
-                
-            })
+                .then(res => {
+                    let data = res.data;
+                    setIsCompleted(data.isCompleted)
+
+                })
         }
 
 
@@ -230,6 +237,24 @@ export default function UploadVideo(props) {
         return ret;
     }
 
+    const uploadFinishCourse = async () => {
+        await axios.put('http://localhost:3001/api/courses', {
+            courseData: {
+                isCompleted: !isCompleteEnabled ? isCompleted : false
+            },
+            courseId: courseId
+        }, {
+            headers: {
+                'x-access-token': await Refreshtoken()
+            }
+        }).then(res => {
+            return true;
+
+        }).catch(e => {
+            console.log(e);
+            return false;
+        })
+    }
 
 
     const onSubmit = async data => {
@@ -243,24 +268,59 @@ export default function UploadVideo(props) {
 
         await Refreshtoken();
 
+        let p = await uploadFinishCourse()
+        if (p === false) {
+            //TODO: Popup thất bại
+        }
+
         if (courseData[activeStep] == null) {
             //Call API thêm chương
             console.log("Add chapter")
             let a = await setupUploadChapter()
+            if (a === null) {
+                //TODO: Popup thất bại
+
+                return;
+            }
             console.log(a);
             let b = await setupUploadVideo(a.contentId);
 
+            if (b === false) {
+                //TODO: Popup thất bại
+
+
+                return;
+            }
+
+            //TODO: Popup thành công
         }
         else {
             //Call API cập nhật chương
             let t = await setupUpdateChapter();
 
-            await setupUploadVideo(courseData[activeStep]['_id'])
+            if (t === null) {
+                //TODO: Popup thất bại
+
+                return;
+            }
+
+            let result = await setupUploadVideo(courseData[activeStep]['_id'])
+            if (result === false) {
+                //TODO: Popup thất bại
+
+
+                return;
+            }
+
+            //TODO: Popup thành công
         }
+
+
 
 
         //console.log(videoFile[activeStep])
     }
+
 
 
     const handleClickOpen = () => {
@@ -365,9 +425,7 @@ export default function UploadVideo(props) {
     };
 
     const checkFullyVideo = () => {
-        let t = completed.findIndex(c => c === 1);
-        console.log("t = ", t);
-        return t !== -1
+        return completed.find(c => c === 0) !== undefined
     }
 
     return (
@@ -401,7 +459,7 @@ export default function UploadVideo(props) {
                     </Grid>
                 </Grid>
                 <Grid container item xs={12} justify='center' alignItems='center'>
-                    <Typography variant='h5' align='left' style={{marginRight: '1%'}}>
+                    <Typography variant='h5' align='left' style={{ marginRight: '1%' }}>
                         Đã hoàn thiện:
                     </Typography>
                     <input
@@ -410,7 +468,7 @@ export default function UploadVideo(props) {
                         id={'isCompletedButton'}
                         // defaultChecked={courseData.isCompleted}
                         checked={isCompleted}
-                        disabled={true}
+                        disabled={isCompleteEnabled}
                         onChange={e => {
                             setIsCompleted(!isCompleted)
                         }}
