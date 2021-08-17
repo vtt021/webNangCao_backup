@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import { Paper, Typography, List, ListItem, Box } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
-import Header from '../common/header/header';
+import HeaderTeacher from './child_component/headerTeacher';
 import Footer from '../common/footer/footer';
 import CourseInfo from '../detail_page/component/courseInfo';
 import Accordions from '../detail_page/component/accordion';
@@ -345,7 +345,7 @@ export default function PreviewDetailPage(props) {
 
     return (
         <div fluid>
-            <Header />
+            <HeaderTeacher />
             {
                 handleCarousel()
             }

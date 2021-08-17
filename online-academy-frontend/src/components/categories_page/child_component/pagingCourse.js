@@ -12,8 +12,8 @@ export default function PagingCard(props) {
     const [minValue, setMinValue] = useState(0);
     const [maxValue, setmaxValue] = useState(numEachPage);
     const [page, setPage] = useState(1);
-    const [priceSort,setPriceSort] = useState(0)
-    const [allCategory,setAllCategory]= useState()
+    const [priceSort, setPriceSort] = useState(0)
+    const [allCategory, setAllCategory] = useState()
     useEffect(() => {
         axios.get("http://localhost:3001/api/sub-categories/all").then(res => {
             setAllCategory(res.data)
@@ -35,31 +35,31 @@ export default function PagingCard(props) {
         }
     };
 
-    const filterItem = async ()=>{
-        if(props.category){
+    const filterItem = async () => {
+        if (props.category) {
             const filtered = lastItems.filter(d => {
-                if (new String(allCategory[d.subCategoryId]).search(new RegExp(props.category, "i")) >= 0){
-                        return d;
+                if (new String(allCategory[d.subCategoryId]).search(new RegExp(props.category, "i")) >= 0) {
+                    return d;
                 }
                 console.log(d.categoryId)
             });
             console.log(props.category)
             setItems(filtered)
-        }else{
+        } else {
             setItems(lastItems)
         }
 
-        if(priceSort==0&&props.ratingSort==0){
+        if (priceSort == 0 && props.ratingSort == 0) {
             setItems(lastItems)
         }
 
-        if(priceSort==3){
-            const filterItem = await items.sort((a,b)=>{return a.salePrice-b.salePrice})
+        if (priceSort == 3) {
+            const filterItem = await items.sort((a, b) => { return a.salePrice - b.salePrice })
             setItems(filterItem)
         }
 
-        if(priceSort==4){
-            const filterItem = await items.sort((a,b)=>{return a.salePrice-b.salePrice}).reverse()
+        if (priceSort == 4) {
+            const filterItem = await items.sort((a, b) => { return a.salePrice - b.salePrice }).reverse()
             setItems(filterItem)
         }
     }
@@ -78,7 +78,7 @@ export default function PagingCard(props) {
         }
         if (props.search) {
             axios.get(url, {
-                params:{
+                params: {
                     keyword: props.search
                 }
             }).then(res => {
@@ -98,11 +98,11 @@ export default function PagingCard(props) {
     useEffect(() => {
         getCourseItems()
         console.log(items)
-    },[]);
+    }, []);
     useEffect(() => {
         setPriceSort(props.priceSort)
         filterItem()
-    },[props.category,props.ratingSort,props.priceSort]);
+    }, [props.category, props.ratingSort, props.priceSort]);
     return (
         <Grid
             className={classes.container}
@@ -112,21 +112,13 @@ export default function PagingCard(props) {
             justify="flex-start"
         >
             <Grid container justifyContent="center" justify="center" alignItems="flex-start" spacing={3}>
-                { items && items.length > 0 &&
+                {items && items.length > 0 &&
                     items.slice(minValue, maxValue).map((item, i) =>
-                        i % 2 === 0 /*TODO: Kiểm tra là khoá học mới đăng 
-                                    hoặc các khoá học có nhiều học viên đăng ký học (Best Seller) 
-                                    sẽ có thể hiện khác với các khoá học còn lại*/
-                            ? (
-                                <Grid key={i} item>
-                                    <CourseCard key={i} courseInfo={item} />
-                                </Grid>
-                            )
-                            : (
-                                <Grid key={i} item >
-                                    <SpecialCourseCard key={i} courseInfo={item} />
-                                </Grid>
-                            )
+                    (
+                        <Grid key={i} item>
+                            <CourseCard key={i} courseInfo={item} />
+                        </Grid>
+                    )
 
                     )
                 }

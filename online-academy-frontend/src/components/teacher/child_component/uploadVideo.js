@@ -23,7 +23,7 @@ export default function UploadVideo(props) {
     const courseId = props.match.params.id
 
     const [user, setUser] = useState(JSON.parse(localStorage.getItem("auth")))
-    
+
     const [courseData, setCourseData] = useState([]);
 
     const [activeStep, setActiveStep] = useState(0);
@@ -95,33 +95,33 @@ export default function UploadVideo(props) {
         const initDetailData = async () => {
             // await axios.get('http://localhost:3001/api/course-contents/course?courseId=60f1a3d20b04b858a41f1e13')
             await axios.get('http://localhost:3001/api/course-contents/course?courseId=' + courseId)
-            .then(res => {
-                let data = res.data;
-                console.log(data);
+                .then(res => {
+                    let data = res.data;
+                    console.log(data);
 
-                if (data.length === 0) {
-                    setSteps(['Chương 1']);
-                    setCompleted([0]);
-                    setContent(defaultData)
-                }
-                else {
-                    let chapters = data.map((d, i) => 'Chương ' + (i + 1));
-                    setSteps(chapters);
+                    if (data.length === 0) {
+                        setSteps(['Chương 1']);
+                        setCompleted([0]);
+                        setContent(defaultData)
+                    }
+                    else {
+                        let chapters = data.map((d, i) => 'Chương ' + (i + 1));
+                        setSteps(chapters);
 
-                    let completeStatus = data.map((d, i) => d.video != null ? 1 : 0);
-                    setCompleted(completeStatus)
-                    setContent(res.data[0])
-                    setTitle(res.data[0].content)
-                    setIsPreview(res.data[0].isPreview.localeCompare("true") === 0)
-                }
-                setCourseData(res.data)
-            }).catch(e => {
-                console.log(e)
-            })
+                        let completeStatus = data.map((d, i) => d.video != null ? 1 : 0);
+                        setCompleted(completeStatus)
+                        setContent(res.data[0])
+                        setTitle(res.data[0].content)
+                        setIsPreview(res.data[0].isPreview.localeCompare("true") === 0)
+                    }
+                    setCourseData(res.data)
+                }).catch(e => {
+                    console.log(e)
+                })
         }
 
 
-        const init = async() => {
+        const init = async () => {
             await initDetailData()
         }
 
@@ -144,7 +144,7 @@ export default function UploadVideo(props) {
 
     const setupUploadVideo = async (ret) => {
         console.log("ret", ret);
-        
+
         console.log("videoFile", videoFile);
         if (videoFile != null) {
             let formData = new FormData();
@@ -266,7 +266,7 @@ export default function UploadVideo(props) {
         await handleRemove()
         handleCloseConfirm()
     };
-    
+
     const handleCloseConfirm = () => {
         setOpenConfirm(false);
     };
@@ -317,7 +317,7 @@ export default function UploadVideo(props) {
 
             let k = activeStep;
             let newStep = [];
-            for(let i = 1; i <= steps.length - 1; i++) {
+            for (let i = 1; i <= steps.length - 1; i++) {
                 newStep.push('Chương ' + i)
             }
             if (k === 0) {
@@ -356,7 +356,7 @@ export default function UploadVideo(props) {
         <div className={classes.root}>
             <AlertDialog open={open} handleClose={handleClose} value='Không thể xóa' />
             <ConfirmDialog open={openConfirm} handleClose={handleCloseConfirm} handleConfirm={handleConfirm} value='Bạn muốn xóa chương này? Không thể hồi phục lại sau khi xóa!' />
-            <HeaderTeacher/>
+            <HeaderTeacher />
             <Grid container spacing={2} alignItems='flex-start' justify='center'>
                 <Grid container item xs={12} justify='center' spacing={2}>
                     <Grid item>
@@ -382,13 +382,26 @@ export default function UploadVideo(props) {
                         </Button>
                     </Grid>
                 </Grid>
+                <Grid container item xs={12} justify='center' alignItems='center'>
+                    <Typography variant='h5' align='left' style={{marginRight: '1%'}}>
+                        Đã hoàn thiện:
+                    </Typography>
+                    <input
+                        name="isCompleted"
+                        type='checkbox'
+                        id={'isCompletedButton'}
+                        defaultChecked={false}
+                        className={classes.Checkbox}
+                    />
+
+                </Grid>
             </Grid>
 
             <Stepper activeStep={activeStep} alternativeLabel nonLinear >
                 {steps.map((label, index) => (
                     <Step key={label} completed={completed[index]}>
                         <StepButton onClick={handleStep(index)} completed={completed[index]}>
-                            {'Chương ' + (index +1)}
+                            {'Chương ' + (index + 1)}
                         </StepButton>
                     </Step>
                 ))}
@@ -396,13 +409,13 @@ export default function UploadVideo(props) {
             <div>
                 <div>
                     {
-                        <Typography  variant='h5' style={{ paddingBottom: '1%'}}>
+                        <Typography variant='h5' style={{ paddingBottom: '1%' }}>
                             {steps[activeStep]}
                         </Typography>
                     }
                     <VideoContent id={activeStep} completed={completed[activeStep]}
                         onSubmit={onSubmit} setSelectedFile={setVideoFile} setFileName={setFileName}
-                        content={content} isPreview={isPreview} setIsPreview={setIsPreview} title={title} setTitle={setTitle} 
+                        content={content} isPreview={isPreview} setIsPreview={setIsPreview} title={title} setTitle={setTitle}
                         oldVideo={oldVideo}
                     />
                 </div>
@@ -423,4 +436,8 @@ const useStyles = makeStyles((theme) => ({
         marginTop: theme.spacing(1),
         marginBottom: theme.spacing(1),
     },
+    Checkbox: {
+        width: '20px',
+        height: '20px'
+    }
 }));
