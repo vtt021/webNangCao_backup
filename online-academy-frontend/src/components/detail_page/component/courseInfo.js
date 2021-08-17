@@ -63,6 +63,16 @@ export default function CourseInfo(props) {
         }
     }
 
+    const convertDate = (current) => {
+        let date = new Date(current)
+        let dd = String(date.getDate()).padStart(2, '0');
+        let mm = String(date.getMonth() + 1).padStart(2, '0'); //January is 0!
+        let yyyy = date.getFullYear();
+
+        let today = mm + '/' + dd + '/' + yyyy;
+        return today;
+    }
+
     return (
         <div className={classes.container}>
             <Paper className={classes.paper}>
@@ -153,7 +163,7 @@ export default function CourseInfo(props) {
 
                                 <Grid container justify="flex-end"  >
                                     <Typography gutterBottom variant="subtitle2">
-                                        {props.courseInfo ? props.courseInfo.createdDate : '1/1/2021'}
+                                        {props.courseInfo ? "Được tạo từ ngày: " + convertDate(props.courseInfo.createdDate) : '1/1/2021'}
                                     </Typography>
                                 </Grid>
                             </Grid>
