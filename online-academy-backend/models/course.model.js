@@ -1,12 +1,8 @@
-const courseContentModel = require('./courseContent.model');
 const subCategoryModel = require('./subCategory.model');
 const userModel = require('./user.model');
-const TABLE_NAME = 'course'
 
 const { Course } = require('../schema/mongodb.schema');
-const { getAllUsernameWithId } = require('./user.model');
 const categoryModel = require('./category.model');
-const contentData = 'courseName subCategoryId teacherId rating ratingCount imageThumbnail price salePrice'
 
 
 const mainPageData = [
@@ -23,6 +19,7 @@ const mainPageData = [
     'studentCount',
     'hotPoint',
     // 'lastUpdated',
+    'isCompleted',
     'createdDate'
 ];
 
@@ -74,6 +71,7 @@ module.exports = {
             data['imageThumbnail'] = courses[i]['imageThumbnail']
             data['imageCourse'] = courses[i]['imageCourse']
             data['price'] = courses[i]['price']
+            data['isCompleted'] = courses[i]['isCompleted']
             data['salePrice'] = courses[i]['salePrice']
             data['hotPoint'] = courses[i]['hotPoint']
             data['createdDate'] = courses[i]['createdDate']
@@ -128,6 +126,7 @@ module.exports = {
             data['subCategoryId'] = courses[i]['subCategoryId']
             data['teacherId'] = courses[i]['teacherId']
             data['rating'] = courses[i]['rating']
+            data['isCompleted'] = courses[i]['isCompleted']
             data['ratingCount'] = courses[i]['ratingCount']
             data['imageThumbnail'] = courses[i]['imageThumbnail']
             data['imageCourse'] = courses[i]['imageCourse']
@@ -185,6 +184,7 @@ module.exports = {
             data['teacherId'] = courses[i]['teacherId']
             data['rating'] = courses[i]['rating']
             data['ratingCount'] = courses[i]['ratingCount']
+            data['isCompleted'] = courses[i]['isCompleted']
             data['imageThumbnail'] = courses[i]['imageThumbnail']
             data['imageCourse'] = courses[i]['imageCourse']
             data['price'] = courses[i]['price']
@@ -250,6 +250,7 @@ module.exports = {
             data['imageThumbnail'] = courses[i]['imageThumbnail']
             data['imageCourse'] = courses[i]['imageCourse']
             data['price'] = courses[i]['price']
+            data['isCompleted'] = courses[i]['isCompleted']
             data['salePrice'] = courses[i]['salePrice']
             data['hotPoint'] = courses[i]['hotPoint']
             data['createdDate'] = courses[i]['createdDate']
@@ -287,6 +288,7 @@ module.exports = {
             data['teacherId'] = courses[i]['teacherId']
             data['rating'] = courses[i]['rating']
             data['ratingCount'] = courses[i]['ratingCount']
+            data['isCompleted'] = courses[i]['isCompleted']
             data['imageThumbnail'] = courses[i]['imageThumbnail']
             data['imageCourse'] = courses[i]['imageCourse']
             data['hotPoint'] = courses[i]['hotPoint']
@@ -328,6 +330,7 @@ module.exports = {
             data['ratingCount'] = courses[i]['ratingCount']
             data['imageThumbnail'] = courses[i]['imageThumbnail']
             data['imageCourse'] = courses[i]['imageCourse']
+            data['isCompleted'] = courses[i]['isCompleted']
             data['hotPoint'] = courses[i]['hotPoint']
             data['createdDate'] = courses[i]['createdDate']
             data['price'] = courses[i]['price']
@@ -470,6 +473,7 @@ module.exports = {
             data['imageCourse'] = courses[i]['imageCourse']
             data['price'] = courses[i]['price']
             data['hotPoint'] = courses[i]['hotPoint']
+            data['isCompleted'] = courses[i]['isCompleted']
             data['createdDate'] = courses[i]['createdDate']
             data['salePrice'] = courses[i]['salePrice']
             newCourses.push(data)

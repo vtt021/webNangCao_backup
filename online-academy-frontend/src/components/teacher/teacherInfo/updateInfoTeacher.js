@@ -39,8 +39,10 @@ export default function UpdateInfoTeacher() {
             }
         }).then(res => {
             console.log("Success")
+            //TODO: Popup báo thành công
         }).catch(e => {
             console.log(e);
+            //TODO: Popup báo thất bại
         });
     }
 
@@ -58,9 +60,10 @@ export default function UpdateInfoTeacher() {
 
                     setUsername(data.username);
                     setEmail(data.email);
-                    
 
 
+                    setValue("username", data.username);
+                    setValue("email", data.email);
 
 
                 }).catch(e => {
@@ -94,7 +97,10 @@ export default function UpdateInfoTeacher() {
                                 fullWidth
                                 id="username"
                                 label="Họ và tên người dùng"
-                                onChangeCapture={(e) => setUsername(e.target.value)}
+                                onChangeCapture={(e) => {
+                                    setUsername(e.target.value)
+                                    setValue("username", e.target.value)
+                                }}
                                 autoFocus
                                 {...register("username", { required: true })}
                             />
@@ -106,7 +112,10 @@ export default function UpdateInfoTeacher() {
                             <TextField
                                 defaultValue={email}
                                 value={email}
-                                onChangeCapture={(e) => setEmail(e.target.value)}
+                                onChangeCapture={(e) => {
+                                    setEmail(e.target.value)
+                                    setValue("email", e.target.value);
+                                }}
                                 variant="filled"
                                 required
                                 fullWidth

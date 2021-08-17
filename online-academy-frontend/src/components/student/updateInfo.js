@@ -39,10 +39,17 @@ export default function UpdateInfo() {
             }
         }).then(res => {
             console.log("Success")
+            //TODO: Popup báo thành công
         }).catch(e => {
             console.log(e);
+            //TODO: Popup báo thất bại
         });
     }
+
+    const [username, setUsername] = useState("")
+    const [password, setPassword] = useState("")
+    const [email, setEmail] = useState("")
+
 
     useEffect(() => {
         const init = async () => {
@@ -52,7 +59,12 @@ export default function UpdateInfo() {
                     console.log(data);
                     setUserData(data);
 
+                    setUsername(data.username);
+                    setEmail(data.email);
 
+                    setValue("username", data.username)
+                    setValue("email", data.email)
+                    
 
 
                 }).catch(e => {
@@ -77,7 +89,6 @@ export default function UpdateInfo() {
                         {/* Tên đăng nhập */}
                         <Grid item xs={12}>
                             <TextField
-                                defaultValue={userData.username}
                                 autoComplete="fname"
                                 name="username"
                                 variant="filled"
@@ -85,6 +96,11 @@ export default function UpdateInfo() {
                                 fullWidth
                                 id="username"
                                 label="Họ và tên người dùng"
+                                value={username}
+                                onChangeCapture={e => {
+                                    setUsername(e.target.value)
+                                    setValue("username", e.target.value)
+                                }}
                                 autoFocus
                                 {...register("username", { required: true })}
                             />
@@ -94,7 +110,6 @@ export default function UpdateInfo() {
                         {/* Email */}
                         <Grid item xs={12}>
                             <TextField
-                                defaultValue={userData.email}
                                 variant="filled"
                                 required
                                 fullWidth
@@ -103,7 +118,12 @@ export default function UpdateInfo() {
                                 name="email"
                                 autoComplete="email"
                                 type="email"
-                                onChange={(event) => setValue('email', event.target.value)}
+                                value={email}
+
+                                onChangeCapture={(event) => {
+                                    setEmail(event.target.value);
+                                    setValue('email', event.target.value)
+                                }}
 
                                 {...register("email", { required: true, pattern: /^\S+@\S+$/i })}
                             />

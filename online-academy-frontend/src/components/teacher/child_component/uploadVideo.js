@@ -39,6 +39,8 @@ export default function UploadVideo(props) {
 
     const [title, setTitle] = useState("")
 
+    const [isCompleted, setIsCompleted] = useState(false)
+
     useEffect(() => {
         setUser(JSON.parse(localStorage.getItem("auth")))
     }, [localStorage.getItem("auth")])
@@ -120,9 +122,19 @@ export default function UploadVideo(props) {
                 })
         }
 
+        const initCompleted = async () => {
+            await axios.get('http://localhost:3001/api/courses/id?id=' + courseId)
+            .then(res => {
+                let data = res.data;
+                setIsCompleted(data.isCompleted)
+                
+            })
+        }
+
 
         const init = async () => {
             await initDetailData()
+            await initCompleted()
         }
 
         init();
@@ -352,6 +364,13 @@ export default function UploadVideo(props) {
         setActiveStep(step);
         // setTitle(courseData[step].content)
     };
+
+    const checkFullyVideo = () => {
+        let t = completed.findIndex(c => c === 1);
+        console.log("t = ", t);
+        return t !== -1
+    }
+
     return (
         <div className={classes.root}>
             <AlertDialog open={open} handleClose={handleClose} value='Không thể xóa' />
@@ -390,7 +409,12 @@ export default function UploadVideo(props) {
                         name="isCompleted"
                         type='checkbox'
                         id={'isCompletedButton'}
-                        defaultChecked={false}
+                        // defaultChecked={courseData.isCompleted}
+                        checked={isCompleted}
+                        disabled={true}
+                        onChange={e => {
+                            setIsCompleted(!isCompleted)
+                        }}
                         className={classes.Checkbox}
                     />
 
