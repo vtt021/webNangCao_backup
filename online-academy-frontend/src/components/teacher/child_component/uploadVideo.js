@@ -42,6 +42,8 @@ export default function UploadVideo(props) {
     const [isCompleted, setIsCompleted] = useState(false)
     const [isCompleteEnabled, setIsCompletedEnabled] = useState(false)
 
+    const [isOpened2, setOpen2] = useState(false);
+    const [isOpened3, setOpen3] = useState(false);
     useEffect(() => {
         setUser(JSON.parse(localStorage.getItem("auth")))
     }, [localStorage.getItem("auth")])
@@ -258,19 +260,21 @@ export default function UploadVideo(props) {
 
 
     const onSubmit = async data => {
-        //Còn không thì cứ reset khi lưu 
-        // handleSave();
         console.log(activeStep)
         // console.log(data)
         console.log(videoFile)
         console.log(courseData[activeStep])
         console.log(courseId);
-
+        if (videoFile === null)
+        {
+            setOpen3(true)
+            return
+        }
         await Refreshtoken();
 
         let p = await uploadFinishCourse()
         if (p === false) {
-            //TODO: Popup thất bại
+            setOpen3(true)
         }
 
         if (courseData[activeStep] == null) {
@@ -278,7 +282,7 @@ export default function UploadVideo(props) {
             console.log("Add chapter")
             let a = await setupUploadChapter()
             if (a === null) {
-                //TODO: Popup thất bại
+                setOpen3(true)
 
                 return;
             }
@@ -286,33 +290,30 @@ export default function UploadVideo(props) {
             let b = await setupUploadVideo(a.contentId);
 
             if (b === false) {
-                //TODO: Popup thất bại
-
+                setOpen3(true)
 
                 return;
             }
 
-            //TODO: Popup thành công
+            setOpen2(true)
         }
         else {
             //Call API cập nhật chương
             let t = await setupUpdateChapter();
 
             if (t === null) {
-                //TODO: Popup thất bại
-
+                setOpen3(true)
                 return;
             }
 
             let result = await setupUploadVideo(courseData[activeStep]['_id'])
             if (result === false) {
-                //TODO: Popup thất bại
-
+                setOpen3(true)
 
                 return;
             }
 
-            //TODO: Popup thành công
+            setOpen2(true)
         }
 
 
@@ -432,6 +433,9 @@ export default function UploadVideo(props) {
         <div className={classes.root}>
             <AlertDialog open={open} handleClose={handleClose} value='Không thể xóa' />
             <ConfirmDialog open={openConfirm} handleClose={handleCloseConfirm} handleConfirm={handleConfirm} value='Bạn muốn xóa chương này? Không thể hồi phục lại sau khi xóa!' />
+            <AlertDialog open={isOpened2} handleClose={() => { setOpen2(false) }} value="Tải video thành công" />
+            <AlertDialog open={isOpened3} handleClose={() => { setOpen3(false) }} value="Tải video không thành công" />
+
             <HeaderTeacher />
             <Grid container spacing={2} alignItems='flex-start' justify='center'>
                 <Grid container item xs={12} justify='center' spacing={2}>
