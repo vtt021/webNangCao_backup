@@ -21,8 +21,8 @@ export default function CourseCard(props) {
 
     const [image, setImage] = useState()
     const getImage = async () => {
-        setImage("http://localhost:3001/api/files/send?fileName=" + props.courseInfo.imageThumbnail)
-        await axios.get("http://localhost:3001/api/sub-categories/id?id=" + props.courseInfo.subCategoryId).then(res => {
+        setImage(process.env.REACT_APP_API_MAIN + "/files/send?fileName=" + props.courseInfo.imageThumbnail)
+        await axios.get(process.env.REACT_APP_API_MAIN + "/sub-categories/id?id=" + props.courseInfo.subCategoryId).then(res => {
             setSubName(res.data.subCategoryName)
         }).catch(error => console.log(error));
     }
@@ -39,7 +39,13 @@ export default function CourseCard(props) {
     };
     const classtifyText = () => {
         //console.log(props.courseInfo)
-        if (props.courseInfo.isCompleted === false) {
+        if (props.courseInfo.hotPoint > 200) {
+            return (
+                (<Typography noWrap align='left' variant="overline" style={{ color: '#FF4848' }}>
+                    {'Nổi bật'}
+                </Typography>)
+            )
+        } else if (props.courseInfo.isCompleted === false) {
             return (
                 (<Typography noWrap align='left' variant="overline" style={{ color: '#CF0000' }}>
                     {'Chưa hoàn thiện'}
@@ -52,14 +58,7 @@ export default function CourseCard(props) {
                     {'Giảm giá'}
                 </Typography>)
             )
-        }
-        else if (props.courseInfo.hotPoint > 200) {
-            return (
-                (<Typography noWrap align='left' variant="overline" style={{ color: '#FF4848' }}>
-                    {'Nổi bật'}
-                </Typography>)
-            )
-        }
+        } 
     }
     const classtifyCard = () => {
         //console.log(props.courseInfo)

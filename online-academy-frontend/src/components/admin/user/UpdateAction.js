@@ -28,7 +28,7 @@ export default function CreateTeacher() {
                 password: "123456",
                 username: value.username
             }
-            await axios.post("http://localhost:3001/api/users/teacher-acc", body,{
+            await axios.post(process.env.REACT_APP_API_MAIN + "/users/teacher-acc", body,{
                 headers: {
                     'x-access-token': await Refreshtoken()
                 },

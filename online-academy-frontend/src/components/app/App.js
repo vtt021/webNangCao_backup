@@ -23,9 +23,14 @@ import AdminCourses from '../admin/courses/AdminCourses';
 import CreateTeacher from '../admin/user/UpdateAction';
 import TeacherManagement from '../teacher/teacherInfo/managementTeacher';
 import PreviewDetailPage from '../teacher/previewCourse';
+import { useEffect } from 'react';
 // import css
 
 function App() {
+    // useEffect(() => {
+    //     localStorage.removeItem("auth")
+    //     localStorage.removeItem("time")
+    // },[])
     return (
         <Router>
             <div className="App">

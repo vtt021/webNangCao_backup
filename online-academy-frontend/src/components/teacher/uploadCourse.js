@@ -50,7 +50,7 @@ export default function UploadCourse(props) {
     const onSubmit = async data => {
         console.log(data)
 
-        let ret = await axios.post('http://localhost:3001/api/courses', data, {
+        let ret = await axios.post(process.env.REACT_APP_API_MAIN + '/courses', data, {
             headers: {
                 'x-access-token': await Refreshtoken()
             }
@@ -79,7 +79,7 @@ export default function UploadCourse(props) {
 
                 // console.log(selectedFile)
 
-                let result1 = await axios.post('http://localhost:3001/api/courses/course-image', formData, {
+                let result1 = await axios.post(process.env.REACT_APP_API_MAIN + '/courses/course-image', formData, {
                     headers: {
                         'x-access-token': await Refreshtoken(),
                         'Content-Type': `multipart/form-data; boundary=${formData._boundary}`
@@ -106,7 +106,7 @@ export default function UploadCourse(props) {
 
                 // console.log(selectedFile)
 
-                let result2 = axios.post('http://localhost:3001/api/courses/thumbnail-image', thumbnailFormData, {
+                let result2 = axios.post(process.env.REACT_APP_API_MAIN + '/courses/thumbnail-image', thumbnailFormData, {
                     headers: {
                         'x-access-token': await Refreshtoken(),
                         'Content-Type': `multipart/form-data; boundary=${thumbnailFormData._boundary}`

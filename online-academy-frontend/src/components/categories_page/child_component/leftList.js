@@ -14,7 +14,7 @@ import { useHistory } from "react-router-dom";
 export default function LeftList(props) {
 
     const getSubCategory = () => {
-        axios.get("http://localhost:3001/api/sub-categories/").then(res => {
+        axios.get(process.env.REACT_APP_API_MAIN + "/sub-categories/").then(res => {
             setListSub(res.data)
         }).catch(error => console.log(error))
     }
@@ -23,7 +23,7 @@ export default function LeftList(props) {
     const [listSubCategory, setListSub] = useState([{}])
 
     useEffect(() => {
-        axios.get("http://localhost:3001/api/categories").then(res => {
+        axios.get(process.env.REACT_APP_API_MAIN + "/categories").then(res => {
             const listCategories = res.data;
             setListCategories(listCategories);
         })

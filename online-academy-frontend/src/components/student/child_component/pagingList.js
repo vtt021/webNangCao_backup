@@ -35,7 +35,7 @@ export default function PagingRegisteredList(props) {
 
     const getCouresItems = async () => {
 
-        const path = 'http://localhost:3001/api/register-courses/course-only';
+        const path = process.env.REACT_APP_API_MAIN + '/register-courses/course-only';
         console.log(path)
         
         await Refreshtoken()

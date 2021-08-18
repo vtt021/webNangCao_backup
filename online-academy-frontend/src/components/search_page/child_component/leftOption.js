@@ -14,7 +14,7 @@ export default function LeftOption(props) {
     const [listCategories, setListCategories] = useState([{ id: 1, categoryName: 'Không có khóa học' }])
     
     const getListCategory = async () =>{
-        axios.get("http://localhost:3001/api/categories").then(res => {
+        axios.get(process.env.REACT_APP_API_MAIN + "/categories").then(res => {
             const listCategories = res.data;
             setListCategories(listCategories);
         })

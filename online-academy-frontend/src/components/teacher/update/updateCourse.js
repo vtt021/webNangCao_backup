@@ -50,7 +50,7 @@ export default function UpdateCourse(props) {
     }
 
     const initData = async () => {
-        let info = await axios.get('http://localhost:3001/api/courses/id?id=' + id)
+        let info = await axios.get(process.env.REACT_APP_API_MAIN + '/courses/id?id=' + id)
             .then(res => {
                 let receiveData = res.data;
                 console.log(res.data);
@@ -66,7 +66,7 @@ export default function UpdateCourse(props) {
     }
 
     const setupSubcate = async () => {
-        let subData = await axios.get("http://localhost:3001/api/sub-categories/").then(res => {
+        let subData = await axios.get(process.env.REACT_APP_API_MAIN + "/sub-categories/").then(res => {
             setListSub(res.data)
             return res.data;
         }).catch(error => {
@@ -78,7 +78,7 @@ export default function UpdateCourse(props) {
     }
 
     const setupCategory = async () => {
-        await axios.get("http://localhost:3001/api/categories").then(res => {
+        await axios.get(process.env.REACT_APP_API_MAIN + "/categories").then(res => {
             const listCategories = res.data;
             setListCategories(listCategories);
         })
@@ -104,7 +104,7 @@ export default function UpdateCourse(props) {
             await setupCategory();
             await setupSubcate();
             let info = await initData();
-            // console.log("here", convertImgToBase64("http://localhost:3001/api/files/send?fileName=course1.jpg", (dataUrl) => {
+            // console.log("here", convertImgToBase64(process.env.REACT_APP_API_MAIN + "/files/send?fileName=course1.jpg", (dataUrl) => {
             //     console.log("DataURL", dataUrl);
             //     return dataUrl;
             // }));
@@ -133,7 +133,7 @@ export default function UpdateCourse(props) {
 
             // console.log(selectedFile)
 
-            await axios.post('http://localhost:3001/api/courses/course-image', formData, {
+            await axios.post(process.env.REACT_APP_API_MAIN + '/courses/course-image', formData, {
                 headers: {
                     'x-access-token': await Refreshtoken(),
                     'Content-Type': `multipart/form-data; boundary=${formData._boundary}`
@@ -158,7 +158,7 @@ export default function UpdateCourse(props) {
             thumbnailFormData.append("courseId", id);
 
 
-            await axios.post('http://localhost:3001/api/courses/thumbnail-image', thumbnailFormData, {
+            await axios.post(process.env.REACT_APP_API_MAIN + '/courses/thumbnail-image', thumbnailFormData, {
                 headers: {
                     'x-access-token': await Refreshtoken(),
                     'Content-Type': `multipart/form-data; boundary=${thumbnailFormData._boundary}`
@@ -172,7 +172,7 @@ export default function UpdateCourse(props) {
             })
         }
 
-        await axios.put('http://localhost:3001/api/courses', {
+        await axios.put(process.env.REACT_APP_API_MAIN + '/courses', {
             courseData: data,
             courseId: id
         }, {
@@ -202,7 +202,7 @@ export default function UpdateCourse(props) {
                         <Typography variant='h5' align='left'>
                             Ảnh bìa hiện tại
                         </Typography>
-                        <img src={'http://localhost:3001/api/files/send?fileName=' + courseInfo.imageCourse}
+                        <img src={process.env.REACT_APP_API_MAIN + '/files/send?fileName=' + courseInfo.imageCourse}
                             alt="Ảnh bìa" className={classes.photo}
                         />
                     </Grid>
@@ -210,7 +210,7 @@ export default function UpdateCourse(props) {
                         <Typography variant='h5' align='left'>
                             Ảnh minh họa hiện tại
                         </Typography>
-                        <img src={'http://localhost:3001/api/files/send?fileName=' + courseInfo.imageThumbnail}
+                        <img src={process.env.REACT_APP_API_MAIN + '/files/send?fileName=' + courseInfo.imageThumbnail}
                             alt="Ảnh bìa" className={classes.photo}
                         />
                     </Grid>

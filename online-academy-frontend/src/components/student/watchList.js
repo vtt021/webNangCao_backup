@@ -21,7 +21,7 @@ export default function WatchList(props) {
         const init = async () => {
             await Refreshtoken();
         
-            await axios.get('http://localhost:3001/api/users/favorite', {
+            await axios.get(process.env.REACT_APP_API_MAIN + '/users/favorite', {
                 headers: {
                     'x-access-token': await Refreshtoken()
                 }
@@ -48,7 +48,7 @@ export default function WatchList(props) {
         //Làm cái gì đó với database ở đây nè
         console.log(cellValues.id);
 
-        await axios.post('http://localhost:3001/api/users/favorite', {
+        await axios.post(process.env.REACT_APP_API_MAIN + '/users/favorite', {
             courseId: cellValues.id
         }, {
             headers: {

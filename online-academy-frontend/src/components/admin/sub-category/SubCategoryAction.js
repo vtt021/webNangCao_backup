@@ -42,7 +42,7 @@ export default function CategoryAction(props) {
                 subCategoryName: newName
             }
             console.log(data)
-            await axios.put('http://localhost:3001/api/sub-categories/', data, {
+            await axios.put(process.env.REACT_APP_API_MAIN + '/sub-categories/', data, {
                 headers: {
                     'x-access-token': await Refreshtoken()
                 },
@@ -66,7 +66,7 @@ export default function CategoryAction(props) {
             id: props.id
         }
         console.log(data)
-        await axios.delete('http://localhost:3001/api/sub-categories/', {
+        await axios.delete(process.env.REACT_APP_API_MAIN + '/sub-categories/', {
             headers: {
                 'x-access-token': await Refreshtoken()
             },

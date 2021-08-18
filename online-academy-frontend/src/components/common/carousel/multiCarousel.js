@@ -15,7 +15,7 @@ export default function MultiCarousel(props) {
 
     
     const getCourseItems = async () => {
-        await axios.get("http://localhost:3001/api/" + props.categoryId).then(res => {
+        await axios.get(process.env.REACT_APP_API_MAIN + '/' + props.categoryId).then(res => {
             const listCourse = res.data;
             setItems(listCourse);
         }).catch(error => console.log(error));

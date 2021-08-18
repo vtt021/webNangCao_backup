@@ -21,7 +21,7 @@ export default function SignUp() {
 
     const onSubmit = async (data) => {
         if (watch("verifyPassword") === watch("password")) {
-            await axios.post("http://localhost:3001/api/users", {
+            await axios.post(process.env.REACT_APP_API_MAIN + "/users", {
                 email: data.email,
                 password: data.password,
                 username: data.username

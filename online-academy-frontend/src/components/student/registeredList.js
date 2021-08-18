@@ -14,7 +14,7 @@ export default function RegistedList(props) {
 
 
     // const getName = async () => {
-    //     await axios.get("http://localhost:3001/api/categories/id?id=60ef0789f83a7030481c3932").then(res => {
+    //     await axios.get(process.env.REACT_APP_API_MAIN + "/categories/id?id=60ef0789f83a7030481c3932").then(res => {
     //         const listCategories = res.data;
     //         // setName(res.data.categoryName)
     //         console.log(res.data)

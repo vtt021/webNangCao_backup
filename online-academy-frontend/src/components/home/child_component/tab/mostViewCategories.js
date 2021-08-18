@@ -13,7 +13,7 @@ export default function MostViewCategories() {
     const [listCategories, setListCategories] = useState([{ id: 1, categoryName: 'KHÁC' }])
 
     const getHotCategory=async()=>{
-        await axios.get("http://localhost:3001/api/categories").then(res => {
+        await axios.get(process.env.REACT_APP_API_MAIN + "/categories").then(res => {
             const listCategories = res.data;
             setListCategories(listCategories);
         })

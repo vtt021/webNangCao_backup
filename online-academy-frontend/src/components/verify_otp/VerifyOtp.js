@@ -24,7 +24,7 @@ export default function Verifyotp(props) {
     const { register, handleSubmit, formState: { errors } } = useForm();
 
     const onSubmit = (data) => {
-        axios.post("http://localhost:3001/api/users/verify-otp", {
+        axios.post(process.env.REACT_APP_API_MAIN + "/users/verify-otp", {
             email: email,
             token: data.otp
         }).then(res => {

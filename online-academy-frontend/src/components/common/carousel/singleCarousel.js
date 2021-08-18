@@ -12,7 +12,7 @@ export default function SingleCarousel(props) {
     const [teachers, setTeachers] = useState([{}])
 
     const getCouresItems = async () => {
-        const path = 'http://localhost:3001/api/courses/' + props.coursesPath;
+        const path = process.env.REACT_APP_API_MAIN + '/courses/' + props.coursesPath;
         console.log(path)
         await axios.get(path).then(res => {
             const listCourse = res.data;

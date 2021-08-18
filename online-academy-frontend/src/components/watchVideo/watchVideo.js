@@ -25,7 +25,7 @@ export default function WatchVideoPage(props) {
     const getProgress = async () => {
         if (content.courseId) {
             await Refreshtoken()
-            await axios.get("http://localhost:3001/api/register-courses/progress?courseId=" + content.courseId, {
+            await axios.get(process.env.REACT_APP_API_MAIN + "/register-courses/progress?courseId=" + content.courseId, {
                 headers: {
                     'x-access-token': await Refreshtoken()
                 }
@@ -55,14 +55,14 @@ export default function WatchVideoPage(props) {
     }
 
     const getContent = async () => {
-        await axios.get("http://localhost:3001/api/course-contents/id?contentId=" + id).then(res => {
+        await axios.get(process.env.REACT_APP_API_MAIN + "/course-contents/id?contentId=" + id).then(res => {
             setContent(res.data)
             console.log(res.data)
         }).catch(error => console.log(error));
     }
     const getCourseDetail = async () => {
         if (content.courseId) {
-            await axios.get("http://localhost:3001/api/courses/id?id=" + content.courseId).then(res => {
+            await axios.get(process.env.REACT_APP_API_MAIN + "/courses/id?id=" + content.courseId).then(res => {
                 setCoursesDetail(res.data)
                 console.log(res.data)
             }).catch(error => console.log(error))
@@ -107,13 +107,13 @@ export default function WatchVideoPage(props) {
                     </Typography>
                 </Grid>
                 <Grid item xs={8} className={classes.videoContainer}>
-                    {/* <PlayerControl src={'http://localhost:3001/api/files/send?fileName=' + content.video} 
+                    {/* <PlayerControl src={process.env.REACT_APP_API_MAIN + '/files/send?fileName=' + content.video} 
                         startTime={startTime}
                         contentId={id}
                         courseId={content.courseId}
                     /> */}
 
-                    <ReactVideo src={'http://localhost:3001/api/files/send?fileName=' + content.video}
+                    <ReactVideo src={process.env.REACT_APP_API_MAIN + '/files/send?fileName=' + content.video}
                         startTime={startTime}
                         contentId={id}
                         courseId={content.courseId}

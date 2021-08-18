@@ -18,7 +18,7 @@ import axios from 'axios';
 
 export default function CourseInfo(props) {
     const classes = useStyles();
-    const imageString = 'http://localhost:3001/api/files/send?fileName='
+    const imageString = process.env.REACT_APP_API_MAIN + '/files/send?fileName='
 
 
 

@@ -13,7 +13,7 @@ export default function TeacherAccordions(props) {
     const [expanded, setExpanded] = React.useState(false);
     const [courseContent, setCourseContent] = useState([]);
     const getCourseContent=async ()=>{
-        await axios.get("http://localhost:3001/api/course-contents/course?courseId=" + props.courseId).then(res => {
+        await axios.get(process.env.REACT_APP_API_MAIN + "/course-contents/course?courseId=" + props.courseId).then(res => {
             setCourseContent(res.data)
             console.log(props.courseId)
         }).catch(error => console.log(error));
@@ -53,7 +53,7 @@ export default function TeacherAccordions(props) {
                                             </Link>
                                         </Grid>
                                         {/* <Grid item xs={12} className={classes.videoContainer}>
-                                            <PlayerControl src={'http://localhost:3001/api/files/send?fileName=' + content.video} />
+                                            <PlayerControl src={process.env.REACT_APP_API_MAIN + '/files/send?fileName=' + content.video} />
                                         </Grid> */}
                                     </Grid>
                                 </AccordionDetails>

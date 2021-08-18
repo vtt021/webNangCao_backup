@@ -38,7 +38,7 @@ export default function PreviewDetailPage(props) {
             rate: ratingValue,
             rateContent: ratingContent
         }
-        await axios.post("http://localhost:3001/api/register-courses/rate",body,{
+        await axios.post(process.env.REACT_APP_API_MAIN + "/register-courses/rate",body,{
                 headers: {
                     'x-access-token': await Refreshtoken()
                 },
@@ -66,13 +66,13 @@ export default function PreviewDetailPage(props) {
     }, [localStorage.getItem("auth")])
 
     const getTeacherEmail = async () => {
-        await axios.get("http://localhost:3001/api/users/id?id=" + courseDetail.teacherId).then(res => {
+        await axios.get(process.env.REACT_APP_API_MAIN + "/users/id?id=" + courseDetail.teacherId).then(res => {
             setEmail(res.data.email)
             console.log(res.data.email)
         }).catch(error => console.log(error));
     }
     const getCourseDetail = async () => {
-        await axios.get("http://localhost:3001/api/courses/id?id=" + id).then(res => {
+        await axios.get(process.env.REACT_APP_API_MAIN + "/courses/id?id=" + id).then(res => {
             setCoursesDetail(res.data)
         }).catch(error => console.log(error))
     }
@@ -87,7 +87,7 @@ export default function PreviewDetailPage(props) {
             return;
         }
 
-        await axios.post('http://localhost:3001/api/users/favorite', {
+        await axios.post(process.env.REACT_APP_API_MAIN + '/users/favorite', {
             courseId: courseDetail._id
         }, {
             headers: {
@@ -108,7 +108,7 @@ export default function PreviewDetailPage(props) {
         }
         await Refreshtoken();
 
-        await axios.post("http://localhost:3001/api/register-courses", {
+        await axios.post(process.env.REACT_APP_API_MAIN + "/register-courses", {
             courseId: id
         }, {
             headers: {
@@ -126,7 +126,7 @@ export default function PreviewDetailPage(props) {
     useEffect(() => {
         const setBoughtCourseAndFeedbackStatus = async () => {
             if (user != null) {
-                await axios.get('http://localhost:3001/api/register-courses/detail?courseId=' + id, {
+                await axios.get(process.env.REACT_APP_API_MAIN + '/register-courses/detail?courseId=' + id, {
                     headers: {
                         'x-access-token': await Refreshtoken()
                     }
@@ -156,7 +156,7 @@ export default function PreviewDetailPage(props) {
 
         const setFavorite = async () => {
             if (user != null) {
-                await axios.get('http://localhost:3001/api/users/favorite-course?courseId=' + id, {
+                await axios.get(process.env.REACT_APP_API_MAIN + '/users/favorite-course?courseId=' + id, {
                     headers: {
                         'x-access-token': await Refreshtoken()
                     }
@@ -171,7 +171,7 @@ export default function PreviewDetailPage(props) {
         }
 
         const setFeedbackList = async () => {
-            await axios.get("http://localhost:3001/api/register-courses/rate?courseId=" + id)
+            await axios.get(process.env.REACT_APP_API_MAIN + "/register-courses/rate?courseId=" + id)
                 .then(res => {
                     console.log(res.data);
                     setListFeedback(res.data);

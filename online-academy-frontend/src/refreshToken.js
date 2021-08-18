@@ -4,7 +4,7 @@ import { CheckExTime } from './checkTime';
 export default async function Refreshtoken() {
     const user = JSON.parse(localStorage.getItem("auth"))
     if ((user != null) && CheckExTime()) {
-        await axios.post('http://localhost:3001/api/auth/refresh', {
+        await axios.post(process.env.REACT_APP_API_MAIN + '/auth/refresh', {
             accessToken: user.accessToken,
             refreshToken: user.refreshToken
         }).then(res => {

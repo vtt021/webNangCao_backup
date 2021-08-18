@@ -23,12 +23,12 @@ export default function Category() {
 
     
     const getSubCategory = async()=>{
-        await axios.get("http://localhost:3001/api/sub-categories/").then(res => {    
+        await axios.get(process.env.REACT_APP_API_MAIN + "/sub-categories/").then(res => {    
             setListSub(res.data)
         }).catch(error => console.log(error))
     }
     const getCategory = async()=>{
-        await axios.get("http://localhost:3001/api/categories").then(res => {
+        await axios.get(process.env.REACT_APP_API_MAIN + "/categories").then(res => {
             const listCategories = res.data;
             setListCategories(listCategories);
             

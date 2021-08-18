@@ -106,7 +106,7 @@ export default function VideoContent(props) {
                         props.completed != false && (
                             <Link align='left'
                                 rel="noopener noreferrer" target="_blank" variant='h6'
-                                href={'http://localhost:3001/api/files/download?fileName=' + props.oldVideo}
+                                href={process.env.REACT_APP_API_MAIN + '/files/download?fileName=' + props.oldVideo}
                             >
                                 Video hiện tại
                             </Link>

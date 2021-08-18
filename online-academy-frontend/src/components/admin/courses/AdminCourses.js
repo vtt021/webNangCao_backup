@@ -145,7 +145,7 @@ export default function AdminCourses() {
     };
     const [courses, setCourses] = useState([]);
     const getCourses = async () => {
-        await axios.get('http://localhost:3001/api/courses', {
+        await axios.get(process.env.REACT_APP_API_MAIN + '/courses', {
             headers: {
                 "x-access-token": await Refreshtoken()
             }

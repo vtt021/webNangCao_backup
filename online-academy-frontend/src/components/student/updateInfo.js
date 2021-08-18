@@ -31,7 +31,7 @@ export default function UpdateInfo() {
 
     const onSubmit = async (data) => {
         console.log(data)
-        await axios.put('http://localhost:3001/api/users', {
+        await axios.put(process.env.REACT_APP_API_MAIN + '/users', {
             password: data.password,
             email: data.email,
             username: data.username
@@ -55,7 +55,7 @@ export default function UpdateInfo() {
 
     useEffect(() => {
         const init = async () => {
-            await axios.get('http://localhost:3001/api/users/id?id=' + user.id)
+            await axios.get(process.env.REACT_APP_API_MAIN + '/users/id?id=' + user.id)
                 .then(res => {
                     let data = res.data;
                     console.log(data);

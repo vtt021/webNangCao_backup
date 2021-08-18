@@ -44,7 +44,7 @@ export default function CategoryAction(props) {
                 categoryName: newName
             }
             console.log(data)
-            await axios.put('http://localhost:3001/api/categories/', data, {
+            await axios.put(process.env.REACT_APP_API_MAIN + '/categories/', data, {
                 headers: {
                     'x-access-token': await Refreshtoken()
                 },
@@ -68,7 +68,7 @@ export default function CategoryAction(props) {
             id: props.id
         }
         console.log(data)
-        await axios.delete('http://localhost:3001/api/categories/', {
+        await axios.delete(process.env.REACT_APP_API_MAIN + '/categories/', {
             headers: {
                 'x-access-token': await Refreshtoken()
             },

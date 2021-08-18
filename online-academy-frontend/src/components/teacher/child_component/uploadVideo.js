@@ -99,8 +99,8 @@ export default function UploadVideo(props) {
     }, [activeStep]);
 
     const initDetailData = async () => {
-        // await axios.get('http://localhost:3001/api/course-contents/course?courseId=60f1a3d20b04b858a41f1e13')
-        await axios.get('http://localhost:3001/api/course-contents/course?courseId=' + courseId)
+        // await axios.get(process.env.REACT_APP_API_MAIN + '/course-contents/course?courseId=60f1a3d20b04b858a41f1e13')
+        await axios.get(process.env.REACT_APP_API_MAIN + '/course-contents/course?courseId=' + courseId)
             .then(res => {
                 let data = res.data;
                 console.log(data);
@@ -131,7 +131,7 @@ export default function UploadVideo(props) {
     }
 
     const initCompleted = async () => {
-        await axios.get('http://localhost:3001/api/courses/id?id=' + courseId)
+        await axios.get(process.env.REACT_APP_API_MAIN + '/courses/id?id=' + courseId)
             .then(res => {
                 let data = res.data;
                 setIsCompleted(data.isCompleted)
@@ -181,7 +181,7 @@ export default function UploadVideo(props) {
 
             // console.log(selectedFile)
 
-            let result2 = await axios.post('http://localhost:3001/api/course-contents/video', formData, {
+            let result2 = await axios.post(process.env.REACT_APP_API_MAIN + '/course-contents/video', formData, {
                 headers: {
                     'x-access-token': await Refreshtoken(),
                     'Content-Type': `multipart/form-data; boundary=${formData._boundary}`
@@ -198,7 +198,7 @@ export default function UploadVideo(props) {
     }
 
     const setupUploadChapter = async () => {
-        let ret = await axios.post('http://localhost:3001/api/course-contents', {
+        let ret = await axios.post(process.env.REACT_APP_API_MAIN + '/course-contents', {
             courseId: courseId,
             content: title,
             isPreview: isPreview
@@ -218,7 +218,7 @@ export default function UploadVideo(props) {
     }
 
     const setupUpdateChapter = async () => {
-        let ret = await axios.put('http://localhost:3001/api/course-contents', {
+        let ret = await axios.put(process.env.REACT_APP_API_MAIN + '/course-contents', {
             contentId: courseData[activeStep]['_id'],
             contentData: {
                 isPreview: isPreview,
@@ -240,7 +240,7 @@ export default function UploadVideo(props) {
     }
 
     const uploadFinishCourse = async () => {
-        await axios.put('http://localhost:3001/api/courses', {
+        await axios.put(process.env.REACT_APP_API_MAIN + '/courses', {
             courseData: {
                 isCompleted: !isCompleteEnabled ? isCompleted : false
             },
@@ -360,7 +360,7 @@ export default function UploadVideo(props) {
             return false;
         }
 
-        await axios.delete("http://localhost:3001/api/course-contents", {
+        await axios.delete(process.env.REACT_APP_API_MAIN + "/course-contents", {
             headers: {
                 'x-access-token': await Refreshtoken()
             },

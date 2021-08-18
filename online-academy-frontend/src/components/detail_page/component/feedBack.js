@@ -7,7 +7,7 @@ import { Paper, Typography, List, ListItem, ListItemAvatar, ListItemText } from 
 
 export default function FeedBack(props) {
     const classes = useStyles();
-    const imageString = 'http://localhost:3001/api/files/send?fileName='
+    const imageString = process.env.REACT_APP_API_MAIN + '/files/send?fileName='
 
     return (
         <div className={classes.container}>

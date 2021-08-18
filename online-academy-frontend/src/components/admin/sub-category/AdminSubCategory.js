@@ -176,7 +176,7 @@ export default function AdminSubCategory() {
     const [subCategories, setSubCategories] = useState([]);
 
     const getSubCategory = async () => {
-        await axios.get('http://localhost:3001/api/sub-categories/admin', {
+        await axios.get(process.env.REACT_APP_API_MAIN + '/sub-categories/admin', {
             headers: {
                 "x-access-token": await Refreshtoken()
             }
@@ -187,7 +187,7 @@ export default function AdminSubCategory() {
             })
     }
     const getCategory = async () => {
-        await axios.get("http://localhost:3001/api/categories").then(res => {
+        await axios.get(process.env.REACT_APP_API_MAIN + "/categories").then(res => {
             const listCategories = res.data;
             setListCategory(listCategories);
 
@@ -200,7 +200,7 @@ export default function AdminSubCategory() {
                 categoryId: category,
                 subCategoryName: newName
             }
-            await axios.post('http://localhost:3001/api/sub-categories/', data, {
+            await axios.post(process.env.REACT_APP_API_MAIN + '/sub-categories/', data, {
                 headers: {
                     'x-access-token': await Refreshtoken()
                 },

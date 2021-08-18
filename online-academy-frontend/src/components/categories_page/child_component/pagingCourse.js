@@ -15,7 +15,7 @@ export default function PagingCard(props) {
     const [priceSort, setPriceSort] = useState(0)
     const [allCategory, setAllCategory] = useState()
     useEffect(() => {
-        axios.get("http://localhost:3001/api/sub-categories/all").then(res => {
+        axios.get(process.env.REACT_APP_API_MAIN + "/sub-categories/all").then(res => {
             setAllCategory(res.data)
         })
             .catch(error => console.log(error));
@@ -65,7 +65,7 @@ export default function PagingCard(props) {
     }
 
     const getCourseItems = () => {
-        let url = "http://localhost:3001/api/courses/"
+        let url = process.env.REACT_APP_API_MAIN + "/courses/"
         if (props.search) {
             url = url + "search"
         } else {

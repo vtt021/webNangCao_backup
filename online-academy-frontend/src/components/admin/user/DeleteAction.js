@@ -18,7 +18,7 @@ const handleDellteUser= async (admin,id)=>{
     const data = {
         id: id
     }
-    await axios.delete('http://localhost:3001/api/users/',{
+    await axios.delete(process.env.REACT_APP_API_MAIN + '/users/',{
         headers: {
             'x-access-token': await Refreshtoken()
         },

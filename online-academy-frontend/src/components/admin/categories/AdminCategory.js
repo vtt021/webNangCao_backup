@@ -168,7 +168,7 @@ export default function AdminCategory() {
     };
     const [categories, setCategories] = useState([]);
     const getCategory = async () => {
-        await axios.get('http://localhost:3001/api/categories/admin', {
+        await axios.get(process.env.REACT_APP_API_MAIN + '/categories/admin', {
             headers: {
                 "x-access-token": await Refreshtoken()
             }
@@ -206,7 +206,7 @@ export default function AdminCategory() {
                 categoryName: newName
             }
             console.log(data)
-            await axios.post('http://localhost:3001/api/categories/', data, {
+            await axios.post(process.env.REACT_APP_API_MAIN + '/categories/', data, {
                 headers: {
                     'x-access-token': await Refreshtoken()
                 },

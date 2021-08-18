@@ -19,7 +19,7 @@ export default function ReactVideo(props) {
         }
         console.log(body)
         await Refreshtoken()
-        await axios.post("http://localhost:3001/api/register-courses/progress", body, {
+        await axios.post(process.env.REACT_APP_API_MAIN + "/register-courses/progress", body, {
             headers: {
                 'x-access-token': await Refreshtoken()
             },

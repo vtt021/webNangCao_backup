@@ -15,7 +15,7 @@ export default function CategoryPage(props) {
     const categoryId = props.match.params.id
     const [categoryName,setName] = useState("")
     const getName = async () =>{
-        await axios.get("http://localhost:3001/api/categories/id?id="+categoryId).then(res => {
+        await axios.get(process.env.REACT_APP_API_MAIN + "/categories/id?id="+categoryId).then(res => {
             const listCategories = res.data;
             setName(res.data.categoryName)
             console.log(res.data)

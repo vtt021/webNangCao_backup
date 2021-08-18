@@ -43,7 +43,7 @@ export default function UpdatePassTeacher() {
         console.log(accessToken);
 
 
-        await axios.put("http://localhost:3001/api/users/password", data, {
+        await axios.put(process.env.REACT_APP_API_MAIN + "/users/password", data, {
             headers: {
                 'x-access-token': await Refreshtoken()
             }

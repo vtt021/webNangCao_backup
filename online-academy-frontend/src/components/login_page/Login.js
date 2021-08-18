@@ -23,7 +23,7 @@ export default function Login() {
 
     const onSubmit = async (data) => {
         localStorage.removeItem("auth")
-        await axios.post("http://localhost:3001/api/auth", {
+        await axios.post(process.env.REACT_APP_API_MAIN + "/auth", {
             email: data.email,
             password: data.password
         }).then(res => {

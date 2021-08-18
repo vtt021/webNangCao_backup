@@ -23,7 +23,7 @@ const handleDellteCourse= async (id)=>{
     const data = {
         courseId: id
     }
-    await axios.delete('http://localhost:3001/api/courses/admin',{
+    await axios.delete(process.env.REACT_APP_API_MAIN + '/courses/admin',{
         headers: {
             'x-access-token': await Refreshtoken()
         },

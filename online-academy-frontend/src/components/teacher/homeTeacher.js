@@ -20,7 +20,7 @@ export default function HomeTeacher() {
 
         const init = async () => {
             console.log("user", user);
-            await axios.get("http://localhost:3001/api/courses/teacher?teacherId=" + user.id).then(res => {
+            await axios.get(process.env.REACT_APP_API_MAIN + "/courses/teacher?teacherId=" + user.id).then(res => {
                 res.data.map((course, i) => {
                     course.id = course._id;
                 }
