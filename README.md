@@ -2,8 +2,7 @@ Danh sách các bảng trong CSDL: https://docs.google.com/spreadsheets/d/1LVhNF
 
 Backend chạy tại port 3001
 Frontend chạy tại port 3000
-Nhớ thay đổi kết nối trong file utils/db.js
 
-File mock database: onlineAcademy.sql
-
-Web host: https://online-academy-789799818.herokuapp.com/
+Server host: https://online-academy-789799818.herokuapp.com/
+Client host: https://online-client-789799818.herokuapp.com/
+Trang facebook chatbot (Cần được cấp quyền): https://www.facebook.com/profile.php?id=100070767115803
