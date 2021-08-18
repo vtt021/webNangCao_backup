@@ -52,7 +52,7 @@ export default function UploadCourse(props) {
 
         let ret = await axios.post('http://localhost:3001/api/courses', data, {
             headers: {
-                'x-access-token': await Refreshtoken
+                'x-access-token': await Refreshtoken()
             }
         }).then(res => {
             handleOpen()

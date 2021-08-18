@@ -58,7 +58,7 @@ export default function UploadVideo(props) {
 
     useEffect(() => {
         console.log("completed", completed)
-        setIsCompletedEnabled(checkFullyVideo())
+        setIsCompletedEnabled(checkFullyVideo(completed))
 
     }, [completed])
 
@@ -98,49 +98,48 @@ export default function UploadVideo(props) {
 
     }, [activeStep]);
 
+    const initDetailData = async () => {
+        // await axios.get('http://localhost:3001/api/course-contents/course?courseId=60f1a3d20b04b858a41f1e13')
+        await axios.get('http://localhost:3001/api/course-contents/course?courseId=' + courseId)
+            .then(res => {
+                let data = res.data;
+                console.log(data);
+
+                if (data.length === 0) {
+                    setSteps(['Chương 1']);
+                    setCompleted([0]);
+                    setContent(defaultData)
+                }
+                else {
+                    let chapters = data.map((d, i) => 'Chương ' + (i + 1));
+                    setSteps(chapters);
+
+                    let completeStatus = data.map((d, i) => d.video != null ? 1 : 0);
+                    setCompleted(completeStatus)
+                    setContent(res.data[0])
+                    setTitle(res.data[0].content)
+                    setIsPreview(res.data[0].isPreview.localeCompare("true") === 0)
+                }
+                setCourseData(res.data)
+
+                // console.log("Check fully video", checkFullyVideo())
+                // setIsCompletedEnabled(checkFullyVideo())
+                
+            }).catch(e => {
+                console.log(e)
+            })
+    }
+
+    const initCompleted = async () => {
+        await axios.get('http://localhost:3001/api/courses/id?id=' + courseId)
+            .then(res => {
+                let data = res.data;
+                setIsCompleted(data.isCompleted)
+
+            })
+    }
+
     useEffect(() => {
-        const initDetailData = async () => {
-            // await axios.get('http://localhost:3001/api/course-contents/course?courseId=60f1a3d20b04b858a41f1e13')
-            await axios.get('http://localhost:3001/api/course-contents/course?courseId=' + courseId)
-                .then(res => {
-                    let data = res.data;
-                    console.log(data);
-
-                    if (data.length === 0) {
-                        setSteps(['Chương 1']);
-                        setCompleted([0]);
-                        setContent(defaultData)
-                    }
-                    else {
-                        let chapters = data.map((d, i) => 'Chương ' + (i + 1));
-                        setSteps(chapters);
-
-                        let completeStatus = data.map((d, i) => d.video != null ? 1 : 0);
-                        setCompleted(completeStatus)
-                        setContent(res.data[0])
-                        setTitle(res.data[0].content)
-                        setIsPreview(res.data[0].isPreview.localeCompare("true") === 0)
-                    }
-                    setCourseData(res.data)
-
-                    // console.log("Check fully video", checkFullyVideo())
-                    setIsCompletedEnabled(checkFullyVideo())
-                    
-                }).catch(e => {
-                    console.log(e)
-                })
-        }
-
-        const initCompleted = async () => {
-            await axios.get('http://localhost:3001/api/courses/id?id=' + courseId)
-                .then(res => {
-                    let data = res.data;
-                    setIsCompleted(data.isCompleted)
-
-                })
-        }
-
-
         const init = async () => {
             await initDetailData()
             await initCompleted()
@@ -195,6 +194,7 @@ export default function UploadVideo(props) {
                 return false;
             })
         }
+        return true;
     }
 
     const setupUploadChapter = async () => {
@@ -265,11 +265,11 @@ export default function UploadVideo(props) {
         console.log(videoFile)
         console.log(courseData[activeStep])
         console.log(courseId);
-        if (videoFile === null)
-        {
-            setOpen3(true)
-            return
-        }
+        // if (videoFile === null)
+        // {
+        //     setOpen3(true)
+        //     return
+        // }
         await Refreshtoken();
 
         let p = await uploadFinishCourse()
@@ -298,6 +298,7 @@ export default function UploadVideo(props) {
             setOpen2(true)
         }
         else {
+            console.log("Update chapter")
             //Call API cập nhật chương
             let t = await setupUpdateChapter();
 
@@ -314,7 +315,11 @@ export default function UploadVideo(props) {
             }
 
             setOpen2(true)
+
         }
+
+        await initDetailData()
+        await initCompleted()
 
 
 
@@ -425,8 +430,9 @@ export default function UploadVideo(props) {
         // setTitle(courseData[step].content)
     };
 
-    const checkFullyVideo = () => {
-        return completed.find(c => c === 0) !== undefined
+    const checkFullyVideo = (a) => {
+        // console.log("completed", completed)
+        return a.find(c => c === 0) !== undefined
     }
 
     return (
