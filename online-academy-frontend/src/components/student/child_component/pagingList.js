@@ -69,7 +69,7 @@ export default function PagingRegisteredList(props) {
                 {items && items.length > 0 &&
                     items.slice(minValue, maxValue).map((item, i) =>
                         <Grid key={i} item>
-                            <CourseCard key={i} courseInfo={item} />
+                            <CourseCard key={i} courseInfo={item} tag={2}/>
                         </Grid>
                     )
                 }

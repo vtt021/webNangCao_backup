@@ -115,7 +115,7 @@ export default function PagingCard(props) {
                     items.slice(minValue, maxValue).map((item, i) =>
                     (
                         <Grid key={i} item>
-                            <CourseCard key={i} courseInfo={item} />
+                            <CourseCard key={i} courseInfo={item} tag={1}/>
                         </Grid>
                     )
 

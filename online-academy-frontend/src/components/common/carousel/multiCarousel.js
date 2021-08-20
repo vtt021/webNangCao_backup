@@ -32,7 +32,7 @@ export default function MultiCarousel(props) {
                                 items.slice(i, i + numEachSlide).map((item, i) =>
                                 (
                                     <Grid key={i} item>
-                                        <CourseCard key={i} courseInfo={item} />
+                                        <CourseCard key={i} courseInfo={item} tag={3}/>
                                     </Grid>
                                 )
                                 )

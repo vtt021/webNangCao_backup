@@ -38,36 +38,61 @@ export default function CourseCard(props) {
         window.location.href = "/detail/" + id
     };
     const classtifyText = () => {
-        //console.log(props.courseInfo)
-        if (props.courseInfo.hotPoint > 200) {
-            return (
-                (<Typography noWrap align='left' variant="overline" style={{ color: '#FF4848' }}>
-                    {'Nổi bật'}
-                </Typography>)
-            )
-        } else if (props.courseInfo.isCompleted === false) {
-            return (
-                (<Typography noWrap align='left' variant="overline" style={{ color: '#CF0000' }}>
-                    {'Chưa hoàn thiện'}
-                </Typography>)
-            )
+        switch (props.tag) {
+            case 1:
+                if (props.courseInfo.hotPoint > 200) {
+                    return (
+                        (<Typography noWrap align='left' variant="overline" style={{ color: '#FF4848' }}>
+                            {'Nổi bật'}
+                        </Typography>)
+                    )
+                } else if (props.courseInfo.isCompleted === false) {
+                    return (
+                        (<Typography noWrap align='left' variant="overline" style={{ color: '#CF0000' }}>
+                            {'Chưa hoàn thiện'}
+                        </Typography>)
+                    )
+                }
+                else if (props.courseInfo.salePrice !== '0' && props.courseInfo.salePrice !== props.courseInfo.price) {
+                    return (
+                        (<Typography noWrap align='left' variant="overline" style={{ color: '#FF7600' }} >
+                            {'Giảm giá'}
+                        </Typography>)
+                    )
+                }
+                break;
+            case 2:
+                if (props.courseInfo.isCompleted === false) {
+                    return (
+                        (<Typography noWrap align='left' variant="overline" style={{ color: '#CF0000' }}>
+                            {'Chưa hoàn thiện'}
+                        </Typography>)
+                    )
+                }
+                break;
+
+            default:
+                break;
         }
-        else if (props.courseInfo.salePrice !== '0' && props.courseInfo.salePrice !== props.courseInfo.price) {
-            return (
-                (<Typography noWrap align='left' variant="overline" style={{ color: '#FF7600' }} >
-                    {'Giảm giá'}
-                </Typography>)
-            )
-        } 
+       
     }
     const classtifyCard = () => {
         //console.log(props.courseInfo)
-        if (props.courseInfo.hotPoint > 200) {
-            return classes.hotCard
+        switch (props.tag) {
+            case 1:
+                if (props.courseInfo.hotPoint > 200) {
+                    return classes.hotCard
+                }
+                else {
+                    return classes.card;
+                }
+                break;
+            default:
+                return classes.card;
+                break;
         }
-        else {
-            return classes.card;
-        }
+       
+        
     }
     return (
         <div className={classes.container}>
