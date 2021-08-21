@@ -11,6 +11,11 @@ module.exports = {
         return subCategories;
     },
 
+    async getSubcategory() {
+        const subCategories = await SubCategory.find({isDeleted: false}).exec();
+        return subCategories;
+    },
+
     async getSubcategoryInfo(id) {
         const subCategory = await SubCategory.findOne({_id: id, isDeleted: false}).exec();
         return subCategory;

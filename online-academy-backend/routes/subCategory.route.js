@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
         const id = req.query.id;
 
         if (id === undefined) {
-            const list = await subCategoryModel.getAll();
+            const list = await subCategoryModel.getSubcategory();
             list.forEach(element => {
                 delete element["isDeleted"];
                 delete element["lastUpdated"];
