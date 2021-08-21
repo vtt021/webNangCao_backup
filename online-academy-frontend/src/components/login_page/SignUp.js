@@ -26,7 +26,7 @@ export default function SignUp() {
                 password: data.password,
                 username: data.username
             }).then(res => {
-                window.location.replace("/verify-otp/" + data.email)
+                window.location.href = ("/verify-otp/" + data.email)
 
             })
                 .catch(error => console.log(error));

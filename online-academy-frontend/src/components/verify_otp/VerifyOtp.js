@@ -7,6 +7,7 @@ import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import axios from 'axios';
+import {useHistory} from "react-router-dom";
 
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
@@ -20,6 +21,8 @@ export default function Verifyotp(props) {
     console.log(email)
 
     const classes = useStyles();
+    const history = useHistory();
+
     const [loginStatus, setLoginStatus] = useState(true)
     const { register, handleSubmit, formState: { errors } } = useForm();
 
@@ -37,6 +40,7 @@ export default function Verifyotp(props) {
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
+
             <div className={classes.paper}>
                 <Typography component="h1" variant="h5" style={{ display: "flex", alignItems: "baseline" }}>
                     Chúng tôi đã gửi mã OTP đến địa chỉ:  {'\u00A0'}
@@ -45,7 +49,7 @@ export default function Verifyotp(props) {
                 <form className={classes.form} noValidate onSubmit={handleSubmit(onSubmit)}>
                     <TextField
                         onClick={(e) => { setLoginStatus(true) }}
-                        variant="outlined"
+                        variant="filled"
                         margin="normal"
                         required
                         fullWidth
@@ -68,7 +72,11 @@ export default function Verifyotp(props) {
                     >
                         Xác nhận
                     </Button>
-
+                    <Grid className='left' item xs>
+                        <Link onClick={() => history.goBack()} variant="body2">
+                            {"Quay lại"}
+                        </Link>
+                    </Grid >
                     <div hidden={loginStatus}>
                         <Alert variant="outlined" display="none" severity="error" className={classes.optFailed}>
                             Sai mã xác nhận
@@ -80,6 +88,7 @@ export default function Verifyotp(props) {
 
                         </Grid>
                     </div>
+
                 </form>
             </div>
             <Box mt={8}>
