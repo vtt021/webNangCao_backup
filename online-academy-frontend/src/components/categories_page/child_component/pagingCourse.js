@@ -12,7 +12,8 @@ export default function PagingCard(props) {
     const [minValue, setMinValue] = useState(0);
     const [maxValue, setmaxValue] = useState(numEachPage);
     const [page, setPage] = useState(1);
-    const [priceSort, setPriceSort] = useState(0)
+    const [priceSort, setPriceSort] = useState()
+    const [ratingSort, setRatingSort] = useState()
     const [allCategory, setAllCategory] = useState()
     useEffect(() => {
         axios.get(process.env.REACT_APP_API_MAIN + "/sub-categories/all").then(res => {
@@ -35,7 +36,7 @@ export default function PagingCard(props) {
         }
     };
 
-    const filterItem = async () => {
+    const filterItem = async (priceSort, ratingSort) => {
         if (props.category) {
             const filtered = lastItems.filter(d => {
                 if (new String(allCategory[d.subCategoryId]).search(new RegExp(props.category, "i")) >= 0) {
@@ -49,10 +50,18 @@ export default function PagingCard(props) {
             setItems(lastItems)
         }
 
-        if (priceSort == 0 && props.ratingSort == 0) {
+        if (props.priceSort == 0 && props.ratingSort == 0) {
             setItems(lastItems)
         }
+        if (ratingSort == 1) {
+            const filterItem = await items.sort((a, b) => { return a.rating - b.rating })
+            setItems(filterItem)
+        }
 
+        if (ratingSort == 2) {
+            const filterItem = await items.sort((a, b) => { return a.rating - b.rating }).reverse()
+            setItems(filterItem)
+        }
         if (priceSort == 3) {
             const filterItem = await items.sort((a, b) => { return a.salePrice - b.salePrice })
             setItems(filterItem)
@@ -100,7 +109,8 @@ export default function PagingCard(props) {
     }, []);
     useEffect(() => {
         setPriceSort(props.priceSort)
-        filterItem()
+        setRatingSort(props.ratingSort)
+        filterItem(props.priceSort, props.ratingSort)
     }, [props.category, props.ratingSort, props.priceSort]);
     return (
         <Grid

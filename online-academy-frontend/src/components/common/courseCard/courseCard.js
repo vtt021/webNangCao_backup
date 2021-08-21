@@ -21,6 +21,7 @@ export default function CourseCard(props) {
 
     const [image, setImage] = useState()
     const getImage = async () => {
+        console.log(props.courseInfo.imageThumbnail)
         setImage(process.env.REACT_APP_API_MAIN + "/files/send?fileName=" + props.courseInfo.imageThumbnail)
         await axios.get(process.env.REACT_APP_API_MAIN + "/sub-categories/id?id=" + props.courseInfo.subCategoryId).then(res => {
             setSubName(res.data.subCategoryName)
@@ -32,6 +33,13 @@ export default function CourseCard(props) {
         }
         init()
     }, []);
+
+    useEffect(() => {
+        const changeImage = async () => {
+            await getImage()
+        }
+        changeImage()
+    }, [props.courseInfo.imageThumbnail]);
 
     const handleDetailPage = id => () => {
         console.log(id);
@@ -169,7 +177,7 @@ export default function CourseCard(props) {
                             </container>
                         )}
                         <Grid container justify="flex-start" className={classes.containerRating}>
-                            <Rating name="half-rating-read" defaultValue={props.courseInfo.rating} precision={0.1} readOnly />
+                            <Rating name="half-rating-read"  value={props.courseInfo.rating} precision={0.1} readOnly />
                             <Typography variant="body2" color="textSecondary" className={classes.numberRating}>
                                 {'(' + props.courseInfo.ratingCount + ' đánh giá)'}
                             </Typography>
