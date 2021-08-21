@@ -28,7 +28,8 @@ export default function SearchPage(props) {
 
     const handleSeachClick = (event) => {
         if (searchText) {
-            window.location.href = '/search/' + searchText;
+            window.location.replace('/search/' + searchText);
+            //window.location.href = '/search/' + searchText;
         }
     };
 
@@ -84,7 +85,6 @@ export default function SearchPage(props) {
             </div>
             <Footer />
         </div>
-
 
     )
 }

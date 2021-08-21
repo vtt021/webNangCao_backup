@@ -33,6 +33,13 @@ export default function CourseCard(props) {
         init()
     }, []);
 
+    useEffect(() => {
+        const changeImage = async () => {
+            await getImage()
+        }
+        changeImage()
+    }, [props.courseInfo.imageThumbnail]);
+
     const handleDetailPage = id => () => {
         console.log(id);
         window.location.href = "/detail/" + id
@@ -169,7 +176,7 @@ export default function CourseCard(props) {
                             </container>
                         )}
                         <Grid container justify="flex-start" className={classes.containerRating}>
-                            <Rating name="half-rating-read" defaultValue={props.courseInfo.rating} precision={0.1} readOnly />
+                            <Rating name="half-rating-read"  value={props.courseInfo.rating} precision={0.1} readOnly />
                             <Typography variant="body2" color="textSecondary" className={classes.numberRating}>
                                 {'(' + props.courseInfo.ratingCount + ' đánh giá)'}
                             </Typography>
