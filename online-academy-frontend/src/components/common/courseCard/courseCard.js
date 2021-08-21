@@ -21,7 +21,6 @@ export default function CourseCard(props) {
 
     const [image, setImage] = useState()
     const getImage = async () => {
-        console.log(props.courseInfo.imageThumbnail)
         setImage(process.env.REACT_APP_API_MAIN + "/files/send?fileName=" + props.courseInfo.imageThumbnail)
         await axios.get(process.env.REACT_APP_API_MAIN + "/sub-categories/id?id=" + props.courseInfo.subCategoryId).then(res => {
             setSubName(res.data.subCategoryName)

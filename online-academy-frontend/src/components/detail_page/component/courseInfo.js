@@ -88,8 +88,8 @@ export default function CourseInfo(props) {
                                 <Typography gutterBottom variant="h3" align='left'>
                                     {props.courseInfo ? props.courseInfo.courseName : 'Tên khóa học'}
                                 </Typography>
-                                <Typography variant="h5" gutterBottom>
-                                    {props.courseInfo ? props.courseInfo.detailShort : 'Mô tả ngắn'}
+                                <Typography variant="h5" align='left' gutterBottom>
+                                    {props.courseInfo ? props.courseInfo.detailShort : 'Mô tả'}
                                 </Typography>
                             </Grid>
 
