@@ -112,12 +112,20 @@ export default function WatchVideoPage(props) {
                         contentId={id}
                         courseId={content.courseId}
                     /> */}
+                    {
+                        content.video !== null
+                            ? (
+                                <ReactVideo src={process.env.REACT_APP_API_MAIN + '/files/send?fileName=' + content.video}
+                                    startTime={startTime}
+                                    contentId={id}
+                                    courseId={content.courseId}
+                                />
+                            )
+                            : <Typography variant="h5">
+                                Chưa có video bài giảng
+                            </Typography>
+                    }
 
-                    <ReactVideo src={process.env.REACT_APP_API_MAIN + '/files/send?fileName=' + content.video}
-                        startTime={startTime}
-                        contentId={id}
-                        courseId={content.courseId}
-                    />
 
                 </Grid>
                 <Grid item xs={4}>
