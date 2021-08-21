@@ -50,7 +50,11 @@ router.get('/id', async (req, res, next) => {
 
 router.post('/', adminAuthMdw, async (req, res, next) => {
     try {
-        await categoryModel.add(req.body);
+        let categoryId = await categoryModel.add(req.body);
+        await subCategoryModel.add({
+            categoryId: categoryId,
+            subCategoryName: req.body.categoryName
+        });
         return res.status(201).json({
             message: 'OK'
         });

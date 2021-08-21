@@ -25,6 +25,7 @@ module.exports = {
         let newCategory = new Category;
         newCategory.categoryName = category.categoryName;
         await newCategory.save();
+        return newCategory['_id']
     },
 
     async update(id, categoryName) {
