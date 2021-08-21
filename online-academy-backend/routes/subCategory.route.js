@@ -157,8 +157,11 @@ router.post('/', async (req, res) => {
 
 router.put('/', async (req, res) => {
     try {
+        console.log(req.body)
         const id = req.body.id;
-        const subCategory = req.body.subCategory;
+        const subCategory = req.body.subCategoryName;
+        console.log(id);
+        console.log(subCategory);
         const ret = await subCategoryModel.update(id, subCategory);
         return res.status(200).json(ret);
     }

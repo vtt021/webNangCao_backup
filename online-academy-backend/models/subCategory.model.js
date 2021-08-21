@@ -73,7 +73,10 @@ module.exports = {
         //     }
         // }
 
-        await SubCategory.find({_id: id}).updateMany(subCategory).exec(); 
+        await SubCategory.find({_id: id}).updateMany({
+            subCategoryName: subCategory,
+            lastUpdated: new Date()
+        }).exec(); 
     },
 
     async delete(id) {
