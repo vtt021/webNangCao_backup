@@ -78,7 +78,6 @@ export default function PreviewDetailPage(props) {
     }
 
     const handleChangeLove = async (event) => {
-        await Refreshtoken();
 
         console.log(event.target.checked); //True: Yêu thích - False: Không
         console.log(user)
@@ -86,6 +85,7 @@ export default function PreviewDetailPage(props) {
             setOpenLike(true)
             return;
         }
+        await Refreshtoken();
 
         await axios.post(process.env.REACT_APP_API_MAIN + '/users/favorite', {
             courseId: courseDetail._id

@@ -39,15 +39,15 @@ export default function DetailPage(props) {
             rate: ratingValue,
             rateContent: ratingContent
         }
-        await axios.post(process.env.REACT_APP_API_MAIN + "/register-courses/rate",body,{
-                headers: {
-                    'x-access-token': await Refreshtoken()
-                },
-            }).then(res => {
-                window.location.reload()
+        await axios.post(process.env.REACT_APP_API_MAIN + "/register-courses/rate", body, {
+            headers: {
+                'x-access-token': await Refreshtoken()
+            },
+        }).then(res => {
+            window.location.reload()
 
-            })
-                .catch(error => console.log(body));
+        })
+            .catch(error => console.log(body));
     }
 
 
@@ -79,15 +79,13 @@ export default function DetailPage(props) {
     }
 
     const handleChangeLove = async (event) => {
-        await Refreshtoken();
-
         console.log(event.target.checked); //True: Yêu thích - False: Không
         console.log(user)
         if (user == null) {
             setOpenLike(true)
             return;
         }
-
+        await Refreshtoken();
         await axios.post(process.env.REACT_APP_API_MAIN + '/users/favorite', {
             courseId: courseDetail._id
         }, {
@@ -103,7 +101,7 @@ export default function DetailPage(props) {
     }
 
     const handleBuyCourse = async () => {
-        if(!user){
+        if (!user) {
             setOpenBuy(true)
             return
         }
@@ -263,10 +261,10 @@ export default function DetailPage(props) {
         if (courseDetail._id != null && courseDetail.subCategoryId != null) {
             return (
                 <div className={classes.root}>
-                    <AlertDialog close={()=>{setOpenLike(false)}} isOpened={openLike} value={"Bạn phải có tài khoản mới thể thích khóa học này"}/>
-                    <AlertDialog close={()=>{setOpenSuccess(false)}} isOpened={openSuccess} value={"Đăng ký khóa học thành công"}/>
-                    <AlertDialog close={()=>{setOpenError(false)}} isOpened={openError} value={"Đăng ký khóa học không thành công"}/>
-                    <AlertDialog close={()=>{setOpenBuy(false)}} isOpened={openBuy} value={"Bạn phải đăng nhập mới có thể mua khóa học này"}/>
+                    <AlertDialog close={() => { setOpenLike(false) }} isOpened={openLike} value={"Bạn phải có tài khoản mới thể thích khóa học này"} />
+                    <AlertDialog close={() => { setOpenSuccess(false) }} isOpened={openSuccess} value={"Đăng ký khóa học thành công"} />
+                    <AlertDialog close={() => { setOpenError(false) }} isOpened={openError} value={"Đăng ký khóa học không thành công"} />
+                    <AlertDialog close={() => { setOpenBuy(false) }} isOpened={openBuy} value={"Bạn phải đăng nhập mới có thể mua khóa học này"} />
                     <CourseInfo courseInfo={courseDetail} isBought={isBought} isFavorite={isFavorite}
                         handleChangeLove={handleChangeLove} handleBuyCourse={handleBuyCourse} />
                     <Grid container spacing={3} className={classes.container}>
@@ -278,11 +276,11 @@ export default function DetailPage(props) {
                                 </div>
                             </Paper>
                             <Typography variant="h4" gutterBottom className={classes.underline}>
-                                Đề cương khóa học: 
-                                {courseDetail.isCompleted !== true 
-                                ? ' Chưa hoàn thiện'
-                                : ''
-                            }
+                                Đề cương khóa học:
+                                {courseDetail.isCompleted !== true
+                                    ? ' Chưa hoàn thiện'
+                                    : ''
+                                }
                             </Typography>
                             <Accordions courseId={id} isBought={isBought} />
                             <Typography variant="h4" gutterBottom className={classes.underline} >

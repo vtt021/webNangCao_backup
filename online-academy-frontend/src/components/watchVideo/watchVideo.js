@@ -23,16 +23,18 @@ export default function WatchVideoPage(props) {
     const [content, setContent] = useState({});
     const [startTime, setStartTime] = useState(0)
     const getProgress = async () => {
-        if (content.courseId) {
-            await Refreshtoken()
-            await axios.get(process.env.REACT_APP_API_MAIN + "/register-courses/progress?courseId=" + content.courseId, {
-                headers: {
-                    'x-access-token': await Refreshtoken()
-                }
-            }).then(res => {
-                setListProgress(res.data)
-                console.log(res.data)
-            }).catch(error => console.log(error));
+        if (user) {
+            if (content.courseId) {
+                await Refreshtoken()
+                await axios.get(process.env.REACT_APP_API_MAIN + "/register-courses/progress?courseId=" + content.courseId, {
+                    headers: {
+                        'x-access-token': await Refreshtoken()
+                    }
+                }).then(res => {
+                    setListProgress(res.data)
+                    console.log(res.data)
+                }).catch(error => console.log(error));
+            }
         }
     }
     const getLastTime = () => {
