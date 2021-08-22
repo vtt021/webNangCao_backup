@@ -19,6 +19,7 @@ export default function CourseCard(props) {
     const history = useHistory();
     const [subCategoryName, setSubName] = useState()
 
+    
     const [image, setImage] = useState()
     const getImage = async () => {
         setImage(process.env.REACT_APP_API_MAIN + "/files/send?fileName=" + props.courseInfo.imageThumbnail)

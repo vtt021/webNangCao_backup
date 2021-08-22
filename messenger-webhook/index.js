@@ -20,7 +20,7 @@ const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
 const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
 const LIVE_URL = process.env.LIVE_URL;
 
-
+const CLIENT_URL = process.env.CLIENT_URL;
 
 // Creates the endpoint for our webhook 
 app.post('/webhook', (req, res) => {
@@ -251,7 +251,7 @@ async function handleSearchMessage(data) {
     const finalData = await axios.get(LIVE_URL + '/courses/search', {
         params: {
             keyword: data,
-            limit: 3,
+            limit: 5,
             page: 1
         }
     }).then(res => {
@@ -266,13 +266,13 @@ async function handleSearchMessage(data) {
                     "image_url": LIVE_URL + '/files/send?fileName=' + d.imageThumbnail,
                     "default_action": {
                         "type": "web_url",
-                        "url": "http://localhost:3000/detail/" + d._id,
+                        "url": CLIENT_URL + "/detail/" + d._id,
                         "webview_height_ratio": "tall",
                     },
                     "buttons": [
                         {
                             "type": "web_url",
-                            "url": "http://localhost:3000/detail/" + d._id,
+                            "url": CLIENT_URL + "/detail/" + d._id,
                             "title": "Đăng ký ngay!"
                         }, {
                             "type": "postback",
@@ -384,13 +384,13 @@ async function handleGetCourseByCategory(data) {
                         "image_url": LIVE_URL + '/files/send?fileName=' + d.imageThumbnail,
                         "default_action": {
                             "type": "web_url",
-                            "url": "http://localhost:3000/detail/" + d._id,
+                            "url": CLIENT_URL + "/detail/" + d._id,
                             "webview_height_ratio": "tall",
                         },
                         "buttons": [
                             {
                                 "type": "web_url",
-                                "url": "http://localhost:3000/detail/" + d._id,
+                                "url": CLIENT_URL + "/detail/" + d._id,
                                 "title": "Đăng ký ngay!"
                             }, {
                                 "type": "postback",
